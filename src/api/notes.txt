@@ -1,0 +1,5 @@
+React, Firebase implementation of chess - can serve as inspiration
+https://www.youtube.com/watch?v=kBR7pDLcC3A&list=PLAXzGp2JkeQ8U7RO0yYQhZId46WbFbzKi
+
+Firebase - Get realtime upbdates from the db 
+https://firebase.google.com/docs/firestore/query-data/listen
