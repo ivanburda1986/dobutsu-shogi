@@ -3,3 +3,6 @@ https://www.youtube.com/watch?v=kBR7pDLcC3A&list=PLAXzGp2JkeQ8U7RO0yYQhZId46WbFb
 
 Firebase - Get realtime upbdates from the db 
 https://firebase.google.com/docs/firestore/query-data/listen
+
+Perfect firebase and firestore course 
+https://youtu.be/s1frrNxq4js
