@@ -6,3 +6,8 @@ https://firebase.google.com/docs/firestore/query-data/listen
 
 Perfect firebase and firestore course 
 https://youtu.be/s1frrNxq4js
+
+Technical ideas: https://www.techighness.com/post/develop-two-player-chess-game-with-react-js/
+
+Inheritance and polymorphysm 
+https://www.techighness.com/post/javascript-inheritance-and-polymorphism-in-react-js-application/
