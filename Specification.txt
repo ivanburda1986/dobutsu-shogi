@@ -1,3 +1,18 @@
+DESIGN 
+Screens:
+1) Launch screen: 
+- displayed upon launching the game 
+- Register / Login (email, name) + Reset password
+- Logged in as (Player icon&name) -> Profile settings, Logout
+
+2) Register 
+
+3) Profile settings
+
+
+
+
+
 1)Player registration and profile creation: 
 Email, Password, Nickname, Icon
 Can reset the pass and edit the nickname 
