@@ -1,12 +1,13 @@
 import React from "react";
+import { Avatar } from "./Avatar/Avatar";
+import { Button } from "../components/Button/Button";
 import styles from "./Header.module.css";
-import sharedStyles from "../sharedStyles.module.css";
 
 export const Header: React.FC = () => {
   return (
-    <header>
-      Header
-      <button className={`${sharedStyles.button} ${styles.logoutButton}`}>Logout</button>
+    <header className={styles.header}>
+      <Button name="Logout" bgColor="tomato" borderColor="red" />
+      <Avatar name={"avatar2"} />
     </header>
   );
 };

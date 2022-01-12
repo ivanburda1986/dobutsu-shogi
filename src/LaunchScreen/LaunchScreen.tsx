@@ -1,11 +1,12 @@
 import React from "react";
+import { Button } from "../components/Button/Button";
 import styles from "../sharedStyles.module.css";
 
 export const LaunchScreen = () => {
   return (
     <div>
-      <button className={styles.button}>Register</button>
-      <button className={styles.button}>Login</button>
+      <Button name="Register" />
+      <Button name="Login" />
     </div>
   );
 };

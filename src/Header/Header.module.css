@@ -1,5 +1,11 @@
+.header {
+  display: flex;
+  justify-content: row;
+  justify-content: space-between;
+  padding: 0.5em;
+}
+
 .logoutButton {
   background-color: tomato;
   border-color: rgb(207, 82, 60);
-  margin-bottom: 50px;
 }
