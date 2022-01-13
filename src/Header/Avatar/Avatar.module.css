@@ -1,7 +1,8 @@
 .avatar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 10rem;
+}
+
+.avatarIco {
   height: 3rem;
   width: 3rem;
   border: 0.25em solid rgb(39, 93, 129);

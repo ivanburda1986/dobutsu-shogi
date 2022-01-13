@@ -24,7 +24,7 @@ export const RegisterScreen = () => {
           <Form.Text className="text-muted">Don't use your mailbox password.</Form.Text>
         </Form.Group>
         <Button variant="primary" type="submit">
-          Submit
+          Register
         </Button>
       </Form>
     </Container>
