@@ -1,9 +1,32 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
+
+import styles from "./RegisterScreen.module.css";
 
 export const RegisterScreen = () => {
   return (
-    <div>
-      <p>Register screen</p>
-    </div>
+    <Container>
+      <h2>Registration</h2>
+      <div className="d-flex">
+        <p className="me-1">Already registred?</p>
+        <NavLink to="/login">Login</NavLink>
+      </div>
+      <Form className={styles.registerForm}>
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control type="email" placeholder="Enter email" />
+          <Form.Text className="text-muted">This will be your login.</Form.Text>
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control type="password" placeholder="Password" />
+          <Form.Text className="text-muted">Don't use your mailbox password.</Form.Text>
+        </Form.Group>
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>
+      </Form>
+    </Container>
   );
 };

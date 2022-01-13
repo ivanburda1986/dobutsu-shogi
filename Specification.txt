@@ -53,6 +53,9 @@ Statistics - stats for a specific games are visible only to its participants
 Players can set a limit even during an ongoing game to speed it up. This option gets suggested automatically if the game is going on for some time. 
 
 
+Reference 
+https://getbootstrap.com/docs/5.0/layout/containers/
+
 
 
 
