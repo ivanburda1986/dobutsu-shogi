@@ -24,6 +24,11 @@ export const LoginScreen: React.FC = () => {
               <Form.Label>Password</Form.Label>
               <Form.Control type="password" placeholder="Password" />
             </Form.Group>
+            <div>
+              <a href="#" className="small mb-2">
+                Forgotten your password?
+              </a>
+            </div>
             <Button variant="primary" type="submit">
               Login
             </Button>
