@@ -1,8 +1,8 @@
 import React from "react";
 
-export const Profile = () => {
+export const Profile: React.FC = () => {
   return (
-    <div>
+    <div className="container-lg">
       <p>Profile</p>
     </div>
   );
