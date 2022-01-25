@@ -11,6 +11,18 @@ export const RegisterScreen: React.FC = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
   const registerUser = useRegisterUser;
 
+  const onRegistration = () => {
+    if (emailRef.current?.value === "") {
+      console.log("Email missing");
+      return;
+    }
+    if (passwordRef.current?.value === "") {
+      console.log("Password missing");
+    }
+
+    registerUser({ email: emailRef.current?.value, password: passwordRef.current?.value });
+  };
+
   return (
     <Container fluid className="my-3">
       <Row className="justify-content-center">
@@ -35,7 +47,7 @@ export const RegisterScreen: React.FC = () => {
               <Form.Label>Confirm password</Form.Label>
               <Form.Control type="password" placeholder="Confirm password" />
             </Form.Group>
-            <Button variant="primary" type="button" onClick={() => registerUser({ email: emailRef.current?.value, password: passwordRef.current?.value })}>
+            <Button variant="primary" type="button" onClick={() => onRegistration()}>
               Register
             </Button>
           </Form>
