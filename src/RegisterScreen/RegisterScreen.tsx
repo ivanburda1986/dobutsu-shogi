@@ -1,15 +1,38 @@
-import React from "react";
+import React, { useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 
 import styles from "./RegisterScreen.module.css";
+import { initializeApp } from "firebase/app";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+const firebaseConfig = {
+  apiKey: "AIzaSyCBnawTeOf0cVa7m7aKFQoIqrXbJOorW2c",
+  authDomain: "dobutsushogi-43c6e.firebaseapp.com",
+  databaseURL: "https://dobutsushogi-43c6e-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "dobutsushogi-43c6e",
+  storageBucket: "dobutsushogi-43c6e.appspot.com",
+  messagingSenderId: "721291009374",
+  appId: "1:721291009374:web:16ce8eaf9286ec6a4683cf",
+  measurementId: "G-NHVXG2LCZJ",
+};
+initializeApp(firebaseConfig);
 
-export const RegisterScreen = () => {
+export const RegisterScreen: React.FC = () => {
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const auth = getAuth();
+
+  function register(e: { preventDefault: () => void }) {
+    e.preventDefault();
+    createUserWithEmailAndPassword(auth, emailRef.current!.value, passwordRef.current!.value)
+      .then((cred: any) => {
+        console.log("user created:", cred.user);
+      })
+      .catch((err: any) => {
+        console.log(err.message);
+      });
+  }
   return (
-    // <Container>
-
-    // </Container>
-
     <Container fluid className="my-3">
       <Row className="justify-content-center">
         <Col md={8} lg={5}>
@@ -21,15 +44,19 @@ export const RegisterScreen = () => {
           <Form className={`${styles.registerForm} p-3`}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email address</Form.Label>
-              <Form.Control type="email" placeholder="Enter email" />
+              <Form.Control type="email" placeholder="Enter email" ref={emailRef} />
               <Form.Text className="text-muted">This will be your login.</Form.Text>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Label>Password</Form.Label>
-              <Form.Control type="password" placeholder="Password" />
+              <Form.Control type="password" placeholder="Password" ref={passwordRef} />
               <Form.Text className="text-muted">Don't use your mailbox password.</Form.Text>
             </Form.Group>
-            <Button variant="primary" type="submit">
+            <Form.Group className="mb-3" controlId="formBasicPassword">
+              <Form.Label>Confirm password</Form.Label>
+              <Form.Control type="password" placeholder="Confirm password" />
+            </Form.Group>
+            <Button variant="primary" type="submit" onClick={register}>
               Register
             </Button>
           </Form>

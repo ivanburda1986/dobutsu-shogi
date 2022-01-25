@@ -1,7 +1,7 @@
 import React from "react";
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs, addDoc, getDoc, setDoc, deleteDoc, doc, onSnapshot, orderBy, serverTimestamp, query, updateDoc, where } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import "./App.css";
 
 const firebaseConfig = {
