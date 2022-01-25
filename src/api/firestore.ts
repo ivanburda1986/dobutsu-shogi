@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs, addDoc, getDoc, setDoc, deleteDoc, doc, onSnapshot, orderBy, serverTimestamp, query, updateDoc, where } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCBnawTeOf0cVa7m7aKFQoIqrXbJOorW2c",
@@ -21,3 +21,22 @@ const db = getFirestore();
 
 //Init authentication
 const auth = getAuth();
+
+interface RegisterUserInterface {
+  email: string | undefined;
+  password: string | undefined;
+}
+
+export const useRegisterUser = ({ email, password }: RegisterUserInterface): void => {
+  console.log(email);
+  console.log(password);
+  if (email && password) {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((cred: any) => {
+        console.log("user created:", cred.user);
+      })
+      .catch((err: any) => {
+        console.log(err.message);
+      });
+  }
+};
