@@ -9,8 +9,11 @@ import { validateEmail } from "./validateEmail";
 
 export const RegisterScreen: React.FC = () => {
   const emailRef = useRef<HTMLInputElement>(null);
+  const [emailInput, setEmailInput] = React.useState<string>("");
   const passwordRef = useRef<HTMLInputElement>(null);
+  const [passwordInput, setPasswordInput] = React.useState<string>("");
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
+  const [confirmPasswordInput, setConfirmPasswordInput] = React.useState<string>("");
   const [emailValidity, setEmailValidity] = React.useState<boolean>(false);
   const [startedEmailEntry, setStartedEmailEntry] = React.useState<boolean>(false);
   const [passLengthValidity, setPassLengthValidity] = React.useState<boolean>(false);
@@ -49,16 +52,16 @@ export const RegisterScreen: React.FC = () => {
     return setPassMatchValidity(false);
   };
 
-  const onRegistration = () => {
-    if (emailRef.current?.value === "") {
-      console.log("Email missing");
-      return;
+  const resetForm = (userRegistrationSuccess: boolean) => {
+    if (userRegistrationSuccess) {
+      setEmailInput("");
+      setPasswordInput("");
+      setConfirmPasswordInput("");
     }
-    if (passwordRef.current?.value === "") {
-      console.log("Password missing");
-    }
+  };
 
-    registerUser({ email: emailRef.current?.value, password: passwordRef.current?.value });
+  const onRegistration = () => {
+    registerUser({ email: emailRef.current?.value, password: passwordRef.current?.value, callbackFunction: resetForm });
   };
 
   return (
@@ -70,14 +73,16 @@ export const RegisterScreen: React.FC = () => {
             <p className="me-1">Already registred?</p>
             <NavLink to="/login">Login</NavLink>
           </div>
-          <Form className={`${styles.registerForm} p-3`}>
+          <Form id="registrationForm" className={`${styles.registerForm} p-3`}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Your email address</Form.Label>
               <Form.Control
                 type="email"
                 placeholder="This will be your login"
                 ref={emailRef}
+                value={emailInput}
                 onChange={() => {
+                  setEmailInput(emailRef.current!.value);
                   setStartedEmailEntry(true);
                   validateEmailInput();
                 }}
@@ -90,7 +95,9 @@ export const RegisterScreen: React.FC = () => {
                 type="password"
                 placeholder="Min. 6 characters - not your mailbox pass"
                 ref={passwordRef}
+                value={passwordInput}
                 onChange={() => {
+                  setPasswordInput(passwordRef.current!.value);
                   setStartedPassEntry(true);
                   validatePasswordInputLength();
                   validatePasswordMatch();
@@ -104,7 +111,9 @@ export const RegisterScreen: React.FC = () => {
                 type="password"
                 placeholder="Confirm password"
                 ref={confirmPasswordRef}
+                value={confirmPasswordInput}
                 onChange={() => {
+                  setConfirmPasswordInput(confirmPasswordRef.current!.value);
                   setStartedPassEntry(true);
                   validatePasswordMatch();
                 }}

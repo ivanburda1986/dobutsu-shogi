@@ -25,16 +25,21 @@ const auth = getAuth();
 interface RegisterUserInterface {
   email: string | undefined;
   password: string | undefined;
+  callbackFunction: (userRegistrationSuccess: boolean) => void;
 }
 
-export const useRegisterUser = ({ email, password }: RegisterUserInterface): void => {
+export const useRegisterUser = ({ email, password, callbackFunction }: RegisterUserInterface) => {
+  //let userRegistrationSuccessful = false;
   if (email && password) {
     createUserWithEmailAndPassword(auth, email, password)
       .then((cred: any) => {
         console.log("user created:", cred.user);
+        callbackFunction(true);
       })
       .catch((err: any) => {
         console.log(err.message);
+        callbackFunction(false);
       });
   }
+  //return userRegistrationSuccessful;
 };
