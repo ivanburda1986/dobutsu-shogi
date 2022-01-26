@@ -28,8 +28,6 @@ interface RegisterUserInterface {
 }
 
 export const useRegisterUser = ({ email, password }: RegisterUserInterface): void => {
-  console.log(email);
-  console.log(password);
   if (email && password) {
     createUserWithEmailAndPassword(auth, email, password)
       .then((cred: any) => {
