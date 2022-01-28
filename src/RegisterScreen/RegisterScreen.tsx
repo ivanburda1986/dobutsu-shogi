@@ -61,7 +61,7 @@ export const RegisterScreen: React.FC = () => {
   };
 
   const onRegistration = () => {
-    registerUser({ email: emailRef.current?.value, password: passwordRef.current?.value, callbackFunction: resetForm });
+    registerUser({ email: emailRef.current?.value, password: passwordRef.current?.value, registerUserCb: resetForm });
   };
 
   return (

@@ -19,6 +19,9 @@ export const Header: React.FC = () => {
         <NavLink to="/login" className="btn btn-primary">
           Log in
         </NavLink>
+        <NavLink to="/" className="btn btn-danger mx-3">
+          Log out
+        </NavLink>
       </div>
     </header>
   );

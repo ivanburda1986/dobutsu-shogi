@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs, addDoc, getDoc, setDoc, deleteDoc, doc, onSnapshot, orderBy, serverTimestamp, query, updateDoc, where } from "firebase/firestore";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, signOut, signInWithEmailAndPassword } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCBnawTeOf0cVa7m7aKFQoIqrXbJOorW2c",
@@ -20,26 +20,56 @@ initializeApp(firebaseConfig);
 const db = getFirestore();
 
 //Init authentication
-const auth = getAuth();
+export const auth = getAuth();
 
 interface RegisterUserInterface {
   email: string | undefined;
   password: string | undefined;
-  callbackFunction: (userRegistrationSuccess: boolean) => void;
+  registerUserCb: (userRegistrationSuccess: boolean) => void;
 }
 
-export const useRegisterUser = ({ email, password, callbackFunction }: RegisterUserInterface) => {
+export const useRegisterUser = ({ email, password, registerUserCb }: RegisterUserInterface) => {
   //let userRegistrationSuccessful = false;
   if (email && password) {
     createUserWithEmailAndPassword(auth, email, password)
       .then((cred: any) => {
         console.log("user created:", cred.user);
-        callbackFunction(true);
+        registerUserCb(true);
       })
       .catch((err: any) => {
         console.log(err.message);
-        callbackFunction(false);
+        registerUserCb(false);
       });
   }
   //return userRegistrationSuccessful;
+};
+
+interface LoginUserInterface {
+  email: string | undefined;
+  password: string | undefined;
+  loginUserCb: (userLoginSuccess: boolean) => void;
+}
+
+export const useLoginUser = ({ email, password, loginUserCb }: LoginUserInterface) => {
+  if (email && password) {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((cred) => {
+        console.log("user logged in", cred.user);
+        loginUserCb(true);
+      })
+      .catch((err) => {
+        console.log(err.message);
+        loginUserCb(false);
+      });
+  }
+};
+
+export const useLogoutUser = () => {
+  signOut(auth)
+    .then(() => {
+      console.log("The user has signed out");
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
 };
