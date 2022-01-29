@@ -6,6 +6,8 @@ import { LoginScreen } from "./LoginScreen/LoginScreen";
 import { Profile } from "./Profile/Profile";
 import { RegisterScreen } from "./RegisterScreen/RegisterScreen";
 import { AppContext } from "./context/AppContext";
+import { auth } from "./api/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import sharedStyles from "./sharedStyles.module.css";
@@ -16,6 +18,12 @@ export interface LoggedInUserInterface {
 
 export default function App() {
   const [loggedInUser, setLoggedInUser] = React.useState<LoggedInUserInterface>();
+
+  React.useCallback(() => {
+    onAuthStateChanged(auth, (user) => {
+      console.log("user status changed: ", user);
+    });
+  }, []);
 
   const providedContext = {
     loggedInUser,

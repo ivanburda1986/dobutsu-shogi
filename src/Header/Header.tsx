@@ -3,12 +3,14 @@ import { Avatar } from "./Avatar/Avatar";
 import { Button } from "react-bootstrap";
 import styles from "./Header.module.css";
 import { NavLink } from "react-router-dom";
+import { useLogoutUser } from "../api/firestore";
 
 interface HeaderInterface {
   loggedInUserEmail: string | undefined;
 }
 
 export const Header: React.FC<HeaderInterface> = ({ loggedInUserEmail }) => {
+  const logout = useLogoutUser;
   return (
     <header className={`${styles.header} container-fluid d-flex flex-row justify-content-between align-items-center py-2`}>
       <h2>
@@ -23,7 +25,7 @@ export const Header: React.FC<HeaderInterface> = ({ loggedInUserEmail }) => {
         <NavLink to="/login" className="btn btn-primary">
           Log in
         </NavLink>
-        <NavLink to="/" className="btn btn-danger mx-3">
+        <NavLink to="/" className="btn btn-danger mx-3" onClick={() => logout()}>
           Log out
         </NavLink>
       </div>
