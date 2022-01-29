@@ -43,7 +43,7 @@ export const LoginScreen: React.FC = () => {
   };
 
   const onLogin = () => {
-    loginUser({ email: emailRef.current?.value, password: passwordRef.current?.value, loginUserCb: { resetForm, setLoggedInUser: appContext.setLoggedInUser } });
+    loginUser({ email: emailRef.current?.value, password: passwordRef.current?.value, loginUserCb: { resetForm } });
   };
 
   const resetForm = (userLoginSuccess: boolean) => {

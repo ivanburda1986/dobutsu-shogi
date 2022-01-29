@@ -11,19 +11,23 @@ import { onAuthStateChanged } from "firebase/auth";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import sharedStyles from "./sharedStyles.module.css";
+import _ from "lodash";
 
 export interface LoggedInUserInterface {
   email: string;
+  uid: string;
 }
 
 export default function App() {
   const [loggedInUser, setLoggedInUser] = React.useState<LoggedInUserInterface>();
 
-  React.useCallback(() => {
-    onAuthStateChanged(auth, (user) => {
-      console.log("user status changed: ", user);
-    });
-  }, []);
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log(user);
+      let userData = _.pick(user, ["email", "uid"]);
+      //setLoggedInUser(userData);
+    }
+  });
 
   const providedContext = {
     loggedInUser,

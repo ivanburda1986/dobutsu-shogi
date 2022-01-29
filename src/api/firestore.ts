@@ -49,7 +49,6 @@ interface LoginUserInterface {
   password: string | undefined;
   loginUserCb: {
     resetForm: (userLoginSuccess: boolean) => void;
-    setLoggedInUser: ({ email }: LoggedInUserInterface) => void;
   };
 }
 
@@ -59,9 +58,6 @@ export const useLoginUser = ({ email, password, loginUserCb }: LoginUserInterfac
       .then((cred) => {
         console.log("user logged in", cred.user);
         loginUserCb.resetForm(true);
-        if (cred.user.email) {
-          loginUserCb.setLoggedInUser({ email: cred.user.email });
-        }
       })
       .catch((err) => {
         console.log(err.message);
@@ -79,5 +75,3 @@ export const useLogoutUser = () => {
       console.log(err.message);
     });
 };
-
-export const listenToAuthEvent = () => {};
