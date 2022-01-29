@@ -49,13 +49,18 @@ interface LoginUserInterface {
   password: string | undefined;
   loginUserCb: {
     resetForm: (userLoginSuccess: boolean) => void;
+    loginProgress: (loginProgressFinished: boolean) => void;
   };
 }
 
 export const useLoginUser = ({ email, password, loginUserCb }: LoginUserInterface) => {
   if (email && password) {
+    loginUserCb.loginProgress(false);
     signInWithEmailAndPassword(auth, email, password)
       .then((cred) => {
+        setTimeout(() => {
+          loginUserCb.loginProgress(true);
+        }, 100);
         loginUserCb.resetForm(true);
       })
       .catch((err) => {

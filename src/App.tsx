@@ -17,7 +17,7 @@ import _ from "lodash";
 export default function App() {
   const [userLoggedIn, setUserLoggedIn] = React.useState<boolean>(false);
   const [loggedInUserEmail, setLoggedInUserEmail] = React.useState<string>("");
-
+  const [loginFinished, setLoginFinished] = React.useState<boolean>(true);
   const navigate = useNavigate();
 
   onAuthStateChanged(auth, (user) => {
@@ -34,13 +34,15 @@ export default function App() {
   const providedContext = {
     userLoggedIn,
     loggedInUserEmail,
+    loginFinished,
+    setLoginFinished,
   };
   React.useEffect(() => {
-    if (userLoggedIn) {
+    if (userLoggedIn && loginFinished) {
       console.log(userLoggedIn);
       navigate("../", { replace: false });
     }
-  }, [userLoggedIn]);
+  }, [userLoggedIn, loginFinished]);
 
   return (
     <>

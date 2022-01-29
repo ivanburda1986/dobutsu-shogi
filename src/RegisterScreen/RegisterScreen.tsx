@@ -81,6 +81,7 @@ export const RegisterScreen: React.FC = () => {
                 placeholder="This will be your login"
                 ref={emailRef}
                 value={emailInput}
+                autoComplete="username"
                 onChange={() => {
                   setEmailInput(emailRef.current!.value);
                   setStartedEmailEntry(true);
@@ -89,13 +90,14 @@ export const RegisterScreen: React.FC = () => {
               />
               {startedEmailEntry && !emailValidity && <Form.Text className="text-danger">Invalid email address</Form.Text>}
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Min. 6 characters - not your mailbox pass"
                 ref={passwordRef}
                 value={passwordInput}
+                autoComplete="new-password"
                 onChange={() => {
                   setPasswordInput(passwordRef.current!.value);
                   setStartedPassEntry(true);
@@ -105,13 +107,14 @@ export const RegisterScreen: React.FC = () => {
               />
               {startedPassEntry && !passLengthValidity && <Form.Text className="text-danger">Your password is too short</Form.Text>}
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Group className="mb-3">
               <Form.Label>Confirm password</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Confirm password"
                 ref={confirmPasswordRef}
                 value={confirmPasswordInput}
+                autoComplete="new-password"
                 onChange={() => {
                   setConfirmPasswordInput(confirmPasswordRef.current!.value);
                   setStartedPassEntry(true);

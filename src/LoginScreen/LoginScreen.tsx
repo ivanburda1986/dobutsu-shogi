@@ -44,7 +44,7 @@ export const LoginScreen: React.FC = () => {
   };
 
   const onLogin = () => {
-    loginUser({ email: emailRef.current?.value, password: passwordRef.current?.value, loginUserCb: { resetForm } });
+    loginUser({ email: emailRef.current?.value, password: passwordRef.current?.value, loginUserCb: { resetForm, loginProgress: appContext.setLoginFinished } });
   };
 
   const resetForm = (userLoginSuccess: boolean) => {
@@ -71,6 +71,7 @@ export const LoginScreen: React.FC = () => {
                 placeholder="Enter email"
                 ref={emailRef}
                 value={emailInput}
+                autoComplete="username"
                 onChange={() => {
                   setEmailInput(emailRef.current!.value);
                   setStartedEmailEntry(true);
@@ -79,13 +80,14 @@ export const LoginScreen: React.FC = () => {
               />
               {startedEmailEntry && !emailValidity && <Form.Text className="text-danger">Invalid format of email address</Form.Text>}
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Password"
                 ref={passwordRef}
                 value={passwordInput}
+                autoComplete="current-password"
                 onChange={() => {
                   setPasswordInput(passwordRef.current!.value);
                   validatePasswordInputLength();
