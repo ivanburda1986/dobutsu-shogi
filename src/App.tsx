@@ -14,12 +14,12 @@ import sharedStyles from "./sharedStyles.module.css";
 import _ from "lodash";
 
 export interface LoggedInUserInterface {
-  email: string;
-  uid: string;
+  email: string | undefined;
+  uid: string | undefined;
 }
 
 export default function App() {
-  const [loggedInUser, setLoggedInUser] = React.useState<LoggedInUserInterface>();
+  const [loggedInUserEmail, setLoggedInUserEmail] = React.useState<LoggedInUserInterface>();
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -30,13 +30,13 @@ export default function App() {
   });
 
   const providedContext = {
-    loggedInUser,
-    setLoggedInUser,
+    loggedInUserEmail,
+    setLoggedInUserEmail,
   };
   return (
     <>
       <AppContext.Provider value={providedContext}>
-        <Header loggedInUserEmail={loggedInUser?.email} />
+        <Header />
         <Routes>
           <Route path="*" element={<LaunchScreen />} />
           <Route path="/" element={<LaunchScreen />} />

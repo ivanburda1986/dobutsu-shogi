@@ -56,7 +56,6 @@ export const useLoginUser = ({ email, password, loginUserCb }: LoginUserInterfac
   if (email && password) {
     signInWithEmailAndPassword(auth, email, password)
       .then((cred) => {
-        console.log("user logged in", cred.user);
         loginUserCb.resetForm(true);
       })
       .catch((err) => {

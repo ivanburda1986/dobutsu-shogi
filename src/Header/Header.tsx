@@ -9,7 +9,7 @@ interface HeaderInterface {
   loggedInUserEmail: string | undefined;
 }
 
-export const Header: React.FC<HeaderInterface> = ({ loggedInUserEmail }) => {
+export const Header: React.FC = () => {
   const logout = useLogoutUser;
   return (
     <header className={`${styles.header} container-fluid d-flex flex-row justify-content-between align-items-center py-2`}>
@@ -20,7 +20,7 @@ export const Header: React.FC<HeaderInterface> = ({ loggedInUserEmail }) => {
       </h2>
       <div className="d-flex flex-row justify-content-between ">
         <NavLink to="/profile" className="btn mx-2">
-          {loggedInUserEmail}
+          Username
         </NavLink>
         <NavLink to="/login" className="btn btn-primary">
           Log in
