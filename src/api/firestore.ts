@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs, addDoc, getDoc, setDoc, deleteDoc, doc, onSnapshot, orderBy, serverTimestamp, query, updateDoc, where } from "firebase/firestore";
 import { createUserWithEmailAndPassword, getAuth, signOut, signInWithEmailAndPassword } from "firebase/auth";
-
+import { LoggedInUserInterface } from "../App";
 const firebaseConfig = {
   apiKey: "AIzaSyCBnawTeOf0cVa7m7aKFQoIqrXbJOorW2c",
   authDomain: "dobutsushogi-43c6e.firebaseapp.com",
@@ -47,7 +47,10 @@ export const useRegisterUser = ({ email, password, registerUserCb }: RegisterUse
 interface LoginUserInterface {
   email: string | undefined;
   password: string | undefined;
-  loginUserCb: (userLoginSuccess: boolean) => void;
+  loginUserCb: {
+    resetForm: (userLoginSuccess: boolean) => void;
+    setLoggedInUser: ({ email }: LoggedInUserInterface) => void;
+  };
 }
 
 export const useLoginUser = ({ email, password, loginUserCb }: LoginUserInterface) => {
@@ -55,11 +58,14 @@ export const useLoginUser = ({ email, password, loginUserCb }: LoginUserInterfac
     signInWithEmailAndPassword(auth, email, password)
       .then((cred) => {
         console.log("user logged in", cred.user);
-        loginUserCb(true);
+        loginUserCb.resetForm(true);
+        if (cred.user.email) {
+          loginUserCb.setLoggedInUser({ email: cred.user.email });
+        }
       })
       .catch((err) => {
         console.log(err.message);
-        loginUserCb(false);
+        loginUserCb.resetForm(false);
       });
   }
 };

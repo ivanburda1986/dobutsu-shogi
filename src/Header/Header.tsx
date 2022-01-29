@@ -4,7 +4,11 @@ import { Button } from "react-bootstrap";
 import styles from "./Header.module.css";
 import { NavLink } from "react-router-dom";
 
-export const Header: React.FC = () => {
+interface HeaderInterface {
+  loggedInUserEmail: string | undefined;
+}
+
+export const Header: React.FC<HeaderInterface> = ({ loggedInUserEmail }) => {
   return (
     <header className={`${styles.header} container-fluid d-flex flex-row justify-content-between align-items-center py-2`}>
       <h2>
@@ -14,7 +18,7 @@ export const Header: React.FC = () => {
       </h2>
       <div className="d-flex flex-row justify-content-between ">
         <NavLink to="/profile" className="btn mx-2">
-          Ivan
+          {loggedInUserEmail}
         </NavLink>
         <NavLink to="/login" className="btn btn-primary">
           Log in

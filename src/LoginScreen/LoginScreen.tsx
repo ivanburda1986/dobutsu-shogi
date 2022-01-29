@@ -1,14 +1,16 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
+
+import { AppContext } from "../context/AppContext";
+import { validateEmail } from "../RegisterScreen/validateEmail";
+import { useLoginUser } from "../api/firestore";
 
 import styles from "./LoginScreen.module.css";
 import sharedStyles from "../sharedStyles.module.css";
 
-import { validateEmail } from "../RegisterScreen/validateEmail";
-import { useLoginUser } from "../api/firestore";
-
 export const LoginScreen: React.FC = () => {
+  const appContext = useContext(AppContext);
   const emailRef = useRef<HTMLInputElement>(null);
   const [emailInput, setEmailInput] = React.useState<string>("");
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -41,7 +43,7 @@ export const LoginScreen: React.FC = () => {
   };
 
   const onLogin = () => {
-    loginUser({ email: emailRef.current?.value, password: passwordRef.current?.value, loginUserCb: resetForm });
+    loginUser({ email: emailRef.current?.value, password: passwordRef.current?.value, loginUserCb: { resetForm, setLoggedInUser: appContext.setLoggedInUser } });
   };
 
   const resetForm = (userLoginSuccess: boolean) => {
