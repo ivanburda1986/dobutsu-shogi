@@ -1,5 +1,6 @@
 import React from "react";
-import { Route, Link, Routes } from "react-router-dom";
+import { Route, Link, Routes, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { Header } from "./Header/Header";
 import { LaunchScreen } from "./LaunchScreen/LaunchScreen";
 import { LoginScreen } from "./LoginScreen/LoginScreen";
@@ -13,30 +14,38 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import sharedStyles from "./sharedStyles.module.css";
 import _ from "lodash";
 
-export interface LoggedInUserInterface {
-  email: string | undefined;
-  uid: string | undefined;
-}
-
 export default function App() {
-  const [loggedInUserEmail, setLoggedInUserEmail] = React.useState<LoggedInUserInterface>();
+  const [userLoggedIn, setUserLoggedIn] = React.useState<boolean>(false);
+  const [loggedInUserEmail, setLoggedInUserEmail] = React.useState<string>("");
+
+  const navigate = useNavigate();
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      console.log(user);
-      let userData = _.pick(user, ["email", "uid"]);
-      //setLoggedInUser(userData);
+      setUserLoggedIn(true);
+      let email = user.email;
+      email && setLoggedInUserEmail(email);
+    } else {
+      setUserLoggedIn(false);
+      setLoggedInUserEmail("");
     }
   });
 
   const providedContext = {
+    userLoggedIn,
     loggedInUserEmail,
-    setLoggedInUserEmail,
   };
+  React.useEffect(() => {
+    if (userLoggedIn) {
+      console.log(userLoggedIn);
+      navigate("../", { replace: false });
+    }
+  }, [userLoggedIn]);
+
   return (
     <>
       <AppContext.Provider value={providedContext}>
-        <Header />
+        <Header username={loggedInUserEmail} />
         <Routes>
           <Route path="*" element={<LaunchScreen />} />
           <Route path="/" element={<LaunchScreen />} />
