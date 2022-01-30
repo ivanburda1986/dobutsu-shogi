@@ -10,15 +10,18 @@ import { validateEmail } from "./validateEmail";
 export const RegisterScreen: React.FC = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const [emailInput, setEmailInput] = React.useState<string>("");
+  const [emailValidity, setEmailValidity] = React.useState<boolean>(false);
+  const [startedEmailEntry, setStartedEmailEntry] = React.useState<boolean>(false);
+  const [emailAlreadyUsed, setEmailAlreadyUsed] = React.useState<boolean>(false);
+
   const passwordRef = useRef<HTMLInputElement>(null);
   const [passwordInput, setPasswordInput] = React.useState<string>("");
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
   const [confirmPasswordInput, setConfirmPasswordInput] = React.useState<string>("");
-  const [emailValidity, setEmailValidity] = React.useState<boolean>(false);
-  const [startedEmailEntry, setStartedEmailEntry] = React.useState<boolean>(false);
   const [passLengthValidity, setPassLengthValidity] = React.useState<boolean>(false);
   const [passMatchValidity, setPassMatchValidity] = React.useState<boolean>(false);
   const [startedPassEntry, setStartedPassEntry] = React.useState<boolean>(false);
+
   const [formValid, setFormValid] = React.useState<boolean>(false);
   const registerUser = useRegisterUser;
 
@@ -61,7 +64,16 @@ export const RegisterScreen: React.FC = () => {
   };
 
   const onRegistration = () => {
-    registerUser({ email: emailRef.current?.value, password: passwordRef.current?.value, registerUserCb: resetForm });
+    registerUser({ email: emailRef.current?.value, password: passwordRef.current?.value, registerUserCb: { resetForm, forwardError } });
+  };
+
+  const forwardError = (error: string) => {
+    if (error === "Firebase: Error (auth/email-already-in-use).") {
+      setEmailAlreadyUsed(true);
+      setTimeout(() => {
+        setEmailAlreadyUsed(false);
+      }, 3000);
+    }
   };
 
   return (
@@ -89,6 +101,7 @@ export const RegisterScreen: React.FC = () => {
                 }}
               />
               {startedEmailEntry && !emailValidity && <Form.Text className="text-danger">Invalid email address</Form.Text>}
+              {emailAlreadyUsed && <Form.Text className="text-danger">Email already used. Try to login instead.</Form.Text>}
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>

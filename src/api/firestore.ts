@@ -25,7 +25,10 @@ export const auth = getAuth();
 interface RegisterUserInterface {
   email: string | undefined;
   password: string | undefined;
-  registerUserCb: (userRegistrationSuccess: boolean) => void;
+  registerUserCb: {
+    resetForm: (userRegistrationSuccess: boolean) => void;
+    forwardError: (error: string) => void;
+  };
 }
 
 export const useRegisterUser = ({ email, password, registerUserCb }: RegisterUserInterface) => {
@@ -34,11 +37,12 @@ export const useRegisterUser = ({ email, password, registerUserCb }: RegisterUse
     createUserWithEmailAndPassword(auth, email, password)
       .then((cred: any) => {
         console.log("user created:", cred.user);
-        registerUserCb(true);
+        registerUserCb.resetForm(true);
       })
       .catch((err: any) => {
         console.log(err.message);
-        registerUserCb(false);
+        registerUserCb.resetForm(false);
+        registerUserCb.forwardError(err.message);
       });
   }
   //return userRegistrationSuccessful;
@@ -50,7 +54,7 @@ interface LoginUserInterface {
   loginUserCb: {
     resetForm: (userLoginSuccess: boolean) => void;
     loginProgress: (loginProgressFinished: boolean) => void;
-    notifyAboutWrongPassword: () => void;
+    forwardError: (error: string) => void;
   };
 }
 
@@ -67,9 +71,7 @@ export const useLoginUser = ({ email, password, loginUserCb }: LoginUserInterfac
       .catch((err) => {
         console.log(err.message);
         loginUserCb.resetForm(false);
-        if (err.message === "Firebase: Error (auth/wrong-password).") {
-          loginUserCb.notifyAboutWrongPassword();
-        }
+        loginUserCb.forwardError(err.message);
       });
   }
 };
