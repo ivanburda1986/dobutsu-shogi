@@ -1,21 +1,15 @@
 DESIGN 
-Screens:
-1) Launch screen: 
-- displayed upon launching the game 
-- Register / Login (email, pass) + Reset password
-- Logged in as (Player email) -> Logout
+Launch screen: 
+-recently played games
+-waiting for an opponent games
 
-2) Register 
-
-3) Profile settings
-
+Profile settings
+-username
+-avatar image
+-statistics
 
 
 
-
-1)Player registration and profile creation: 
-Email, Password, Nickname, Icon
-Can reset the pass and edit the nickname 
 
 2)Game session creation 
 A registered player can create a new game session waiting for another player
@@ -24,7 +18,6 @@ Creation time, id, createdBy, player1, player2, type, state, gameplayTimeframe
 3)Game session displaying 
 All sessions where the game is waiting to start or is in progress are listed to join
  
-
 4)Game sesseion deletion 
 A session can be deleted by the person who has created it or by the main admin
 A deleted session will disappear completely
@@ -46,7 +39,6 @@ A player can surrender which ends the game.
 
 Additional ideas: 
 Game timeframe - can be specified by the admin when creating a session
-Ingame chat 
 Game can be saved so that the players can continue later 
 A game session can be password protected
 Statistics - stats for a specific games are visible only to its participants

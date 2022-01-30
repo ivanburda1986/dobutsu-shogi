@@ -15,6 +15,7 @@ export const LoginScreen: React.FC = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const [emailInput, setEmailInput] = React.useState<string>("");
   const [emailValidity, setEmailValidity] = React.useState<boolean>(false);
+  const [userDoesNotExist, setUsedDoesNotExist] = React.useState<boolean>(false);
   const [startedEmailEntry, setStartedEmailEntry] = React.useState<boolean>(false);
 
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -70,6 +71,13 @@ export const LoginScreen: React.FC = () => {
   };
 
   const forwardError = (error: string) => {
+    if (error === "Firebase: Error (auth/user-not-found).") {
+      setUsedDoesNotExist(true);
+      setTimeout(() => {
+        setUsedDoesNotExist(false);
+      }, 5000);
+    }
+
     if (error === "Firebase: Error (auth/wrong-password).") {
       setWrongPasswordEntered(true);
       setTimeout(() => {
@@ -102,7 +110,8 @@ export const LoginScreen: React.FC = () => {
                   validateEmailInput();
                 }}
               />
-              {startedEmailEntry && !emailValidity && <Form.Text className="text-danger ">Invalid format of email address</Form.Text>}
+              {startedEmailEntry && !emailValidity && <Form.Text className="text-danger ">Invalid format of email address.</Form.Text>}
+              {userDoesNotExist && emailValidity && <Form.Text className="text-danger ">The user does not exist. Make sure it is correct or register instead.</Form.Text>}
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>

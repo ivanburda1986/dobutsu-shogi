@@ -15,7 +15,7 @@ export const Header: React.FC<HeaderInterface> = ({ username }) => {
   const appContext = useContext(AppContext);
   const logout = useLogoutUser;
   return (
-    <header className={`${styles.header} container-fluid d-flex flex-row justify-content-between align-items-center py-2`}>
+    <header className={`${styles.header} container-fluid d-flex flex-row justify-content-between align-items-center`}>
       <h2>
         <NavLink to="/" className="btn fs-3">
           Dobutsu Shogi

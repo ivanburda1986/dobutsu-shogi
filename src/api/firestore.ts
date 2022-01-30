@@ -71,12 +71,13 @@ export const useLoginUser = ({ email, password, loginUserCb }: LoginUserInterfac
         setTimeout(() => {
           loginUserCb.loginProgress(true);
         }, 100);
+        console.log(cred);
         loginUserCb.resetForm(true);
       })
       .catch((err) => {
         console.log(err.message);
-        loginUserCb.resetForm(false);
         loginUserCb.forwardError(err.message);
+        loginUserCb.resetForm(false);
       });
   }
 };
