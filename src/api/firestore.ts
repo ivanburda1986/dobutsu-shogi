@@ -50,6 +50,7 @@ interface LoginUserInterface {
   loginUserCb: {
     resetForm: (userLoginSuccess: boolean) => void;
     loginProgress: (loginProgressFinished: boolean) => void;
+    notifyAboutWrongPassword: () => void;
   };
 }
 
@@ -66,6 +67,9 @@ export const useLoginUser = ({ email, password, loginUserCb }: LoginUserInterfac
       .catch((err) => {
         console.log(err.message);
         loginUserCb.resetForm(false);
+        if (err.message === "Firebase: Error (auth/wrong-password).") {
+          loginUserCb.notifyAboutWrongPassword();
+        }
       });
   }
 };

@@ -21,7 +21,7 @@ export const LoginScreen: React.FC = () => {
   const [startedEmailEntry, setStartedEmailEntry] = React.useState<boolean>(false);
   const [startedPassEntry, setStartedPassEntry] = React.useState<boolean>(false);
   const [formValid, setFormValid] = React.useState<boolean>(false);
-  const [wrongPasswordEntered, setWrongPasswordEntered] = React.useState<boolean>(true);
+  const [wrongPasswordEntered, setWrongPasswordEntered] = React.useState<boolean>(false);
   const loginUser = useLoginUser;
   const requestPasswordReset = useRequestPasswordReset;
 
@@ -46,7 +46,7 @@ export const LoginScreen: React.FC = () => {
   };
 
   const onLogin = () => {
-    loginUser({ email: emailRef.current?.value, password: passwordRef.current?.value, loginUserCb: { resetForm, loginProgress: appContext.setLoginFinished } });
+    loginUser({ email: emailRef.current?.value, password: passwordRef.current?.value, loginUserCb: { resetForm, notifyAboutWrongPassword, loginProgress: appContext.setLoginFinished } });
   };
 
   const onRequestPasswordReset = () => {
@@ -60,6 +60,13 @@ export const LoginScreen: React.FC = () => {
       setEmailInput("");
       setPasswordInput("");
     }
+  };
+
+  const notifyAboutWrongPassword = () => {
+    setWrongPasswordEntered(true);
+    setTimeout(() => {
+      setWrongPasswordEntered(false);
+    }, 3000);
   };
 
   return (
@@ -89,7 +96,12 @@ export const LoginScreen: React.FC = () => {
               {startedEmailEntry && !emailValidity && <Form.Text className="text-danger ">Invalid format of email address</Form.Text>}
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Password</Form.Label>
+              <Form.Label>
+                Password{" "}
+                <Button variant="link" onClick={() => onRequestPasswordReset()}>
+                  Email reset link
+                </Button>
+              </Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Password"
@@ -102,14 +114,8 @@ export const LoginScreen: React.FC = () => {
                   setStartedPassEntry(true);
                 }}
               />
-              {startedPassEntry && !passLengthValidity && (
-                <Form.Text>
-                  <Alert variant="warning" className="my-1">
-                    This is a alert—check it out!
-                  </Alert>
-                </Form.Text>
-              )}
-              {wrongPasswordEntered && <Form.Text className=""></Form.Text>}
+              {startedPassEntry && !passLengthValidity && <Form.Text className="text-danger">Enter your password.</Form.Text>}
+              {wrongPasswordEntered && passLengthValidity && <Form.Text className="text-danger">Wrong password. </Form.Text>}
             </Form.Group>
 
             <Button variant="primary" type="button" disabled={!formValid} onClick={() => onLogin()}>
