@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs, addDoc, getDoc, setDoc, deleteDoc, doc, onSnapshot, orderBy, serverTimestamp, query, updateDoc, where } from "firebase/firestore";
-import { createUserWithEmailAndPassword, getAuth, signOut, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, signOut, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCBnawTeOf0cVa7m7aKFQoIqrXbJOorW2c",
@@ -77,5 +77,20 @@ export const useLogoutUser = () => {
     })
     .catch((err) => {
       console.log(err.message);
+    });
+};
+
+interface RequestPasswordResetInterface {
+  email: string;
+}
+export const useRequestPasswordReset = ({ email }: RequestPasswordResetInterface) => {
+  sendPasswordResetEmail(auth, email)
+    .then(() => {
+      console.log("Password reset email sent!");
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      // ..
     });
 };

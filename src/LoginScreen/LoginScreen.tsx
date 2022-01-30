@@ -1,11 +1,11 @@
 import React, { useContext, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Alert, Button, Col, Container, Form, Row } from "react-bootstrap";
 
 import { AppContext } from "../context/AppContext";
 import { validateEmail } from "../RegisterScreen/validateEmail";
-import { useLoginUser } from "../api/firestore";
+import { useLoginUser, useRequestPasswordReset } from "../api/firestore";
 
 import styles from "./LoginScreen.module.css";
 import sharedStyles from "../sharedStyles.module.css";
@@ -21,7 +21,9 @@ export const LoginScreen: React.FC = () => {
   const [startedEmailEntry, setStartedEmailEntry] = React.useState<boolean>(false);
   const [startedPassEntry, setStartedPassEntry] = React.useState<boolean>(false);
   const [formValid, setFormValid] = React.useState<boolean>(false);
+  const [wrongPasswordEntered, setWrongPasswordEntered] = React.useState<boolean>(true);
   const loginUser = useLoginUser;
+  const requestPasswordReset = useRequestPasswordReset;
 
   React.useEffect(() => {
     if (emailValidity && passLengthValidity) {
@@ -45,6 +47,12 @@ export const LoginScreen: React.FC = () => {
 
   const onLogin = () => {
     loginUser({ email: emailRef.current?.value, password: passwordRef.current?.value, loginUserCb: { resetForm, loginProgress: appContext.setLoginFinished } });
+  };
+
+  const onRequestPasswordReset = () => {
+    if (emailRef.current) {
+      requestPasswordReset({ email: emailRef.current?.value });
+    }
   };
 
   const resetForm = (userLoginSuccess: boolean) => {
@@ -78,7 +86,7 @@ export const LoginScreen: React.FC = () => {
                   validateEmailInput();
                 }}
               />
-              {startedEmailEntry && !emailValidity && <Form.Text className="text-danger">Invalid format of email address</Form.Text>}
+              {startedEmailEntry && !emailValidity && <Form.Text className="text-danger ">Invalid format of email address</Form.Text>}
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>
@@ -94,13 +102,16 @@ export const LoginScreen: React.FC = () => {
                   setStartedPassEntry(true);
                 }}
               />
-              {startedPassEntry && !passLengthValidity && <Form.Text className="text-danger">Password not entered</Form.Text>}
+              {startedPassEntry && !passLengthValidity && (
+                <Form.Text>
+                  <Alert variant="warning" className="my-1">
+                    This is a alert—check it out!
+                  </Alert>
+                </Form.Text>
+              )}
+              {wrongPasswordEntered && <Form.Text className=""></Form.Text>}
             </Form.Group>
-            <div>
-              <a href="#" className="small">
-                Forgotten password?
-              </a>
-            </div>
+
             <Button variant="primary" type="button" disabled={!formValid} onClick={() => onLogin()}>
               Login
             </Button>
