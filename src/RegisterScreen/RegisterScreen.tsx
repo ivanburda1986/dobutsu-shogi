@@ -1,13 +1,14 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
-
+import { AppContext } from "../context/AppContext";
 import styles from "./RegisterScreen.module.css";
 
 import { useRegisterUser } from "../api/firestore";
 import { validateEmail } from "./validateEmail";
 
 export const RegisterScreen: React.FC = () => {
+  const appContext = useContext(AppContext);
   const emailRef = useRef<HTMLInputElement>(null);
   const [emailInput, setEmailInput] = React.useState<string>("");
   const [emailValidity, setEmailValidity] = React.useState<boolean>(false);
@@ -64,7 +65,7 @@ export const RegisterScreen: React.FC = () => {
   };
 
   const onRegistration = () => {
-    registerUser({ email: emailRef.current?.value, password: passwordRef.current?.value, registerUserCb: { resetForm, forwardError } });
+    registerUser({ email: emailRef.current?.value, password: passwordRef.current?.value, registerUserCb: { resetForm, forwardError, registrationProgress: appContext.setRegistrationFinished } });
   };
 
   const forwardError = (error: string) => {
