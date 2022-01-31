@@ -50,7 +50,7 @@ export const LoginScreen: React.FC = () => {
   };
 
   const onLogin = () => {
-    loginUser({ email: emailRef.current?.value, password: passwordRef.current?.value, loginUserCb: { resetForm, forwardError, loginProgress: appContext.setLoginFinished } });
+    loginUser({ email: emailRef.current?.value, password: passwordRef.current?.value, loginUserCb: { forwardError } });
   };
 
   const onRequestPasswordReset = () => {
@@ -60,13 +60,6 @@ export const LoginScreen: React.FC = () => {
       setTimeout(() => {
         setPassResetLinkSent(false);
       }, 3000);
-    }
-  };
-
-  const resetForm = (userLoginSuccess: boolean) => {
-    if (userLoginSuccess) {
-      setEmailInput("");
-      setPasswordInput("");
     }
   };
 
@@ -110,7 +103,7 @@ export const LoginScreen: React.FC = () => {
                   validateEmailInput();
                 }}
               />
-              {startedEmailEntry && !emailValidity && <Form.Text className="text-danger ">Invalid format of email address.</Form.Text>}
+              {startedEmailEntry && !emailValidity && <Form.Text className="text-danger ">Incomplete email address.</Form.Text>}
               {userDoesNotExist && emailValidity && <Form.Text className="text-danger ">The user does not exist. Make sure it is correct or register instead.</Form.Text>}
             </Form.Group>
             <Form.Group className="mb-3">

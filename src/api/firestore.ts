@@ -40,7 +40,7 @@ export const useRegisterUser = ({ email, password, registerUserCb }: RegisterUse
       .then((cred: any) => {
         setTimeout(() => {
           registerUserCb.registrationProgress(true);
-        }, 100);
+        }, 500);
         console.log("user created:", cred.user);
         registerUserCb.resetForm(true);
       })
@@ -57,27 +57,19 @@ interface LoginUserInterface {
   email: string | undefined;
   password: string | undefined;
   loginUserCb: {
-    resetForm: (userLoginSuccess: boolean) => void;
-    loginProgress: (loginProgressFinished: boolean) => void;
     forwardError: (error: string) => void;
   };
 }
 
 export const useLoginUser = ({ email, password, loginUserCb }: LoginUserInterface) => {
   if (email && password) {
-    loginUserCb.loginProgress(false);
     signInWithEmailAndPassword(auth, email, password)
       .then((cred) => {
-        setTimeout(() => {
-          loginUserCb.loginProgress(true);
-        }, 100);
         console.log(cred);
-        loginUserCb.resetForm(true);
       })
       .catch((err) => {
         console.log(err.message);
         loginUserCb.forwardError(err.message);
-        loginUserCb.resetForm(false);
       });
   }
 };
