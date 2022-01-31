@@ -56,16 +56,8 @@ export const RegisterScreen: React.FC = () => {
     return setPassMatchValidity(false);
   };
 
-  const resetForm = (userRegistrationSuccess: boolean) => {
-    if (userRegistrationSuccess) {
-      setEmailInput("");
-      setPasswordInput("");
-      setConfirmPasswordInput("");
-    }
-  };
-
   const onRegistration = () => {
-    registerUser({ email: emailRef.current?.value, password: passwordRef.current?.value, registerUserCb: { resetForm, forwardError, registrationProgress: appContext.setRegistrationFinished } });
+    registerUser({ email: emailRef.current?.value, password: passwordRef.current?.value, registerUserCb: { forwardError } });
   };
 
   const forwardError = (error: string) => {

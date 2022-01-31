@@ -26,8 +26,6 @@ interface RegisterUserInterface {
   email: string | undefined;
   password: string | undefined;
   registerUserCb: {
-    resetForm: (userRegistrationSuccess: boolean) => void;
-    registrationProgress: (registrationProgressFinished: boolean) => void;
     forwardError: (error: string) => void;
   };
 }
@@ -35,18 +33,12 @@ interface RegisterUserInterface {
 export const useRegisterUser = ({ email, password, registerUserCb }: RegisterUserInterface) => {
   //let userRegistrationSuccessful = false;
   if (email && password) {
-    registerUserCb.registrationProgress(false);
     createUserWithEmailAndPassword(auth, email, password)
       .then((cred: any) => {
-        setTimeout(() => {
-          registerUserCb.registrationProgress(true);
-        }, 500);
         console.log("user created:", cred.user);
-        registerUserCb.resetForm(true);
       })
       .catch((err: any) => {
         console.log(err.message);
-        registerUserCb.resetForm(false);
         registerUserCb.forwardError(err.message);
       });
   }
