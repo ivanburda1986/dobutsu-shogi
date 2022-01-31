@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs, addDoc, getDoc, setDoc, deleteDoc, doc, onSnapshot, orderBy, serverTimestamp, query, updateDoc, where } from "firebase/firestore";
-import { createUserWithEmailAndPassword, getAuth, signOut, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCBnawTeOf0cVa7m7aKFQoIqrXbJOorW2c",
@@ -84,9 +84,25 @@ export const useRequestPasswordReset = ({ email }: RequestPasswordResetInterface
     .then(() => {
       console.log("Password reset email sent!");
     })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // ..
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+
+interface UpdateUserProfileInterface {
+  displayName?: string;
+  photoURL?: string;
+}
+
+export const useUpdateUserProfile = ({ displayName, photoURL }: UpdateUserProfileInterface) => {
+  updateProfile(auth.currentUser!, {
+    displayName: displayName,
+    photoURL: photoURL,
+  })
+    .then(() => {
+      console.log("User profile updated");
+    })
+    .catch((err) => {
+      console.log(err.message);
     });
 };
