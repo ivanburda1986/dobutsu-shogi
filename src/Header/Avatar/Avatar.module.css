@@ -5,13 +5,11 @@
 .avatarIco {
   height: 3rem;
   width: 3rem;
-  border: 0.25em solid rgb(39, 93, 129);
+  border: 0.25em solid rgb(78, 126, 158);
   border-radius: 50%;
-  box-shadow: 1px 1px 5px 1px #b9b9b9;
   background-size: cover;
   background-position: center;
-  background-size: 80%;
+  background-size: 100%;
   background-repeat: no-repeat;
   background-color: #fff;
-  cursor: pointer;
 }
