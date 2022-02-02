@@ -9,7 +9,9 @@ export const Profile: React.FC = () => {
   const [avatarUsernameEditModeOn, setAvatarUsernameEditModeOn] = React.useState<boolean>(false);
   const [avatarImgSelection, setAvatarImgSelection] = React.useState<string>("");
   const usernameRef = useRef<HTMLInputElement>(null);
+  const [usernameInput, setUsernameInput] = React.useState<string>("");
   const appContext = useContext(AppContext);
+
   const updateUserProfile = useUpdateUserProfile;
 
   const shouldBeChecked = (optionName: string) => {
@@ -24,7 +26,7 @@ export const Profile: React.FC = () => {
           <Row>
             <Col className="d-flex flex-row justify-content-between align-items-center">
               <div className="d-flex flex-row justify-content-between align-items-center">
-                <Avatar name="lion" />
+                <Avatar name={appContext.loggedInUserAvatarImg} />
                 <p className="fs-4 mx-2 align-middle my-auto">{appContext.loggedInUserUsername}</p>
               </div>
               <Button
@@ -60,13 +62,21 @@ export const Profile: React.FC = () => {
               </Form.Group>
               <Form.Group className="mb-3" controlId="formUsername">
                 <Form.Label>Set a username</Form.Label>
-                <Form.Control type="text" placeholder="Username" ref={usernameRef} />
+                <Form.Control
+                  type="text"
+                  placeholder="Username"
+                  ref={usernameRef}
+                  value={usernameInput}
+                  onChange={() => {
+                    setUsernameInput(usernameRef.current!.value);
+                  }}
+                />
               </Form.Group>
               <Button
                 variant="primary"
                 type="button"
                 onClick={() => {
-                  updateUserProfile({ displayName: usernameRef.current?.value, photoURL: avatarImgSelection });
+                  updateUserProfile({ displayName: usernameRef.current?.value, photoURL: avatarImgSelection, cb: appContext.setUserData });
                   setAvatarUsernameEditModeOn(false);
                 }}
               >

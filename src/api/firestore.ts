@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs, addDoc, getDoc, setDoc, deleteDoc, doc, onSnapshot, orderBy, serverTimestamp, query, updateDoc, where } from "firebase/firestore";
-import { createUserWithEmailAndPassword, getAuth, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile } from "firebase/auth";
-
+import { createUserWithEmailAndPassword, getAuth, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile, onAuthStateChanged } from "firebase/auth";
+import { UserDataInterface } from "../App";
 const firebaseConfig = {
   apiKey: "AIzaSyCBnawTeOf0cVa7m7aKFQoIqrXbJOorW2c",
   authDomain: "dobutsushogi-43c6e.firebaseapp.com",
@@ -42,7 +42,6 @@ export const useRegisterUser = ({ email, password, registerUserCb }: RegisterUse
         registerUserCb.forwardError(err.message);
       });
   }
-  //return userRegistrationSuccessful;
 };
 
 interface LoginUserInterface {
@@ -63,6 +62,14 @@ export const useLoginUser = ({ email, password, loginUserCb }: LoginUserInterfac
         console.log(err.message);
         loginUserCb.forwardError(err.message);
       });
+  }
+};
+
+export const useGetUserDetails = () => {
+  const user = auth.currentUser;
+  if (user) {
+    console.log(user.providerData[0]);
+    return user.providerData[0];
   }
 };
 
@@ -92,15 +99,21 @@ export const useRequestPasswordReset = ({ email }: RequestPasswordResetInterface
 interface UpdateUserProfileInterface {
   displayName?: string;
   photoURL?: string;
+  cb: ({ email, username, avatarImg }: UserDataInterface) => void;
 }
 
-export const useUpdateUserProfile = ({ displayName, photoURL }: UpdateUserProfileInterface) => {
+export const useUpdateUserProfile = ({ displayName, photoURL, cb }: UpdateUserProfileInterface) => {
   updateProfile(auth.currentUser!, {
     displayName: displayName,
     photoURL: photoURL,
   })
     .then(() => {
       console.log("User profile updated");
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          cb({ email: user.email, username: user.displayName, avatarImg: user.photoURL });
+        }
+      });
     })
     .catch((err) => {
       console.log(err.message);

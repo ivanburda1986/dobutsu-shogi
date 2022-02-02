@@ -14,6 +14,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import sharedStyles from "./sharedStyles.module.css";
 import _ from "lodash";
 
+export interface UserDataInterface {
+  email: string | null;
+  username: string | null;
+  avatarImg: string | null;
+}
+
 export default function App() {
   const [userLoggedIn, setUserLoggedIn] = React.useState<boolean>(false);
   const [loggedInUserEmail, setLoggedInUserEmail] = React.useState<string>("");
@@ -24,23 +30,24 @@ export default function App() {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setUserLoggedIn(true);
-      let email = user.email;
-      email && setLoggedInUserEmail(email);
-      let username = user.displayName;
-      username && setLoggedInUserUsername(username);
-      let avatarImg = user.photoURL;
-      avatarImg && setLoggedInUserAvatarImg(avatarImg);
     } else {
       setUserLoggedIn(false);
-      setLoggedInUserEmail("");
     }
   });
+
+  const setUserData = ({ email, username, avatarImg }: UserDataInterface) => {
+    email && setLoggedInUserEmail(email);
+    username && setLoggedInUserUsername(username);
+    avatarImg && setLoggedInUserAvatarImg(avatarImg);
+  };
 
   const providedContext = {
     userLoggedIn,
     loggedInUserEmail,
     loggedInUserUsername,
     loggedInUserAvatarImg,
+    setUserData,
+    setLoggedInUserUsername,
   };
   React.useEffect(() => {
     if (userLoggedIn) {
@@ -57,7 +64,7 @@ export default function App() {
   return (
     <>
       <AppContext.Provider value={providedContext}>
-        <Header username={loggedInUserUsername} avatarImg={loggedInUserAvatarImg} />
+        <Header />
         <Routes>
           <Route path="*" element={<LaunchScreen />} />
           <Route path="/" element={<LaunchScreen />} />

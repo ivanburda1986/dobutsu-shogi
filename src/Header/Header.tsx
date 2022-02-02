@@ -4,17 +4,14 @@ import { Avatar } from "./Avatar/Avatar";
 import { Button } from "react-bootstrap";
 import styles from "./Header.module.css";
 import { NavLink } from "react-router-dom";
-import { useLogoutUser } from "../api/firestore";
+import { useLogoutUser, useGetUserDetails } from "../api/firestore";
 import { AppContext } from "../context/AppContext";
 
-interface HeaderInterface {
-  username: string;
-  avatarImg: string;
-}
-
-export const Header: React.FC<HeaderInterface> = ({ username, avatarImg }) => {
+export const Header: React.FC = () => {
   const appContext = useContext(AppContext);
+
   const logout = useLogoutUser;
+
   return (
     <header className={`${styles.header} container-fluid d-flex flex-row justify-content-between align-items-center`}>
       <h2>
@@ -24,11 +21,11 @@ export const Header: React.FC<HeaderInterface> = ({ username, avatarImg }) => {
       </h2>
       <div className="d-flex flex-row justify-content-between ">
         <NavLink to="/profile" className="btn mx-2 d-flex flex-row justify-content-between align-items-center">
-          <span className="me-1 fs-4">{username}</span>
-          <Avatar name={avatarImg} />
+          <Avatar name={appContext.loggedInUserAvatarImg} />
+          <span className="ms-1 fs-4">{appContext.loggedInUserUsername}</span>
         </NavLink>
         {!appContext.userLoggedIn && (
-          <NavLink to="/login" className="btn btn-primary">
+          <NavLink to="/login" className={`btn btn-primary mx-3 my-auto ${styles.headerButton} justify-content-center`}>
             Log in
           </NavLink>
         )}
