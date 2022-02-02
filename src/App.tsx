@@ -57,7 +57,7 @@ export default function App() {
   return (
     <>
       <AppContext.Provider value={providedContext}>
-        <Header username={loggedInUserEmail} />
+        <Header username={loggedInUserUsername} avatarImg={loggedInUserAvatarImg} />
         <Routes>
           <Route path="*" element={<LaunchScreen />} />
           <Route path="/" element={<LaunchScreen />} />

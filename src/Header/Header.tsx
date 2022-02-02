@@ -9,9 +9,10 @@ import { AppContext } from "../context/AppContext";
 
 interface HeaderInterface {
   username: string;
+  avatarImg: string;
 }
 
-export const Header: React.FC<HeaderInterface> = ({ username }) => {
+export const Header: React.FC<HeaderInterface> = ({ username, avatarImg }) => {
   const appContext = useContext(AppContext);
   const logout = useLogoutUser;
   return (
@@ -22,8 +23,9 @@ export const Header: React.FC<HeaderInterface> = ({ username }) => {
         </NavLink>
       </h2>
       <div className="d-flex flex-row justify-content-between ">
-        <NavLink to="/profile" className="btn mx-2">
-          {username}
+        <NavLink to="/profile" className="btn mx-2 d-flex flex-row justify-content-between align-items-center">
+          <span className="me-1 fs-4">{username}</span>
+          <Avatar name={avatarImg} />
         </NavLink>
         {!appContext.userLoggedIn && (
           <NavLink to="/login" className="btn btn-primary">
@@ -31,7 +33,7 @@ export const Header: React.FC<HeaderInterface> = ({ username }) => {
           </NavLink>
         )}
         {appContext.userLoggedIn && (
-          <NavLink to="/" className="btn btn-danger mx-3" onClick={() => logout()}>
+          <NavLink to="/" className={`btn btn-danger mx-3 my-auto ${styles.headerButton} justify-content-center`} onClick={() => logout()}>
             Log out
           </NavLink>
         )}
