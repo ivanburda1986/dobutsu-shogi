@@ -17,6 +17,8 @@ import _ from "lodash";
 export default function App() {
   const [userLoggedIn, setUserLoggedIn] = React.useState<boolean>(false);
   const [loggedInUserEmail, setLoggedInUserEmail] = React.useState<string>("");
+  const [loggedInUserUsername, setLoggedInUserUsername] = React.useState<string>("");
+  const [loggedInUserAvatarImg, setLoggedInUserAvatarImg] = React.useState<string>("");
   const navigate = useNavigate();
 
   onAuthStateChanged(auth, (user) => {
@@ -24,6 +26,10 @@ export default function App() {
       setUserLoggedIn(true);
       let email = user.email;
       email && setLoggedInUserEmail(email);
+      let username = user.displayName;
+      username && setLoggedInUserUsername(username);
+      let avatarImg = user.photoURL;
+      avatarImg && setLoggedInUserAvatarImg(avatarImg);
     } else {
       setUserLoggedIn(false);
       setLoggedInUserEmail("");
@@ -33,6 +39,8 @@ export default function App() {
   const providedContext = {
     userLoggedIn,
     loggedInUserEmail,
+    loggedInUserUsername,
+    loggedInUserAvatarImg,
   };
   React.useEffect(() => {
     if (userLoggedIn) {
