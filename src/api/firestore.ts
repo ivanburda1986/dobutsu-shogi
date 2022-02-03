@@ -2,6 +2,8 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs, addDoc, getDoc, setDoc, deleteDoc, doc, onSnapshot, orderBy, serverTimestamp, query, updateDoc, where } from "firebase/firestore";
 import { createUserWithEmailAndPassword, getAuth, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile, onAuthStateChanged } from "firebase/auth";
 import { UserDataInterface } from "../App";
+import { AppContext } from "../context/AppContext";
+import { useContext } from "react";
 const firebaseConfig = {
   apiKey: "AIzaSyCBnawTeOf0cVa7m7aKFQoIqrXbJOorW2c",
   authDomain: "dobutsushogi-43c6e.firebaseapp.com",
@@ -21,27 +23,6 @@ const db = getFirestore();
 
 //Init authentication
 export const auth = getAuth();
-
-interface RegisterUserInterface {
-  email: string | undefined;
-  password: string | undefined;
-  registerUserCb: {
-    forwardError: (error: string) => void;
-  };
-}
-
-export const useRegisterUser = ({ email, password, registerUserCb }: RegisterUserInterface) => {
-  if (email && password) {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((cred: any) => {
-        console.log("user created:", cred.user);
-      })
-      .catch((err: any) => {
-        console.log(err.message);
-        registerUserCb.forwardError(err.message);
-      });
-  }
-};
 
 interface LoginUserInterface {
   email: string | undefined;
@@ -117,4 +98,29 @@ export const useUpdateUserProfile = ({ displayName, photoURL, cb }: UpdateUserPr
     .catch((err) => {
       console.log(err.message);
     });
+};
+
+interface RegisterUserInterface {
+  email: string | undefined;
+  username: string | undefined;
+  password: string | undefined;
+  registerUserCb: {
+    forwardError: (error: string) => void;
+    updateUserData: () => void;
+  };
+}
+
+export const useRegisterUser = ({ email, username, password, registerUserCb }: RegisterUserInterface) => {
+  const updateUserProfile = useUpdateUserProfile;
+  if (email && password) {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((cred: any) => {
+        console.log("user created:", cred.user);
+        updateUserProfile({ displayName: username, photoURL: "placeholder", cb: registerUserCb.updateUserData });
+      })
+      .catch((err: any) => {
+        console.log(err.message);
+        registerUserCb.forwardError(err.message);
+      });
+  }
 };

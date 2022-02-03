@@ -15,6 +15,11 @@ export const RegisterScreen: React.FC = () => {
   const [startedEmailEntry, setStartedEmailEntry] = React.useState<boolean>(false);
   const [emailAlreadyUsed, setEmailAlreadyUsed] = React.useState<boolean>(false);
 
+  const usernameRef = useRef<HTMLInputElement>(null);
+  const [usernameInput, setUsernameInput] = React.useState<string>("");
+  const [usernameValidity, setUsernameValidity] = React.useState<boolean>(false);
+  const [startedUsernameEntry, setStartedUsernameEntry] = React.useState<boolean>(false);
+
   const passwordRef = useRef<HTMLInputElement>(null);
   const [passwordInput, setPasswordInput] = React.useState<string>("");
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
@@ -27,11 +32,11 @@ export const RegisterScreen: React.FC = () => {
   const registerUser = useRegisterUser;
 
   React.useEffect(() => {
-    if (emailValidity && passLengthValidity && passMatchValidity) {
+    if (emailValidity && usernameValidity && passLengthValidity && passMatchValidity) {
       return setFormValid(true);
     }
     return setFormValid(false);
-  }, [emailValidity, passLengthValidity, passMatchValidity]);
+  }, [emailValidity, usernameValidity, passLengthValidity, passMatchValidity]);
 
   const validateEmailInput = () => {
     setEmailValidity(validateEmail(emailRef.current?.value));
@@ -47,6 +52,16 @@ export const RegisterScreen: React.FC = () => {
     setPassLengthValidity(false);
   };
 
+  const validateUsernameInputLength = () => {
+    if (usernameRef.current?.value) {
+      if (usernameRef.current.value.length >= 2) {
+        return setUsernameValidity(true);
+      }
+      return setUsernameValidity(false);
+    }
+    setUsernameValidity(false);
+  };
+
   const validatePasswordMatch = () => {
     if (passwordRef.current?.value && confirmPasswordRef.current?.value) {
       if (passwordRef.current?.value === confirmPasswordRef.current?.value) {
@@ -57,7 +72,7 @@ export const RegisterScreen: React.FC = () => {
   };
 
   const onRegistration = () => {
-    registerUser({ email: emailRef.current?.value, password: passwordRef.current?.value, registerUserCb: { forwardError } });
+    registerUser({ email: emailRef.current?.value, username: usernameRef.current?.value, password: passwordRef.current?.value, registerUserCb: { forwardError, updateUserData: appContext.setUserData } });
   };
 
   const forwardError = (error: string) => {
@@ -86,7 +101,7 @@ export const RegisterScreen: React.FC = () => {
                 placeholder="This will be your login"
                 ref={emailRef}
                 value={emailInput}
-                autoComplete="username"
+                autoComplete="email"
                 onChange={() => {
                   setEmailInput(emailRef.current!.value);
                   setStartedEmailEntry(true);
@@ -95,6 +110,22 @@ export const RegisterScreen: React.FC = () => {
               />
               {startedEmailEntry && !emailValidity && <Form.Text className="text-danger">Invalid email address</Form.Text>}
               {emailAlreadyUsed && <Form.Text className="text-danger">Email already used. Try to login instead.</Form.Text>}
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+              <Form.Label>Your username</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Min. 2 characters"
+                ref={usernameRef}
+                value={usernameInput}
+                autoComplete="username"
+                onChange={() => {
+                  setUsernameInput(usernameRef.current!.value);
+                  setStartedUsernameEntry(true);
+                  validateUsernameInputLength();
+                }}
+              />
+              {startedUsernameEntry && !usernameValidity && <Form.Text className="text-danger">Choose a longer username</Form.Text>}
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>
