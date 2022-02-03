@@ -22,14 +22,17 @@ export interface UserDataInterface {
 
 export default function App() {
   const [userLoggedIn, setUserLoggedIn] = React.useState<boolean>(false);
-  const [loggedInUserEmail, setLoggedInUserEmail] = React.useState<string>("");
-  const [loggedInUserUsername, setLoggedInUserUsername] = React.useState<string>("");
-  const [loggedInUserAvatarImg, setLoggedInUserAvatarImg] = React.useState<string>("");
+  const [loggedInUserEmail, setLoggedInUserEmail] = React.useState<string | null>("");
+  const [loggedInUserUsername, setLoggedInUserUsername] = React.useState<string | null>("");
+  const [loggedInUserAvatarImg, setLoggedInUserAvatarImg] = React.useState<string | null>("");
   const navigate = useNavigate();
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setUserLoggedIn(true);
+      setLoggedInUserEmail(user.email);
+      setLoggedInUserUsername(user.displayName);
+      setLoggedInUserAvatarImg(user.photoURL);
     } else {
       setUserLoggedIn(false);
     }
@@ -47,7 +50,6 @@ export default function App() {
     loggedInUserUsername,
     loggedInUserAvatarImg,
     setUserData,
-    setLoggedInUserUsername,
   };
   React.useEffect(() => {
     if (userLoggedIn) {
@@ -58,6 +60,12 @@ export default function App() {
   React.useEffect(() => {
     if (userLoggedIn) {
       navigate("../", { replace: false });
+    }
+  }, [userLoggedIn]);
+
+  React.useEffect(() => {
+    if (!userLoggedIn) {
+      navigate("../login", { replace: false });
     }
   }, [userLoggedIn]);
 

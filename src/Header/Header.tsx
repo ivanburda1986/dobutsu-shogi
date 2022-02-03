@@ -4,7 +4,7 @@ import { Avatar } from "./Avatar/Avatar";
 import { Button } from "react-bootstrap";
 import styles from "./Header.module.css";
 import { NavLink } from "react-router-dom";
-import { useLogoutUser, useGetUserDetails } from "../api/firestore";
+import { useLogoutUser } from "../api/firestore";
 import { AppContext } from "../context/AppContext";
 
 export const Header: React.FC = () => {
@@ -20,10 +20,13 @@ export const Header: React.FC = () => {
         </NavLink>
       </h2>
       <div className="d-flex flex-row justify-content-between ">
-        <NavLink to="/profile" className="btn mx-2 d-flex flex-row justify-content-between align-items-center">
-          <Avatar name={appContext.loggedInUserAvatarImg} />
-          <span className="ms-1 fs-4">{appContext.loggedInUserUsername}</span>
-        </NavLink>
+        {appContext.userLoggedIn && (
+          <NavLink to="/profile" className="btn mx-2 d-flex flex-row justify-content-between align-items-center">
+            <Avatar name={appContext.loggedInUserAvatarImg} />
+            <span className="ms-1 fs-4">{appContext.loggedInUserUsername ? appContext.loggedInUserUsername : "Username"}</span>
+          </NavLink>
+        )}
+
         {!appContext.userLoggedIn && (
           <NavLink to="/login" className={`btn btn-primary mx-3 my-auto ${styles.headerButton} justify-content-center`}>
             Log in

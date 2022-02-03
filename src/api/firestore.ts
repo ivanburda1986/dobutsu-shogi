@@ -31,7 +31,6 @@ interface RegisterUserInterface {
 }
 
 export const useRegisterUser = ({ email, password, registerUserCb }: RegisterUserInterface) => {
-  //let userRegistrationSuccessful = false;
   if (email && password) {
     createUserWithEmailAndPassword(auth, email, password)
       .then((cred: any) => {

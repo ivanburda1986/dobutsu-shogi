@@ -27,7 +27,7 @@ export const Profile: React.FC = () => {
             <Col className="d-flex flex-row justify-content-between align-items-center">
               <div className="d-flex flex-row justify-content-between align-items-center">
                 <Avatar name={appContext.loggedInUserAvatarImg} />
-                <p className="fs-4 mx-2 align-middle my-auto">{appContext.loggedInUserUsername}</p>
+                <p className="fs-4 mx-2 align-middle my-auto">{appContext.loggedInUserUsername ? appContext.loggedInUserUsername : "Username"}</p>
               </div>
               <Button
                 className={`${styles.profileSetupBtn} justify-content-center`}
@@ -64,9 +64,9 @@ export const Profile: React.FC = () => {
                 <Form.Label>Set a username</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Username"
                   ref={usernameRef}
                   value={usernameInput}
+                  placeholder={appContext.loggedInUserUsername}
                   onChange={() => {
                     setUsernameInput(usernameRef.current!.value);
                   }}
@@ -76,7 +76,7 @@ export const Profile: React.FC = () => {
                 variant="primary"
                 type="button"
                 onClick={() => {
-                  updateUserProfile({ displayName: usernameRef.current?.value, photoURL: avatarImgSelection, cb: appContext.setUserData });
+                  updateUserProfile({ displayName: usernameRef.current?.value ? usernameRef.current?.value : appContext.loggedInUserUsername, photoURL: avatarImgSelection, cb: appContext.setUserData });
                   setAvatarUsernameEditModeOn(false);
                 }}
               >
