@@ -18,6 +18,12 @@ export const Profile: React.FC = () => {
     return appContext.loggedInUserAvatarImg === optionName;
   };
 
+  React.useEffect(() => {
+    if (!appContext.loggedInUserAvatarImg || !appContext.loggedInUserUsername) {
+      setAvatarUsernameEditModeOn(true);
+    }
+  }, []);
+
   return (
     <Container>
       <h2>Avatar and username</h2>

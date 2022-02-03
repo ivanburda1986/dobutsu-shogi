@@ -23,8 +23,8 @@ export interface UserDataInterface {
 export default function App() {
   const [userLoggedIn, setUserLoggedIn] = React.useState<boolean>(false);
   const [loggedInUserEmail, setLoggedInUserEmail] = React.useState<string | null>("");
-  const [loggedInUserUsername, setLoggedInUserUsername] = React.useState<string | null>("");
-  const [loggedInUserAvatarImg, setLoggedInUserAvatarImg] = React.useState<string | null>("");
+  const [loggedInUserUsername, setLoggedInUserUsername] = React.useState<string | null>();
+  const [loggedInUserAvatarImg, setLoggedInUserAvatarImg] = React.useState<string | null>();
   const navigate = useNavigate();
 
   onAuthStateChanged(auth, (user) => {
@@ -66,6 +66,12 @@ export default function App() {
   React.useEffect(() => {
     if (!userLoggedIn) {
       navigate("../login", { replace: false });
+    }
+  }, [userLoggedIn]);
+
+  React.useEffect(() => {
+    if (userLoggedIn && !loggedInUserUsername) {
+      navigate("../profile", { replace: false });
     }
   }, [userLoggedIn]);
 
