@@ -50,7 +50,7 @@ export const CreateGame: React.FC = () => {
               ))}
             </Form.Group>
 
-            <Button variant="primary" type="button" onClick={() => createGame({ creator: "abc", name: gameNameRef.current!.value, type: gameType, createGameCb: { redirect: navigateToLaunchScreen } })}>
+            <Button variant="primary" type="button" onClick={() => createGame({ creatorId: appContext.loggedInUserUserId, creatorName: appContext.loggedInUserUsername, name: gameNameRef.current!.value, type: gameType, createGameCb: { redirect: navigateToLaunchScreen } })}>
               Create
             </Button>
           </Form>

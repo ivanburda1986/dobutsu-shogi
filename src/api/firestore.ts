@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, Timestamp, getDocs, addDoc, getDoc, setDoc, deleteDoc, doc, onSnapshot, orderBy, serverTimestamp, query, updateDoc, where } from "firebase/firestore";
+import { getFirestore, collection, Timestamp, getDocs, addDoc, getDoc, setDoc, deleteDoc, doc, onSnapshot, orderBy, serverTimestamp, query, updateDoc, where, documentId } from "firebase/firestore";
 import { createUserWithEmailAndPassword, getAuth, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile, onAuthStateChanged } from "firebase/auth";
 import { UserDataInterface } from "../App";
 
@@ -30,9 +30,10 @@ export const auth = getAuth();
 const gamesCollectionRef = collection(db, "games");
 
 export interface CreateGameInterface {
-  createdOn?: Timestamp;
-  creator: string;
-  finishedTimeStamp?: Timestamp | null;
+  createdOn?: number;
+  creatorId: string;
+  creatorName: string;
+  finishedTimeStamp?: number | null;
   name: string;
   oponent?: string | null;
   startingPlayer?: string | null;
@@ -44,10 +45,11 @@ export interface CreateGameInterface {
     redirect: () => void;
   };
 }
-export const useCreateGame = ({ creator, name, type, createGameCb }: CreateGameInterface) => {
+export const useCreateGame = ({ creatorId, creatorName, name, type, createGameCb }: CreateGameInterface) => {
   addDoc(gamesCollectionRef, {
     createdOn: Date.now(),
-    creator: creator,
+    creatorId: creatorId,
+    creatorName: creatorName,
     finishedTimeStamp: null,
     name: name,
     oponent: null,
@@ -58,6 +60,16 @@ export const useCreateGame = ({ creator, name, type, createGameCb }: CreateGameI
     winner: null,
   }).then(() => {
     createGameCb.redirect();
+  });
+};
+
+export const useGetGames = () => {
+  onSnapshot(gamesCollectionRef, (snapshot) => {
+    let games: any = [];
+    snapshot.docs.forEach((doc) => {
+      games.push({ id: documentId });
+    });
+    console.log(games);
   });
 };
 

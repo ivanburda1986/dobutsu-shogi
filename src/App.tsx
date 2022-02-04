@@ -25,6 +25,7 @@ export default function App() {
   const [userLoggedIn, setUserLoggedIn] = React.useState<boolean>(false);
   const [loggedInUserEmail, setLoggedInUserEmail] = React.useState<string | null>("");
   const [loggedInUserUsername, setLoggedInUserUsername] = React.useState<string | null>();
+  const [loggedInUserUserId, setLoggedInUserUserId] = React.useState<string | null>();
   const [loggedInUserAvatarImg, setLoggedInUserAvatarImg] = React.useState<string | null>();
   const navigate = useNavigate();
 
@@ -33,6 +34,7 @@ export default function App() {
       setUserLoggedIn(true);
       setLoggedInUserEmail(user.email);
       setLoggedInUserUsername(user.displayName);
+      setLoggedInUserUserId(user.uid);
       setLoggedInUserAvatarImg(user.photoURL);
     } else {
       setUserLoggedIn(false);
@@ -49,6 +51,7 @@ export default function App() {
     userLoggedIn,
     loggedInUserEmail,
     loggedInUserUsername,
+    loggedInUserUserId,
     loggedInUserAvatarImg,
     setUserData,
   };
