@@ -12,7 +12,7 @@ export const WaitingGamesList: React.FC = () => {
   return (
     <Container>
       <h2>Open Games</h2>
-      <Container>{/* <WaitingGame createdOn={} creatorId={} creatorName={} name={} status={} type={} /> */}</Container>
+      <Container>{/* <WaitingGame id={} createdOn={} creatorId={} creatorName={} name={} status={} type={} /> */}</Container>
     </Container>
   );
 };
