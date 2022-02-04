@@ -1,9 +1,10 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs, addDoc, getDoc, setDoc, deleteDoc, doc, onSnapshot, orderBy, serverTimestamp, query, updateDoc, where } from "firebase/firestore";
+import { getFirestore, collection, Timestamp, getDocs, addDoc, getDoc, setDoc, deleteDoc, doc, onSnapshot, orderBy, serverTimestamp, query, updateDoc, where } from "firebase/firestore";
 import { createUserWithEmailAndPassword, getAuth, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile, onAuthStateChanged } from "firebase/auth";
 import { UserDataInterface } from "../App";
-import { AppContext } from "../context/AppContext";
-import { useContext } from "react";
+
+import { gameType, statusType } from "../CreateGame/newGameClass";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCBnawTeOf0cVa7m7aKFQoIqrXbJOorW2c",
   authDomain: "dobutsushogi-43c6e.firebaseapp.com",
@@ -24,6 +25,44 @@ const db = getFirestore();
 //Init authentication
 export const auth = getAuth();
 
+// GAME CREATION AND MANAGEMENT
+// ======================================================
+const gamesCollectionRef = collection(db, "games");
+
+export interface CreateGameInterface {
+  createdOn?: Timestamp;
+  creator: string;
+  finishedTimeStamp?: Timestamp | null;
+  name: string;
+  oponent?: string | null;
+  startingPlayer?: string | null;
+  status?: statusType;
+  timeToComplete?: number | null;
+  type: gameType;
+  winner?: string | null;
+  createGameCb: {
+    redirect: () => void;
+  };
+}
+export const useCreateGame = ({ creator, name, type, createGameCb }: CreateGameInterface) => {
+  addDoc(gamesCollectionRef, {
+    createdOn: Date.now(),
+    creator: creator,
+    finishedTimeStamp: null,
+    name: name,
+    oponent: null,
+    startingPlayer: null,
+    status: "WAITING",
+    timeToComplete: null,
+    type: type,
+    winner: null,
+  }).then(() => {
+    createGameCb.redirect();
+  });
+};
+
+// USER REGISTRATION AND MANAGEMENT
+// ======================================================
 interface LoginUserInterface {
   email: string | undefined;
   password: string | undefined;

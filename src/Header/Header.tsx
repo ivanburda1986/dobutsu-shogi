@@ -33,6 +33,11 @@ export const Header: React.FC = () => {
           </NavLink>
         )}
         {appContext.userLoggedIn && (
+          <NavLink to="/creategame" className={`btn btn-primary mx-3 my-auto ${styles.headerButton} justify-content-center`}>
+            Create Game
+          </NavLink>
+        )}
+        {appContext.userLoggedIn && (
           <NavLink to="/" className={`btn btn-danger mx-3 my-auto ${styles.headerButton} justify-content-center`} onClick={() => logout()}>
             Log out
           </NavLink>

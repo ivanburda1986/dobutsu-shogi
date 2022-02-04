@@ -13,6 +13,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import "bootstrap/dist/css/bootstrap.min.css";
 import sharedStyles from "./sharedStyles.module.css";
 import _ from "lodash";
+import { CreateGame } from "./CreateGame/CreateGame";
 
 export interface UserDataInterface {
   email: string | null;
@@ -73,6 +74,7 @@ export default function App() {
           <Route path="/register" element={<RegisterScreen />} />
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/creategame" element={<CreateGame />} />
         </Routes>
       </AppContext.Provider>
     </>

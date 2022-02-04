@@ -15,7 +15,7 @@ export const LoginScreen: React.FC = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const [emailInput, setEmailInput] = React.useState<string>("");
   const [emailValidity, setEmailValidity] = React.useState<boolean>(false);
-  const [userDoesNotExist, setUsedDoesNotExist] = React.useState<boolean>(false);
+  const [userDoesNotExist, setUserDoesNotExist] = React.useState<boolean>(false);
   const [startedEmailEntry, setStartedEmailEntry] = React.useState<boolean>(false);
 
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -65,9 +65,9 @@ export const LoginScreen: React.FC = () => {
 
   const forwardError = (error: string) => {
     if (error === "Firebase: Error (auth/user-not-found).") {
-      setUsedDoesNotExist(true);
+      setUserDoesNotExist(true);
       setTimeout(() => {
-        setUsedDoesNotExist(false);
+        setUserDoesNotExist(false);
       }, 5000);
     }
 
