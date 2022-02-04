@@ -6,11 +6,11 @@ import { Avatar } from "../Header/Avatar/Avatar";
 import styles from "./Profile.module.css";
 
 export const Profile: React.FC = () => {
+  const appContext = useContext(AppContext);
   const [avatarUsernameEditModeOn, setAvatarUsernameEditModeOn] = React.useState<boolean>(false);
-  const [avatarImgSelection, setAvatarImgSelection] = React.useState<string>("");
+  const [avatarImgSelection, setAvatarImgSelection] = React.useState<string>(appContext.loggedInUserAvatarImg);
   const usernameRef = useRef<HTMLInputElement>(null);
   const [usernameInput, setUsernameInput] = React.useState<string>("");
-  const appContext = useContext(AppContext);
 
   const updateUserProfile = useUpdateUserProfile;
 
