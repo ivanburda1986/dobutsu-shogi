@@ -57,15 +57,13 @@ export default function App() {
   };
 
   React.useEffect(() => {
-    if (!userLoggedIn) {
-      navigate("../login", { replace: false });
-    }
-  }, [userLoggedIn, navigate]);
-
-  React.useEffect(() => {
-    if (userLoggedIn) {
-      navigate("../", { replace: false });
-    }
+    setTimeout(() => {
+      if (!userLoggedIn) {
+        navigate("../login", { replace: false });
+      } else {
+        navigate("../", { replace: false });
+      }
+    }, 500);
   }, [userLoggedIn]);
 
   return (
