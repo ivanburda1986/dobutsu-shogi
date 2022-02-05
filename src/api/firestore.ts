@@ -63,6 +63,13 @@ export const useCreateGame = ({ creatorId, creatorName, name, type, createGameCb
   });
 };
 
+export const useDeleteGame = (id: string) => {
+  const deleteGameRef = doc(db, "games", id);
+  deleteDoc(deleteGameRef).then(() => {
+    console.log("Game deleted");
+  });
+};
+
 interface ReturnedGameInterface extends DocumentData {
   id: string;
 }

@@ -1,5 +1,5 @@
 import { CreateGameInterface } from "../api/firestore";
-export type gameType = "DOBUTSU" | "GOROGORO" | "SHOGI" | null;
+export type gameType = "DOBUTSU" | "GOROGORO" | "GREENWOOD" | null;
 export type statusType = "WAITING" | "VICTORY" | "CANCELLED" | "RESIGNED" | null;
 
 export class Game {

@@ -9,7 +9,7 @@ import { useNavigate } from "react-router";
 export const CreateGame: React.FC = () => {
   const gameNameRef = useRef<HTMLInputElement>(null);
   const [gameNameInput, setGameNameInput] = React.useState<string>("");
-  const [gameType, setGameType] = React.useState<gameType>("DOBUTSU");
+  const [gameType, setGameType] = React.useState<gameType>("GREENWOOD");
 
   const appContext = useContext(AppContext);
   const createGame = useCreateGame;
@@ -18,8 +18,6 @@ export const CreateGame: React.FC = () => {
   const navigateToLaunchScreen = () => {
     navigate("../", { replace: false });
   };
-
-  let game: CreateGameInterface;
 
   return (
     <Container>
@@ -43,9 +41,9 @@ export const CreateGame: React.FC = () => {
               <Form.Label>Game type</Form.Label>
               {["radio"].map(() => (
                 <div key={`inline-radio`} className="mb-3">
-                  <Form.Check inline label="Dobutsu shogi" name="group1" type="radio" id="DOBUTSU" onChange={(e) => setGameType(e.target.id as gameType)} />
-                  <Form.Check inline label="Goro Goro" name="group1" type="radio" id="GOROGORO" onChange={(e) => setGameType(e.target.id as gameType)} />
-                  <Form.Check inline label="Shogi" name="group1" type="radio" id="SHOGI" onChange={(e) => setGameType(e.target.id as gameType)} />
+                  <Form.Check inline label="Dobutsu Shogi" name="group1" type="radio" id="DOBUTSU" onChange={(e) => setGameType(e.target.id as gameType)} />
+                  <Form.Check inline label="Goro Goro Dobutsu Shogi" name="group1" type="radio" id="GOROGORO" onChange={(e) => setGameType(e.target.id as gameType)} />
+                  <Form.Check inline label="Dobutsu Shogi in the Green Wood" name="group1" type="radio" id="GREENWOOD" onChange={(e) => setGameType(e.target.id as gameType)} />
                 </div>
               ))}
             </Form.Group>
