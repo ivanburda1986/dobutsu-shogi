@@ -27,7 +27,7 @@ export const WaitingGamesList: React.FC = () => {
       <Container fluid>
         <Row>
           {games.map((game) => (
-            <WaitingGame key={game.id} id={game.id} createdOn={game.createdOn} creatorId={game.creatorId} creatorName={game.creator} name={game.name} status={game.status} type={game.type} />
+            <WaitingGame key={game.id} id={game.id} createdOn={game.createdOn} creatorId={game.creatorId} creatorName={game.creatorName} name={game.name} status={game.status} type={game.type} />
           ))}
         </Row>
       </Container>

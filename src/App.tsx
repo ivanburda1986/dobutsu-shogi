@@ -55,15 +55,16 @@ export default function App() {
     loggedInUserAvatarImg,
     setUserData,
   };
-  React.useEffect(() => {
-    if (userLoggedIn) {
-      navigate("../", { replace: false });
-    }
-  }, [userLoggedIn]);
 
   React.useEffect(() => {
     if (!userLoggedIn) {
       navigate("../login", { replace: false });
+    }
+  }, [userLoggedIn, navigate]);
+
+  React.useEffect(() => {
+    if (userLoggedIn) {
+      navigate("../", { replace: false });
     }
   }, [userLoggedIn]);
 
