@@ -38,6 +38,14 @@ export const LoginScreen: React.FC = () => {
     return setFormValid(false);
   }, [emailValidity, passLengthValidity]);
 
+  React.useEffect(() => {
+    setTimeout(() => {
+      if (appContext.userLoggedIn) {
+        navigate("../", { replace: false });
+      }
+    }, 500);
+  });
+
   const validateEmailInput = () => {
     setEmailValidity(validateEmail(emailRef.current?.value));
   };

@@ -1,5 +1,5 @@
 import React, { useContext, useRef } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { AppContext } from "../context/AppContext";
 import styles from "./RegisterScreen.module.css";
@@ -9,6 +9,7 @@ import { validateEmail } from "./validateEmail";
 
 export const RegisterScreen: React.FC = () => {
   const appContext = useContext(AppContext);
+  const navigate = useNavigate();
   const emailRef = useRef<HTMLInputElement>(null);
   const [emailInput, setEmailInput] = React.useState<string>("");
   const [emailValidity, setEmailValidity] = React.useState<boolean>(false);
@@ -37,6 +38,14 @@ export const RegisterScreen: React.FC = () => {
     }
     return setFormValid(false);
   }, [emailValidity, usernameValidity, passLengthValidity, passMatchValidity]);
+
+  React.useEffect(() => {
+    setTimeout(() => {
+      if (appContext.userLoggedIn) {
+        navigate("../", { replace: false });
+      }
+    }, 500);
+  });
 
   const validateEmailInput = () => {
     setEmailValidity(validateEmail(emailRef.current?.value));

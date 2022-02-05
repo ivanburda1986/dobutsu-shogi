@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { Card, Button, ListGroup } from "react-bootstrap";
+import { NavLink } from "react-router-dom";
 import { gameType, statusType } from "../../../CreateGame/newGameClass";
 import { useDeleteGame } from "../../../api/firestore";
 import { AppContext } from "../../../context/AppContext";
@@ -52,9 +53,9 @@ export const WaitingGame: React.FC<WaitingGameInterface> = ({ id, createdOn, cre
         <p>Type: {type}</p>
       </Card.Body>
       <Card.Footer>
-        <Button variant="primary" size="sm">
+        <NavLink to="/session" className={`btn btn-primary btn-sm `}>
           Join the game
-        </Button>
+        </NavLink>
       </Card.Footer>
     </Card>
   );

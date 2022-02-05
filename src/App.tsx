@@ -14,6 +14,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import sharedStyles from "./sharedStyles.module.css";
 import _ from "lodash";
 import { CreateGame } from "./CreateGame/CreateGame";
+import { Session } from "./Session/Session";
 
 export interface UserDataInterface {
   email: string | null;
@@ -60,8 +61,6 @@ export default function App() {
     setTimeout(() => {
       if (!userLoggedIn) {
         navigate("../login", { replace: false });
-      } else {
-        navigate("../", { replace: false });
       }
     }, 500);
   }, [userLoggedIn]);
@@ -77,6 +76,7 @@ export default function App() {
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/creategame" element={<CreateGame />} />
+          <Route path="/session" element={<Session />} />
         </Routes>
       </AppContext.Provider>
     </>

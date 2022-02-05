@@ -16,7 +16,9 @@ export const CreateGame: React.FC = () => {
   const navigate = useNavigate();
 
   const navigateToLaunchScreen = () => {
-    navigate("../", { replace: false });
+    setTimeout(() => {
+      navigate("../", { replace: false });
+    }, 500);
   };
 
   return (
