@@ -5,6 +5,8 @@ import sharedStyles from "../sharedStyles.module.css";
 import { Game } from "../CreateGame/newGameClass";
 import { Container } from "react-bootstrap";
 import { WaitingGamesList } from "./WaitingGamesList/WaitingGamesList";
+import { CreateGameInterface, gamesCollectionRef } from "../api/firestore";
+import { DocumentData, onSnapshot } from "firebase/firestore";
 
 export const LaunchScreen: React.FC = () => {
   return (

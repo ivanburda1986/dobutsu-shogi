@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Button } from "react-bootstrap";
+import { Card, Button, ListGroup } from "react-bootstrap";
 import { gameType, statusType } from "../../../CreateGame/newGameClass";
 
 interface WaitingGameInterface {
@@ -11,14 +11,29 @@ interface WaitingGameInterface {
   type: gameType;
 }
 export const WaitingGame: React.FC<WaitingGameInterface> = ({ createdOn, creatorId, creatorName, name, status, type }) => {
+  const whichBackroundToUse = () => {
+    if (type === "DOBUTSU") {
+      return "success";
+    }
+    if (type === "GOROGORO") {
+      return "warning";
+    }
+    return "danger";
+  };
+
   return (
-    <Card style={{ width: "18rem" }}>
-      <Card.Img variant="top" src="holder.js/100px180" />
+    <Card style={{ width: "18rem" }} className={`p-0 m-2 border-radius border-4 text-white bg-${whichBackroundToUse()}`}>
+      <Card.Header>
+        <Card.Title>{name}</Card.Title>
+      </Card.Header>
       <Card.Body>
-        <Card.Title>Card Title</Card.Title>
-        <Card.Text>Some quick example text to build on the card title and make up the bulk of the card's content.</Card.Text>
-        <Button variant="primary">Go somewhere</Button>
+        <p>Created by: {creatorName}</p>
       </Card.Body>
+      <Card.Footer>
+        <Button variant="primary" size="sm">
+          Join the game
+        </Button>
+      </Card.Footer>
     </Card>
   );
 };

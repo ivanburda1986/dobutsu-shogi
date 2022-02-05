@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, Timestamp, getDocs, addDoc, getDoc, setDoc, deleteDoc, doc, onSnapshot, orderBy, serverTimestamp, query, updateDoc, where, documentId } from "firebase/firestore";
+import { getFirestore, collection, Timestamp, getDocs, addDoc, getDoc, setDoc, deleteDoc, doc, onSnapshot, orderBy, serverTimestamp, query, updateDoc, where, documentId, DocumentData } from "firebase/firestore";
 import { createUserWithEmailAndPassword, getAuth, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile, onAuthStateChanged } from "firebase/auth";
 import { UserDataInterface } from "../App";
 
@@ -27,7 +27,7 @@ export const auth = getAuth();
 
 // GAME CREATION AND MANAGEMENT
 // ======================================================
-const gamesCollectionRef = collection(db, "games");
+export const gamesCollectionRef = collection(db, "games");
 
 export interface CreateGameInterface {
   createdOn?: number;
@@ -63,13 +63,17 @@ export const useCreateGame = ({ creatorId, creatorName, name, type, createGameCb
   });
 };
 
+interface ReturnedGameInterface extends DocumentData {
+  id: string;
+}
 export const useGetGames = () => {
   onSnapshot(gamesCollectionRef, (snapshot) => {
-    let games: any = [];
+    let games: ReturnedGameInterface[] = [];
     snapshot.docs.forEach((doc) => {
-      games.push({ id: documentId });
+      games.push({ id: doc.id, ...doc.data() });
     });
     console.log(games);
+    return games;
   });
 };
 
