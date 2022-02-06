@@ -82,7 +82,7 @@ export const Profile: React.FC = () => {
                 variant="primary"
                 type="button"
                 onClick={() => {
-                  updateUserProfile({ displayName: usernameRef.current?.value ? usernameRef.current?.value : appContext.loggedInUserUsername, photoURL: avatarImgSelection, cb: appContext.setUserData });
+                  updateUserProfile({ displayName: usernameRef.current?.value ? usernameRef.current.value : appContext.loggedInUserUsername, photoURL: avatarImgSelection, cb: appContext.setUserData });
                   setAvatarUsernameEditModeOn(false);
                 }}
               >

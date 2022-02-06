@@ -18,42 +18,42 @@ import { Session } from "./Session/Session";
 
 export interface UserDataInterface {
   email: string | null;
-  username: string | null;
-  avatarImg: string | null;
+  displayName: string | null;
+  photoURL: string | null;
 }
 
 export default function App() {
   const [userLoggedIn, setUserLoggedIn] = React.useState<boolean>(false);
   const [loggedInUserEmail, setLoggedInUserEmail] = React.useState<string | null>("");
-  const [loggedInUserUsername, setLoggedInUserUsername] = React.useState<string | null>();
+  const [loggedInUserDisplayName, setLoggedInUserDisplayName] = React.useState<string | null>();
   const [loggedInUserUserId, setLoggedInUserUserId] = React.useState<string | null>();
-  const [loggedInUserAvatarImg, setLoggedInUserAvatarImg] = React.useState<string | null>();
+  const [loggedInUsePhotoURL, setLoggedInUserPhotoURL] = React.useState<string | null>();
   const navigate = useNavigate();
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setUserLoggedIn(true);
       setLoggedInUserEmail(user.email);
-      setLoggedInUserUsername(user.displayName);
+      setLoggedInUserDisplayName(user.displayName);
       setLoggedInUserUserId(user.uid);
-      setLoggedInUserAvatarImg(user.photoURL);
+      setLoggedInUserPhotoURL(user.photoURL);
     } else {
       setUserLoggedIn(false);
     }
   });
 
-  const setUserData = ({ email, username, avatarImg }: UserDataInterface) => {
+  const setUserData = ({ email, displayName, photoURL }: UserDataInterface) => {
     email && setLoggedInUserEmail(email);
-    username && setLoggedInUserUsername(username);
-    avatarImg && setLoggedInUserAvatarImg(avatarImg);
+    displayName && setLoggedInUserDisplayName(displayName);
+    photoURL && setLoggedInUserPhotoURL(photoURL);
   };
 
   const providedContext = {
     userLoggedIn,
     loggedInUserEmail,
-    loggedInUserUsername,
+    loggedInUserDisplayName,
     loggedInUserUserId,
-    loggedInUserAvatarImg,
+    loggedInUsePhotoURL,
     setUserData,
   };
 

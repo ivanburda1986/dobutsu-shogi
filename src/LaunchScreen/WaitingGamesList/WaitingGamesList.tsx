@@ -1,7 +1,7 @@
 import { DocumentData, onSnapshot } from "firebase/firestore";
 import React from "react";
 import { Container, Row } from "react-bootstrap";
-import { useGetGames, CreateGameInterface, gamesCollectionRef } from "../../api/firestore";
+import { gamesCollectionRef } from "../../api/firestore";
 
 import { WaitingGame } from "./WaitingGame/WaitingGame";
 
@@ -17,7 +17,7 @@ export const WaitingGamesList: React.FC = () => {
       snapshot.docs.forEach((doc) => {
         games.push({ id: doc.id, ...doc.data() });
       });
-      console.log(games);
+
       setGames(games);
     });
   }, []);

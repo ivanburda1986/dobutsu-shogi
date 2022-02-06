@@ -81,7 +81,7 @@ export const RegisterScreen: React.FC = () => {
   };
 
   const onRegistration = () => {
-    registerUser({ email: emailRef.current?.value, username: usernameRef.current?.value, password: passwordRef.current?.value, registerUserCb: { forwardError, updateUserData: appContext.setUserData } });
+    registerUser({ email: emailRef.current!.value, username: usernameRef.current!.value, password: passwordRef.current!.value, registerUserCb: { forwardError, updateUserData: appContext.setUserData } });
   };
 
   const forwardError = (error: string) => {

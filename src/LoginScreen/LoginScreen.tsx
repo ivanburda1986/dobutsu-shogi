@@ -60,7 +60,7 @@ export const LoginScreen: React.FC = () => {
   };
 
   const onLogin = () => {
-    loginUser({ email: emailRef.current?.value, password: passwordRef.current?.value, loginUserCb: { forwardError } });
+    loginUser({ email: emailRef.current!.value, password: passwordRef.current!.value, loginUserCb: { forwardError } });
   };
 
   const onRequestPasswordReset = () => {

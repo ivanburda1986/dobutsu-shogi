@@ -25,26 +25,9 @@ export const auth = getAuth();
 
 // GAME CREATION AND MANAGEMENT
 // ======================================================
-export const gamesCollectionRef = collection(db, "games");
 
 export type gameType = "DOBUTSU" | "GOROGORO" | "GREENWOOD";
 export type statusType = "WAITING" | "VICTORY" | "CANCELLED" | "RESIGNED";
-export interface GameInterface {
-  createdOn?: number;
-  creatorId: string;
-  creatorName: string;
-  name: string;
-  type: gameType;
-  status?: statusType;
-  oponent?: string | null;
-  startingPlayer?: string | null;
-  winner?: string | null;
-  finishedTimeStamp?: number | null;
-  createGameCb?: {
-    redirect: () => void;
-  };
-}
-
 export interface CreateGameInterface {
   creatorId: string;
   creatorName: string;
@@ -54,19 +37,19 @@ export interface CreateGameInterface {
     redirect: () => void;
   };
 }
+export const gamesCollectionRef = collection(db, "games");
 export const useCreateGame = ({ creatorId, creatorName, name, type, createGameCb }: CreateGameInterface) => {
   addDoc(gamesCollectionRef, {
     createdOn: Date.now(),
     creatorId: creatorId,
     creatorName: creatorName,
-    finishedTimeStamp: null,
     name: name,
+    type: type,
+    status: "WAITING",
     oponent: null,
     startingPlayer: null,
-    status: "WAITING",
-    timeToComplete: null,
-    type: type,
     winner: null,
+    finishedTimeStamp: null,
   }).then(() => {
     createGameCb.redirect();
   });
@@ -79,61 +62,66 @@ export const useDeleteGame = (id: string) => {
   });
 };
 
-interface ReturnedGameInterface extends DocumentData {
-  id: string;
+// USER REGISTRATION
+// ======================================================
+interface RegisterUserInterface {
+  email: string;
+  username: string;
+  password: string;
+  registerUserCb: {
+    forwardError: (error: string) => void;
+    updateUserData: () => void;
+  };
 }
-export const useGetGames = () => {
-  onSnapshot(gamesCollectionRef, (snapshot) => {
-    let games: ReturnedGameInterface[] = [];
-    snapshot.docs.forEach((doc) => {
-      games.push({ id: doc.id, ...doc.data() });
+
+export const useRegisterUser = ({ email, username, password, registerUserCb }: RegisterUserInterface) => {
+  const updateUserProfile = useUpdateUserProfile;
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((cred) => {
+      updateUserProfile({ displayName: username, photoURL: "placeholder", cb: registerUserCb.updateUserData });
+      console.log("user created:", cred.user);
+    })
+    .catch((err) => {
+      registerUserCb.forwardError(err.message);
+      console.log(err.message);
     });
-    console.log(games);
-    return games;
-  });
 };
 
-// USER REGISTRATION AND MANAGEMENT
+// USER LOGIN
 // ======================================================
 interface LoginUserInterface {
-  email: string | undefined;
-  password: string | undefined;
+  email: string;
+  password: string;
   loginUserCb: {
     forwardError: (error: string) => void;
   };
 }
 
 export const useLoginUser = ({ email, password, loginUserCb }: LoginUserInterface) => {
-  if (email && password) {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((cred) => {
-        console.log(cred);
-      })
-      .catch((err) => {
-        console.log(err.message);
-        loginUserCb.forwardError(err.message);
-      });
-  }
+  signInWithEmailAndPassword(auth, email, password)
+    .then((cred) => {
+      console.log(cred);
+    })
+    .catch((err) => {
+      loginUserCb.forwardError(err.message);
+      console.log(err.message);
+    });
 };
 
-export const useGetUserDetails = () => {
-  const user = auth.currentUser;
-  if (user) {
-    console.log(user.providerData[0]);
-    return user.providerData[0];
-  }
-};
-
+// USER LOGOUT
+// ======================================================
 export const useLogoutUser = () => {
   signOut(auth)
     .then(() => {
-      console.log("The user has signed out");
+      console.log("The user has logged out");
     })
     .catch((err) => {
       console.log(err.message);
     });
 };
 
+// LOGIN: REQUEST A PASSWORD RESET
+// ======================================================
 interface RequestPasswordResetInterface {
   email: string;
 }
@@ -147,10 +135,12 @@ export const useRequestPasswordReset = ({ email }: RequestPasswordResetInterface
     });
 };
 
+// LOGIN: UPDATE USER PROFILE
+// ======================================================
 interface UpdateUserProfileInterface {
-  displayName?: string;
+  displayName: string;
   photoURL?: string;
-  cb: ({ email, username, avatarImg }: UserDataInterface) => void;
+  cb: ({ email, displayName, photoURL }: UserDataInterface) => void;
 }
 
 export const useUpdateUserProfile = ({ displayName, photoURL, cb }: UpdateUserProfileInterface) => {
@@ -159,39 +149,14 @@ export const useUpdateUserProfile = ({ displayName, photoURL, cb }: UpdateUserPr
     photoURL: photoURL,
   })
     .then(() => {
-      console.log("User profile updated");
       onAuthStateChanged(auth, (user) => {
         if (user) {
-          cb({ email: user.email, username: user.displayName, avatarImg: user.photoURL });
+          cb({ email: user.email, displayName: user.displayName, photoURL: user.photoURL });
         }
       });
+      console.log("User profile updated");
     })
     .catch((err) => {
       console.log(err.message);
     });
-};
-
-interface RegisterUserInterface {
-  email: string | undefined;
-  username: string | undefined;
-  password: string | undefined;
-  registerUserCb: {
-    forwardError: (error: string) => void;
-    updateUserData: () => void;
-  };
-}
-
-export const useRegisterUser = ({ email, username, password, registerUserCb }: RegisterUserInterface) => {
-  const updateUserProfile = useUpdateUserProfile;
-  if (email && password) {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((cred: any) => {
-        console.log("user created:", cred.user);
-        updateUserProfile({ displayName: username, photoURL: "placeholder", cb: registerUserCb.updateUserData });
-      })
-      .catch((err: any) => {
-        console.log(err.message);
-        registerUserCb.forwardError(err.message);
-      });
-  }
 };
