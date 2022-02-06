@@ -138,8 +138,8 @@ export const useRequestPasswordReset = ({ email }: RequestPasswordResetInterface
 // LOGIN: UPDATE USER PROFILE
 // ======================================================
 interface UpdateUserProfileInterface {
-  displayName: string;
-  photoURL?: string;
+  displayName: string | null;
+  photoURL?: string | null;
   cb: ({ email, displayName, photoURL }: UserDataInterface) => void;
 }
 
@@ -153,6 +153,7 @@ export const useUpdateUserProfile = ({ displayName, photoURL, cb }: UpdateUserPr
         if (user) {
           cb({ email: user.email, displayName: user.displayName, photoURL: user.photoURL });
         }
+        console.log(user);
       });
       console.log("User profile updated");
     })

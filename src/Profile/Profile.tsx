@@ -1,25 +1,26 @@
 import React, { useContext, useRef } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { useUpdateUserProfile } from "../api/firestore";
+import { ProvidedContextInterface } from "../App";
 import { AppContext } from "../context/AppContext";
 import { Avatar } from "../Header/Avatar/Avatar";
 import styles from "./Profile.module.css";
 
 export const Profile: React.FC = () => {
-  const appContext = useContext(AppContext);
+  const appContext: ProvidedContextInterface = useContext(AppContext);
   const [avatarUsernameEditModeOn, setAvatarUsernameEditModeOn] = React.useState<boolean>(false);
-  const [avatarImgSelection, setAvatarImgSelection] = React.useState<string>(appContext.loggedInUserAvatarImg);
+  const [avatarImgSelection, setAvatarImgSelection] = React.useState<string | null>(appContext.loggedInUserPhotoURL);
   const usernameRef = useRef<HTMLInputElement>(null);
   const [usernameInput, setUsernameInput] = React.useState<string>("");
 
   const updateUserProfile = useUpdateUserProfile;
 
   const shouldBeChecked = (optionName: string) => {
-    return appContext.loggedInUserAvatarImg === optionName;
+    return appContext.loggedInUserPhotoURL === optionName;
   };
 
   React.useEffect(() => {
-    if (!appContext.loggedInUserAvatarImg || !appContext.loggedInUserUsername) {
+    if (!appContext.loggedInUserPhotoURL || !appContext.loggedInUserDisplayName) {
       setAvatarUsernameEditModeOn(true);
     }
   }, []);
@@ -32,8 +33,8 @@ export const Profile: React.FC = () => {
           <Row>
             <Col className="d-flex flex-row justify-content-between align-items-center">
               <div className="d-flex flex-row justify-content-between align-items-center">
-                <Avatar name={appContext.loggedInUserAvatarImg} />
-                <p className="fs-4 mx-2 align-middle my-auto">{appContext.loggedInUserUsername ? appContext.loggedInUserUsername : "Username"}</p>
+                <Avatar name={appContext.loggedInUserPhotoURL} />
+                <p className="fs-4 mx-2 align-middle my-auto">{appContext.loggedInUserDisplayName ? appContext.loggedInUserDisplayName : "Username"}</p>
               </div>
               <Button
                 className={`${styles.profileSetupBtn} justify-content-center`}
@@ -72,7 +73,7 @@ export const Profile: React.FC = () => {
                   type="text"
                   ref={usernameRef}
                   value={usernameInput}
-                  placeholder={appContext.loggedInUserUsername}
+                  placeholder={appContext.loggedInUserDisplayName ? appContext.loggedInUserDisplayName : "Username"}
                   onChange={() => {
                     setUsernameInput(usernameRef.current!.value);
                   }}
@@ -82,7 +83,7 @@ export const Profile: React.FC = () => {
                 variant="primary"
                 type="button"
                 onClick={() => {
-                  updateUserProfile({ displayName: usernameRef.current?.value ? usernameRef.current.value : appContext.loggedInUserUsername, photoURL: avatarImgSelection, cb: appContext.setUserData });
+                  updateUserProfile({ displayName: usernameRef.current?.value ? usernameRef.current.value : appContext.loggedInUserDisplayName, photoURL: avatarImgSelection, cb: appContext.setUserData });
                   setAvatarUsernameEditModeOn(false);
                 }}
               >

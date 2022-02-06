@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./Avatar.module.css";
 
 interface AvatarProps {
-  name: string;
+  name: string | null;
 }
 
 export const Avatar: React.FC<AvatarProps> = ({ name }) => {

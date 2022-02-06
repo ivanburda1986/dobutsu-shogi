@@ -6,9 +6,10 @@ import styles from "./Header.module.css";
 import { NavLink } from "react-router-dom";
 import { useLogoutUser } from "../api/firestore";
 import { AppContext } from "../context/AppContext";
+import { ProvidedContextInterface } from "../App";
 
 export const Header: React.FC = () => {
-  const appContext = useContext(AppContext);
+  const appContext: ProvidedContextInterface = useContext(AppContext);
 
   const logout = useLogoutUser;
 
@@ -22,8 +23,8 @@ export const Header: React.FC = () => {
       <div className="d-flex flex-row justify-content-between ">
         {appContext.userLoggedIn && (
           <NavLink to="/profile" className="btn mx-2 d-flex flex-row justify-content-between align-items-center">
-            <Avatar name={appContext.loggedInUserAvatarImg} />
-            <span className="ms-1 fs-4">{appContext.loggedInUserUsername ? appContext.loggedInUserUsername : "Username"}</span>
+            <Avatar name={appContext.loggedInUserPhotoURL} />
+            <span className="ms-1 fs-4">{appContext.loggedInUserDisplayName ? appContext.loggedInUserDisplayName : "Username"}</span>
           </NavLink>
         )}
 

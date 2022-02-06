@@ -22,12 +22,21 @@ export interface UserDataInterface {
   photoURL: string | null;
 }
 
+export interface ProvidedContextInterface {
+  userLoggedIn: boolean;
+  loggedInUserEmail: string | null;
+  loggedInUserDisplayName: string | null;
+  loggedInUserUserId: string | null;
+  loggedInUserPhotoURL: string | null;
+  setUserData: ({ email, displayName, photoURL }: UserDataInterface) => void;
+}
+
 export default function App() {
   const [userLoggedIn, setUserLoggedIn] = React.useState<boolean>(false);
   const [loggedInUserEmail, setLoggedInUserEmail] = React.useState<string | null>("");
-  const [loggedInUserDisplayName, setLoggedInUserDisplayName] = React.useState<string | null>();
-  const [loggedInUserUserId, setLoggedInUserUserId] = React.useState<string | null>();
-  const [loggedInUsePhotoURL, setLoggedInUserPhotoURL] = React.useState<string | null>();
+  const [loggedInUserDisplayName, setLoggedInUserDisplayName] = React.useState<string | null>("");
+  const [loggedInUserUserId, setLoggedInUserUserId] = React.useState<string | null>("");
+  const [loggedInUserPhotoURL, setLoggedInUserPhotoURL] = React.useState<string | null>("");
   const navigate = useNavigate();
 
   onAuthStateChanged(auth, (user) => {
@@ -48,12 +57,12 @@ export default function App() {
     photoURL && setLoggedInUserPhotoURL(photoURL);
   };
 
-  const providedContext = {
+  const providedContext: ProvidedContextInterface = {
     userLoggedIn,
     loggedInUserEmail,
     loggedInUserDisplayName,
     loggedInUserUserId,
-    loggedInUsePhotoURL,
+    loggedInUserPhotoURL,
     setUserData,
   };
 
