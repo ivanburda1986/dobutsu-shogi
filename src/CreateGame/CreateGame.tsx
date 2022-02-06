@@ -1,6 +1,7 @@
 import React, { useContext, useRef } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import { Game, gameType } from "./newGameClass";
+import { Game } from "./newGameClass";
+import { gameType } from "../api/firestore";
 import { AppContext } from "../context/AppContext";
 import { useCreateGame, CreateGameInterface } from "../api/firestore";
 import styles from "./CreateGame.module.css";
@@ -43,7 +44,7 @@ export const CreateGame: React.FC = () => {
               <Form.Label>Game type</Form.Label>
               {["radio"].map(() => (
                 <div key={`inline-radio`} className="mb-3">
-                  <Form.Check inline label="Dobutsu Shogi" name="group1" type="radio" id="DOBUTSU" onChange={(e) => setGameType(e.target.id as gameType)} />
+                  <Form.Check inline defaultChecked label="Dobutsu Shogi" name="group1" type="radio" id="DOBUTSU" onChange={(e) => setGameType(e.target.id as gameType)} />
                   <Form.Check inline label="Goro Goro Dobutsu Shogi" name="group1" type="radio" id="GOROGORO" onChange={(e) => setGameType(e.target.id as gameType)} />
                   <Form.Check inline label="Dobutsu Shogi in the Green Wood" name="group1" type="radio" id="GREENWOOD" onChange={(e) => setGameType(e.target.id as gameType)} />
                 </div>

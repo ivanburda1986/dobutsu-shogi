@@ -1,9 +1,7 @@
+import { UserDataInterface } from "../App";
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, Timestamp, getDocs, addDoc, getDoc, setDoc, deleteDoc, doc, onSnapshot, orderBy, serverTimestamp, query, updateDoc, where, documentId, DocumentData } from "firebase/firestore";
 import { createUserWithEmailAndPassword, getAuth, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile, onAuthStateChanged } from "firebase/auth";
-import { UserDataInterface } from "../App";
-
-import { gameType, statusType } from "../CreateGame/newGameClass";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCBnawTeOf0cVa7m7aKFQoIqrXbJOorW2c",
@@ -29,18 +27,29 @@ export const auth = getAuth();
 // ======================================================
 export const gamesCollectionRef = collection(db, "games");
 
-export interface CreateGameInterface {
+export type gameType = "DOBUTSU" | "GOROGORO" | "GREENWOOD";
+export type statusType = "WAITING" | "VICTORY" | "CANCELLED" | "RESIGNED";
+export interface GameInterface {
   createdOn?: number;
   creatorId: string;
   creatorName: string;
-  finishedTimeStamp?: number | null;
   name: string;
+  type: gameType;
+  status?: statusType;
   oponent?: string | null;
   startingPlayer?: string | null;
-  status?: statusType;
-  timeToComplete?: number | null;
-  type: gameType;
   winner?: string | null;
+  finishedTimeStamp?: number | null;
+  createGameCb?: {
+    redirect: () => void;
+  };
+}
+
+export interface CreateGameInterface {
+  creatorId: string;
+  creatorName: string;
+  name: string;
+  type: gameType;
   createGameCb: {
     redirect: () => void;
   };
