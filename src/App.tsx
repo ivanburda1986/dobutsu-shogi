@@ -26,7 +26,7 @@ export interface ProvidedContextInterface {
   userLoggedIn: boolean;
   loggedInUserEmail: string | null;
   loggedInUserDisplayName: string | null;
-  loggedInUserUserId: string | null;
+  loggedInUserUserId: string;
   loggedInUserPhotoURL: string | null;
   setUserData: ({ email, displayName, photoURL }: UserDataInterface) => void;
 }
@@ -34,8 +34,8 @@ export interface ProvidedContextInterface {
 export default function App() {
   const [userLoggedIn, setUserLoggedIn] = React.useState<boolean>(false);
   const [loggedInUserEmail, setLoggedInUserEmail] = React.useState<string | null>("");
-  const [loggedInUserDisplayName, setLoggedInUserDisplayName] = React.useState<string | null>("");
-  const [loggedInUserUserId, setLoggedInUserUserId] = React.useState<string | null>("");
+  const [loggedInUserDisplayName, setLoggedInUserDisplayName] = React.useState<string | null>("Username");
+  const [loggedInUserUserId, setLoggedInUserUserId] = React.useState<string>("");
   const [loggedInUserPhotoURL, setLoggedInUserPhotoURL] = React.useState<string | null>("");
   const navigate = useNavigate();
 

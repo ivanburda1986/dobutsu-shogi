@@ -22,3 +22,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
   font-size: 0.8rem;
 }
+
+.transparentContainer {
+  background-color: rgba(255, 255, 255, 0.632);
+}
+
+.border-rounded-lightblue {
+  border: 5px solid lightblue;
+  border-radius: 10px;
+}

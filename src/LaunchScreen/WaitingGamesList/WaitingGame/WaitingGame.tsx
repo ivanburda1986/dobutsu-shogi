@@ -1,8 +1,7 @@
 import React, { useContext } from "react";
 import { Card, Button, ListGroup } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
-import { gameType, statusType } from "../../../CreateGame/newGameClass";
-import { useDeleteGame } from "../../../api/firestore";
+import { useDeleteGame, gameType, statusType } from "../../../api/firestore";
 import { AppContext } from "../../../context/AppContext";
 
 interface WaitingGameInterface {
@@ -43,7 +42,7 @@ export const WaitingGame: React.FC<WaitingGameInterface> = ({ id, createdOn, cre
       <Card.Header className="d-flex justify-content-between">
         <Card.Title>{name}</Card.Title>
         {displayDeleteOption() && (
-          <Button variant="light" size="sm" onClick={() => onDeleteGame(id)}>
+          <Button style={{ maxHeight: "30px" }} variant="light" size="sm" onClick={() => onDeleteGame(id)}>
             x
           </Button>
         )}
