@@ -1,26 +1,32 @@
-import { DocumentData, onSnapshot } from "firebase/firestore";
-import React from "react";
+import { FC, useEffect, useState } from "react";
 import { Container, Row } from "react-bootstrap";
-import { gamesCollectionRef } from "../../api/firestore";
+import { DocumentData, onSnapshot } from "firebase/firestore";
+import { gamesCollectionRef, gameType, statusType } from "../../api/firestore";
 
 import { WaitingGame } from "./WaitingGame/WaitingGame";
 
-export interface ReturnedGameInterface extends DocumentData {
+export interface ReturnedGameInterface {
   id: string;
+  createdOn: number;
+  creatorId: string;
+  creatorName: string;
+  name: string;
+  status: statusType;
+  type: gameType;
 }
 
-export const WaitingGamesList: React.FC = () => {
-  const [games, setGames] = React.useState<ReturnedGameInterface[]>([]);
-  React.useEffect(() => {
+export const WaitingGamesList: FC = () => {
+  const [games, setGames] = useState<ReturnedGameInterface[]>([]);
+  useEffect(() => {
     onSnapshot(gamesCollectionRef, (snapshot) => {
       let games: ReturnedGameInterface[] = [];
       snapshot.docs.forEach((doc) => {
-        games.push({ id: doc.id, ...doc.data() });
+        games.push({ id: doc.id, ...doc.data() } as ReturnedGameInterface);
       });
-
       setGames(games);
     });
   }, []);
+
   return (
     <Container>
       <h2>Open Games</h2>

@@ -1,4 +1,4 @@
-import React, { FC, useContext } from "react";
+import { FC, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { Card, Button } from "react-bootstrap";
 
@@ -9,8 +9,8 @@ import { ReturnedGameInterface } from "../WaitingGamesList";
 
 export const WaitingGame: FC<ReturnedGameInterface> = ({ id, creatorId, creatorName, name, status, type }) => {
   const appContext: ProvidedContextInterface = useContext(AppContext);
-
   const deleteGame = useDeleteGame;
+
   const whichBackroundToUse = () => {
     if (type === "DOBUTSU") {
       return "success";
