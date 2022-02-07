@@ -36,7 +36,7 @@ export default function App() {
   const [loggedInUserEmail, setLoggedInUserEmail] = React.useState<string | null>("");
   const [loggedInUserDisplayName, setLoggedInUserDisplayName] = React.useState<string | null>("Username");
   const [loggedInUserUserId, setLoggedInUserUserId] = React.useState<string>("");
-  const [loggedInUserPhotoURL, setLoggedInUserPhotoURL] = React.useState<string | null>("");
+  const [loggedInUserPhotoURL, setLoggedInUserPhotoURL] = React.useState<string | null>("placeholder");
   const navigate = useNavigate();
 
   onAuthStateChanged(auth, (user) => {

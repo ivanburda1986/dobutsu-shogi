@@ -153,7 +153,6 @@ export const useUpdateUserProfile = ({ displayName, photoURL, cb }: UpdateUserPr
         if (user) {
           cb({ email: user.email, displayName: user.displayName, photoURL: user.photoURL });
         }
-        console.log(user);
       });
       console.log("User profile updated");
     })

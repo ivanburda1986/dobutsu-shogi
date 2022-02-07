@@ -35,13 +35,13 @@ export const CreateGame: React.FC = () => {
           <Form>
             <Form.Group className="mb-3" controlId="formUsername">
               <Form.Label>
-                <h4>Game name</h4>
+                <h4>New game name</h4>
               </Form.Label>
               <Form.Control
                 type="text"
                 ref={gameNameRef}
                 value={newGameNameInput}
-                placeholder="Give your game a name"
+                placeholder="New game name"
                 onChange={() => {
                   setNewGameNameInput(gameNameRef.current!.value);
                 }}

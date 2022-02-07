@@ -31,3 +31,7 @@ code {
   border: 5px solid lightblue;
   border-radius: 10px;
 }
+
+.btn-height-40 {
+  height: 40px;
+}
