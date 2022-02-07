@@ -1,6 +1,6 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { Container, Row } from "react-bootstrap";
-import { DocumentData, onSnapshot } from "firebase/firestore";
+import { onSnapshot } from "firebase/firestore";
 import { gamesCollectionRef, gameType, statusType } from "../../api/firestore";
 
 import { WaitingGame } from "./WaitingGame/WaitingGame";
@@ -17,13 +17,23 @@ export interface ReturnedGameInterface {
 
 export const WaitingGamesList: FC = () => {
   const [games, setGames] = useState<ReturnedGameInterface[]>([]);
+  const isComponentMountedRef = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isComponentMountedRef.current = false;
+    };
+  }, []);
+
   useEffect(() => {
     onSnapshot(gamesCollectionRef, (snapshot) => {
-      let games: ReturnedGameInterface[] = [];
-      snapshot.docs.forEach((doc) => {
-        games.push({ id: doc.id, ...doc.data() } as ReturnedGameInterface);
-      });
-      setGames(games);
+      if (isComponentMountedRef.current) {
+        let games: ReturnedGameInterface[] = [];
+        snapshot.docs.forEach((doc) => {
+          games.push({ id: doc.id, ...doc.data() } as ReturnedGameInterface);
+        });
+        setGames(games);
+      }
     });
   }, []);
 

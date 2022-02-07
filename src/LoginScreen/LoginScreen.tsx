@@ -1,7 +1,6 @@
 import React, { useContext, useRef } from "react";
 import { NavLink } from "react-router-dom";
 
-import { useNavigate } from "react-router";
 import { Alert, Button, Col, Container, Form, Row } from "react-bootstrap";
 
 import { AppContext } from "../context/AppContext";
@@ -13,7 +12,7 @@ import sharedStyles from "../sharedStyles.module.css";
 
 export const LoginScreen: React.FC = () => {
   const appContext = useContext(AppContext);
-  const navigate = useNavigate();
+
   const emailRef = useRef<HTMLInputElement>(null);
   const [emailInput, setEmailInput] = React.useState<string>("");
   const [emailValidity, setEmailValidity] = React.useState<boolean>(false);
@@ -37,14 +36,6 @@ export const LoginScreen: React.FC = () => {
     }
     return setFormValid(false);
   }, [emailValidity, passLengthValidity]);
-
-  React.useEffect(() => {
-    setTimeout(() => {
-      if (appContext.userLoggedIn) {
-        navigate("../", { replace: false });
-      }
-    }, 500);
-  });
 
   const validateEmailInput = () => {
     setEmailValidity(validateEmail(emailRef.current?.value));

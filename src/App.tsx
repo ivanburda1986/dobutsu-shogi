@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Route, Link, Routes, Navigate } from "react-router-dom";
 import { useNavigate } from "react-router";
 import { Header } from "./Header/Header";
@@ -29,15 +29,28 @@ export interface ProvidedContextInterface {
   loggedInUserUserId: string;
   loggedInUserPhotoURL: string | null;
   setUserData: ({ email, displayName, photoURL }: UserDataInterface) => void;
+  setCreatingNewGameStarted: Function;
+  setCreatingNewGameFinished: Function;
 }
 
-export default function App() {
+export const App = () => {
   const [userLoggedIn, setUserLoggedIn] = React.useState<boolean>(false);
   const [loggedInUserEmail, setLoggedInUserEmail] = React.useState<string | null>("");
   const [loggedInUserDisplayName, setLoggedInUserDisplayName] = React.useState<string | null>("Username");
   const [loggedInUserUserId, setLoggedInUserUserId] = React.useState<string>("");
   const [loggedInUserPhotoURL, setLoggedInUserPhotoURL] = React.useState<string | null>("placeholder");
+  const [creatingNewGameStarted, setCreatingNewGameStarted] = useState<boolean>(false);
+  const [creatingNewGameFinished, setCreatingNewGameFinished] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    setTimeout(() => {
+      if (userLoggedIn) {
+        console.log("App navigated from login");
+        navigate("../", { replace: false });
+      }
+    }, 500);
+  }, [userLoggedIn]);
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -64,6 +77,8 @@ export default function App() {
     loggedInUserUserId,
     loggedInUserPhotoURL,
     setUserData,
+    setCreatingNewGameStarted,
+    setCreatingNewGameFinished,
   };
 
   React.useEffect(() => {
@@ -90,4 +105,4 @@ export default function App() {
       </AppContext.Provider>
     </>
   );
-}
+};
