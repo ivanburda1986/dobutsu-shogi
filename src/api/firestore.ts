@@ -28,7 +28,7 @@ export const auth = getAuth();
 
 export type gameType = "DOBUTSU" | "GOROGORO" | "GREENWOOD";
 export type statusType = "WAITING" | "VICTORY" | "CANCELLED" | "RESIGNED";
-export interface CreateGameInterface {
+export interface CreateGameInputInterface {
   creatorId: string;
   creatorName: string;
   name: string;
@@ -37,8 +37,9 @@ export interface CreateGameInterface {
     redirect: () => void;
   };
 }
+
 export const gamesCollectionRef = collection(db, "games");
-export const useCreateGame = ({ creatorId, creatorName, name, type, createGameCb }: CreateGameInterface) => {
+export const useCreateGame = ({ creatorId, creatorName, name, type, createGameCb }: CreateGameInputInterface) => {
   addDoc(gamesCollectionRef, {
     createdOn: Date.now(),
     creatorId: creatorId,

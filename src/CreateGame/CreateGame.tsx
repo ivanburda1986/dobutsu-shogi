@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import React, { FC, useContext, useEffect, useRef, useState } from "react";
 import { Button, Container, Form, Row } from "react-bootstrap";
 import { useNavigate } from "react-router";
 
@@ -6,10 +6,10 @@ import { AppContext } from "../context/AppContext";
 import { ProvidedContextInterface } from "../App";
 import { useCreateGame, gameType } from "../api/firestore";
 
-export const CreateGame: React.FC = () => {
-  const [newGameNameInput, setNewGameNameInput] = React.useState<string | undefined>("");
-  const [newGameType, setNewGameType] = React.useState<gameType>("DOBUTSU");
-  const [formValid, setFormValid] = React.useState<boolean>(false);
+export const CreateGame: FC = () => {
+  const [newGameNameInput, setNewGameNameInput] = useState<string | undefined>("");
+  const [newGameType, setNewGameType] = useState<gameType>("DOBUTSU");
+  const [formValid, setFormValid] = useState<boolean>(false);
 
   const appContext: ProvidedContextInterface = useContext(AppContext);
   const gameNameRef = useRef<HTMLInputElement>(null);
@@ -20,7 +20,7 @@ export const CreateGame: React.FC = () => {
     navigate("../", { replace: false });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (newGameNameInput && newGameType) {
       return setFormValid(true);
     }

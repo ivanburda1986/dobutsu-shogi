@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { FC, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { useLogoutUser } from "../api/firestore";
 
@@ -7,7 +7,7 @@ import { AppContext } from "../context/AppContext";
 import { Avatar } from "./Avatar/Avatar";
 import styles from "./Header.module.css";
 
-export const Header: React.FC = () => {
+export const Header: FC = () => {
   const appContext: ProvidedContextInterface = useContext(AppContext);
   const logout = useLogoutUser;
 

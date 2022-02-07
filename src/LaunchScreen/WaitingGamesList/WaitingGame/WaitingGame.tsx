@@ -1,20 +1,15 @@
-import React, { useContext } from "react";
-import { Card, Button, ListGroup } from "react-bootstrap";
+import React, { FC, useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { useDeleteGame, gameType, statusType } from "../../../api/firestore";
-import { AppContext } from "../../../context/AppContext";
+import { Card, Button } from "react-bootstrap";
 
-interface WaitingGameInterface {
-  id: string;
-  createdOn?: number;
-  creatorId: string;
-  creatorName: string;
-  name: string;
-  status?: statusType;
-  type: gameType;
-}
-export const WaitingGame: React.FC<WaitingGameInterface> = ({ id, createdOn, creatorId, creatorName, name, status, type }) => {
-  const appContext = useContext(AppContext);
+import { AppContext } from "../../../context/AppContext";
+import { ProvidedContextInterface } from "../../../App";
+import { useDeleteGame } from "../../../api/firestore";
+import { ReturnedGameInterface } from "../WaitingGamesList";
+
+export const WaitingGame: FC<ReturnedGameInterface> = ({ id, creatorId, creatorName, name, status, type }) => {
+  const appContext: ProvidedContextInterface = useContext(AppContext);
+
   const deleteGame = useDeleteGame;
   const whichBackroundToUse = () => {
     if (type === "DOBUTSU") {
@@ -50,6 +45,7 @@ export const WaitingGame: React.FC<WaitingGameInterface> = ({ id, createdOn, cre
       <Card.Body>
         <p>Created by: {creatorName}</p>
         <p>Type: {type}</p>
+        <p>State: {status}</p>
       </Card.Body>
       <Card.Footer>
         <NavLink to="/session" className={`btn btn-primary btn-sm `}>
