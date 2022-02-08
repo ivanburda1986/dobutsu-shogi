@@ -1,20 +1,21 @@
-import React, { useState } from "react";
-import { Route, Link, Routes, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { Route, Routes } from "react-router-dom";
+import _ from "lodash";
+
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./api/firestore";
+import { AppContext } from "./context/AppContext";
+
 import { Header } from "./Header/Header";
 import { LaunchScreen } from "./LaunchScreen/LaunchScreen";
+import { RegisterScreen } from "./RegisterScreen/RegisterScreen";
 import { LoginScreen } from "./LoginScreen/LoginScreen";
 import { Profile } from "./Profile/Profile";
-import { RegisterScreen } from "./RegisterScreen/RegisterScreen";
-import { AppContext } from "./context/AppContext";
-import { auth } from "./api/firestore";
-import { onAuthStateChanged } from "firebase/auth";
-
-import "bootstrap/dist/css/bootstrap.min.css";
-import sharedStyles from "./sharedStyles.module.css";
-import _ from "lodash";
 import { CreateGame } from "./CreateGame/CreateGame";
 import { Session } from "./Session/Session";
+
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export interface UserDataInterface {
   email: string | null;
@@ -32,21 +33,21 @@ export interface ProvidedContextInterface {
 }
 
 export const App = () => {
-  const [userLoggedIn, setUserLoggedIn] = React.useState<boolean>(false);
-  const [loggedInUserEmail, setLoggedInUserEmail] = React.useState<string | null>("");
-  const [loggedInUserDisplayName, setLoggedInUserDisplayName] = React.useState<string | null>("Username");
-  const [loggedInUserUserId, setLoggedInUserUserId] = React.useState<string>("");
-  const [loggedInUserPhotoURL, setLoggedInUserPhotoURL] = React.useState<string | null>("placeholder");
+  const [userLoggedIn, setUserLoggedIn] = useState<boolean>(false);
+  const [loggedInUserEmail, setLoggedInUserEmail] = useState<string | null>("");
+  const [loggedInUserDisplayName, setLoggedInUserDisplayName] = useState<string | null>("Username");
+  const [loggedInUserUserId, setLoggedInUserUserId] = useState<string>("");
+  const [loggedInUserPhotoURL, setLoggedInUserPhotoURL] = useState<string | null>("placeholder");
   const navigate = useNavigate();
 
-  React.useEffect(() => {
-    setTimeout(() => {
-      if (userLoggedIn) {
-        console.log("App navigated from login");
-        navigate("../", { replace: false });
-      }
-    }, 500);
-  }, [userLoggedIn]);
+  useEffect(() => {
+    if (userLoggedIn) {
+      console.log("App navigated from login");
+      navigate("../", { replace: false });
+      return;
+    }
+    navigate("../login", { replace: false });
+  }, [userLoggedIn, navigate]);
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -74,14 +75,6 @@ export const App = () => {
     loggedInUserPhotoURL,
     setUserData,
   };
-
-  React.useEffect(() => {
-    setTimeout(() => {
-      if (!userLoggedIn) {
-        navigate("../login", { replace: false });
-      }
-    }, 500);
-  }, [userLoggedIn]);
 
   return (
     <>

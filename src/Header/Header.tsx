@@ -1,4 +1,4 @@
-import React, { FC, useContext } from "react";
+import { FC, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { useLogoutUser } from "../api/firestore";
 
