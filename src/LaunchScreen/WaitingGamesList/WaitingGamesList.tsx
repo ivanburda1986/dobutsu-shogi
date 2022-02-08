@@ -34,7 +34,6 @@ export const WaitingGamesList: FC = () => {
         });
         setGames(games);
       }
-      setGames([]);
     });
   }, []);
 

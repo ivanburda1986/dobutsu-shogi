@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import _ from "lodash";
 
 import { onAuthStateChanged } from "firebase/auth";
@@ -39,14 +39,19 @@ export const App = () => {
   const [loggedInUserUserId, setLoggedInUserUserId] = useState<string>("");
   const [loggedInUserPhotoURL, setLoggedInUserPhotoURL] = useState<string | null>("placeholder");
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    if (userLoggedIn) {
+    if (userLoggedIn && location.pathname === "/login") {
       console.log("App navigated from login");
       navigate("../", { replace: false });
       return;
     }
-    navigate("../login", { replace: false });
+    if (!userLoggedIn && location.pathname === "/") {
+      console.log("App navigated from login");
+      navigate("../login", { replace: false });
+      return;
+    }
   }, [userLoggedIn, navigate]);
 
   onAuthStateChanged(auth, (user) => {
