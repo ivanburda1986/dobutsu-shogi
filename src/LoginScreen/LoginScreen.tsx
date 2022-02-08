@@ -1,36 +1,29 @@
-import React, { useContext, useRef } from "react";
+import React, { FC, useEffect, useState, useRef } from "react";
 import { NavLink } from "react-router-dom";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 
-import { Alert, Button, Col, Container, Form, Row } from "react-bootstrap";
-
-import { AppContext } from "../context/AppContext";
 import { validateEmail } from "../RegisterScreen/validateEmail";
 import { useLoginUser, useRequestPasswordReset } from "../api/firestore";
 
-import styles from "./LoginScreen.module.css";
-import sharedStyles from "../sharedStyles.module.css";
-
-export const LoginScreen: React.FC = () => {
-  const appContext = useContext(AppContext);
-
+export const LoginScreen: FC = () => {
   const emailRef = useRef<HTMLInputElement>(null);
-  const [emailInput, setEmailInput] = React.useState<string>("");
-  const [emailValidity, setEmailValidity] = React.useState<boolean>(false);
-  const [userDoesNotExist, setUserDoesNotExist] = React.useState<boolean>(false);
-  const [startedEmailEntry, setStartedEmailEntry] = React.useState<boolean>(false);
+  const [emailInput, setEmailInput] = useState<string>("");
+  const [emailValidity, setEmailValidity] = useState<boolean>(false);
+  const [userDoesNotExist, setUserDoesNotExist] = useState<boolean>(false);
+  const [startedEmailEntry, setStartedEmailEntry] = useState<boolean>(false);
 
   const passwordRef = useRef<HTMLInputElement>(null);
-  const [passwordInput, setPasswordInput] = React.useState<string>("");
-  const [passLengthValidity, setPassLengthValidity] = React.useState<boolean>(false);
-  const [startedPassEntry, setStartedPassEntry] = React.useState<boolean>(false);
-  const [wrongPasswordEntered, setWrongPasswordEntered] = React.useState<boolean>(false);
-  const [passResetLinkSent, setPassResetLinkSent] = React.useState<boolean>(false);
+  const [passwordInput, setPasswordInput] = useState<string>("");
+  const [passLengthValidity, setPassLengthValidity] = useState<boolean>(false);
+  const [startedPassEntry, setStartedPassEntry] = useState<boolean>(false);
+  const [wrongPasswordEntered, setWrongPasswordEntered] = useState<boolean>(false);
+  const [passResetLinkSent, setPassResetLinkSent] = useState<boolean>(false);
 
-  const [formValid, setFormValid] = React.useState<boolean>(false);
+  const [formValid, setFormValid] = useState<boolean>(false);
   const loginUser = useLoginUser;
   const requestPasswordReset = useRequestPasswordReset;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (emailValidity && passLengthValidity) {
       return setFormValid(true);
     }
@@ -89,7 +82,7 @@ export const LoginScreen: React.FC = () => {
             <p className="me-1">Not registered yet?</p>
             <NavLink to="/register">Register</NavLink>
           </div>
-          <Form className={`${styles.loginForm} p-3`}>
+          <Form className="transparentContainer border-rounded-lightblue p-3">
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email address</Form.Label>
               <Form.Control
