@@ -1,55 +1,34 @@
-import React, { useContext, useRef } from "react";
+import React, { FC, useState, useEffect, useContext, useRef } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
+
 import { useUpdateUserProfile } from "../api/firestore";
-import { ProvidedContextInterface } from "../App";
 import { AppContext } from "../context/AppContext";
+import { ProvidedContextInterface } from "../App";
 import { Avatar } from "../Header/Avatar/Avatar";
-import styles from "./Profile.module.css";
 
-export const Profile: React.FC = () => {
+export const Profile: FC = () => {
   const appContext: ProvidedContextInterface = useContext(AppContext);
-  const [avatarUsernameEditModeOn, setAvatarUsernameEditModeOn] = React.useState<boolean>(false);
-  const [avatarImgSelection, setAvatarImgSelection] = React.useState<string | null>(appContext.loggedInUserPhotoURL);
+  const [avatarUsernameEditModeOn, setAvatarUsernameEditModeOn] = useState<boolean>(false);
+  const [avatarImgSelection, setAvatarImgSelection] = useState<string | null>(appContext.loggedInUserPhotoURL);
   const usernameRef = useRef<HTMLInputElement>(null);
-  const [usernameInput, setUsernameInput] = React.useState<string>("");
-
+  const [usernameInput, setUsernameInput] = useState<string>("");
   const updateUserProfile = useUpdateUserProfile;
 
   const shouldBeChecked = (optionName: string) => {
     return appContext.loggedInUserPhotoURL === optionName;
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!appContext.loggedInUserPhotoURL || !appContext.loggedInUserDisplayName) {
       setAvatarUsernameEditModeOn(true);
     }
-  }, []);
+  }, [appContext.loggedInUserDisplayName, appContext.loggedInUserPhotoURL]);
 
   return (
     <Container>
       <h2>Avatar and username</h2>
-      {!avatarUsernameEditModeOn && (
-        <Container fluid className={`rounded py-1 my-1 ${styles.profileSectionContainer}`}>
-          <Row>
-            <Col className="d-flex flex-row justify-content-between align-items-center">
-              <div className="d-flex flex-row justify-content-between align-items-center">
-                <Avatar name={appContext.loggedInUserPhotoURL} />
-                <p className="fs-4 mx-2 align-middle my-auto">{appContext.loggedInUserDisplayName ? appContext.loggedInUserDisplayName : "Username"}</p>
-              </div>
-              <Button
-                className={`${styles.profileSetupBtn} justify-content-center`}
-                onClick={() => {
-                  setAvatarUsernameEditModeOn(true);
-                }}
-              >
-                Change
-              </Button>
-            </Col>
-          </Row>
-        </Container>
-      )}
       {avatarUsernameEditModeOn && (
-        <Container fluid className={`rounded py-1 ${styles.profileSectionContainer}`}>
+        <Container fluid className="rounded py-1 transparentContainer">
           <Row>
             <Form>
               <Form.Group className="mb-3" controlId="formAvatarSelection">
@@ -90,6 +69,26 @@ export const Profile: React.FC = () => {
                 Save
               </Button>
             </Form>
+          </Row>
+        </Container>
+      )}
+      {!avatarUsernameEditModeOn && (
+        <Container fluid className="rounded py-1 my-1 transparentContainer">
+          <Row>
+            <Col className="d-flex flex-row justify-content-between align-items-center">
+              <div className="d-flex flex-row justify-content-between align-items-center">
+                <Avatar name={appContext.loggedInUserPhotoURL} />
+                <p className="fs-4 mx-2 align-middle my-auto">{appContext.loggedInUserDisplayName ? appContext.loggedInUserDisplayName : "Username"}</p>
+              </div>
+              <Button
+                className="btn-height-40 justify-content-center"
+                onClick={() => {
+                  setAvatarUsernameEditModeOn(true);
+                }}
+              >
+                Change
+              </Button>
+            </Col>
           </Row>
         </Container>
       )}

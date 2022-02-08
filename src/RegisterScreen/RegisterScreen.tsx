@@ -1,51 +1,43 @@
-import React, { useContext, useRef } from "react";
+import { FC, useEffect, useState, useContext, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import { AppContext } from "../context/AppContext";
-import styles from "./RegisterScreen.module.css";
 
+import { AppContext } from "../context/AppContext";
 import { useRegisterUser } from "../api/firestore";
 import { validateEmail } from "./validateEmail";
+import { ProvidedContextInterface } from "../App";
 
-export const RegisterScreen: React.FC = () => {
+export const RegisterScreen: FC = () => {
   const appContext = useContext(AppContext);
-  const navigate = useNavigate();
   const emailRef = useRef<HTMLInputElement>(null);
-  const [emailInput, setEmailInput] = React.useState<string>("");
-  const [emailValidity, setEmailValidity] = React.useState<boolean>(false);
-  const [startedEmailEntry, setStartedEmailEntry] = React.useState<boolean>(false);
-  const [emailAlreadyUsed, setEmailAlreadyUsed] = React.useState<boolean>(false);
+  const [emailInput, setEmailInput] = useState<string>("");
+  const [emailValidity, setEmailValidity] = useState<boolean>(false);
+  const [startedEmailEntry, setStartedEmailEntry] = useState<boolean>(false);
+  const [emailAlreadyUsed, setEmailAlreadyUsed] = useState<boolean>(false);
 
   const usernameRef = useRef<HTMLInputElement>(null);
-  const [usernameInput, setUsernameInput] = React.useState<string>("");
-  const [usernameValidity, setUsernameValidity] = React.useState<boolean>(false);
-  const [startedUsernameEntry, setStartedUsernameEntry] = React.useState<boolean>(false);
+  const [usernameInput, setUsernameInput] = useState<string>("");
+  const [usernameValidity, setUsernameValidity] = useState<boolean>(false);
+  const [startedUsernameEntry, setStartedUsernameEntry] = useState<boolean>(false);
 
   const passwordRef = useRef<HTMLInputElement>(null);
-  const [passwordInput, setPasswordInput] = React.useState<string>("");
+  const [passwordInput, setPasswordInput] = useState<string>("");
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
-  const [confirmPasswordInput, setConfirmPasswordInput] = React.useState<string>("");
-  const [passLengthValidity, setPassLengthValidity] = React.useState<boolean>(false);
-  const [passMatchValidity, setPassMatchValidity] = React.useState<boolean>(false);
-  const [startedPassEntry, setStartedPassEntry] = React.useState<boolean>(false);
+  const [confirmPasswordInput, setConfirmPasswordInput] = useState<string>("");
+  const [passLengthValidity, setPassLengthValidity] = useState<boolean>(false);
+  const [passMatchValidity, setPassMatchValidity] = useState<boolean>(false);
+  const [startedPassEntry, setStartedPassEntry] = useState<boolean>(false);
 
-  const [formValid, setFormValid] = React.useState<boolean>(false);
+  const [formValid, setFormValid] = useState<boolean>(false);
   const registerUser = useRegisterUser;
+  const navigate = useNavigate();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (emailValidity && usernameValidity && passLengthValidity && passMatchValidity) {
       return setFormValid(true);
     }
     return setFormValid(false);
   }, [emailValidity, usernameValidity, passLengthValidity, passMatchValidity]);
-
-  React.useEffect(() => {
-    setTimeout(() => {
-      if (appContext.userLoggedIn) {
-        navigate("../", { replace: false });
-      }
-    }, 500);
-  });
 
   const validateEmailInput = () => {
     setEmailValidity(validateEmail(emailRef.current?.value));
@@ -102,7 +94,7 @@ export const RegisterScreen: React.FC = () => {
             <p className="me-1">Already registred?</p>
             <NavLink to="/login">Login</NavLink>
           </div>
-          <Form id="registrationForm" className={`${styles.registerForm} p-3`}>
+          <Form id="registrationForm" className="border-rounded-lightblue transparentContainer p-3">
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Your email address</Form.Label>
               <Form.Control
