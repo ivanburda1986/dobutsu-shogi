@@ -4,7 +4,7 @@ import { Button, Col, Container, Form, Row } from "react-bootstrap";
 
 import { validateEmail } from "../RegisterScreen/validateEmail";
 import { useLoginUser, useRequestPasswordReset } from "../api/firestore";
-import { onRequestPasswordReset } from "./LoginScreenService";
+import { onRequestPasswordReset, validatePasswordInputLength } from "./LoginScreenService";
 
 export const LoginScreen: FC = () => {
   const emailRef = useRef<HTMLInputElement>(null);
@@ -30,16 +30,6 @@ export const LoginScreen: FC = () => {
     }
     return setFormValid(false);
   }, [emailValidity, passLengthValidity]);
-
-  const validatePasswordInputLength = () => {
-    if (passwordRef.current?.value) {
-      if (passwordRef.current.value.length >= 1) {
-        return setPassLengthValidity(true);
-      }
-      return setPassLengthValidity(false);
-    }
-    setPassLengthValidity(false);
-  };
 
   const onLogin = () => {
     loginUser({ email: emailRef.current!.value, password: passwordRef.current!.value, loginUserCb: { forwardError } });
@@ -98,7 +88,7 @@ export const LoginScreen: FC = () => {
                 autoComplete="current-password"
                 onChange={() => {
                   setPasswordInput(passwordRef.current!.value);
-                  validatePasswordInputLength();
+                  validatePasswordInputLength({ passwordRef, setPassLengthValidity });
                   setStartedPassEntry(true);
                 }}
               />

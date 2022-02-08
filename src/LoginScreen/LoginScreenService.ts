@@ -12,3 +12,17 @@ export const onRequestPasswordReset = ({ emailRef, requestPasswordReset, setPass
     }, 3000);
   }
 };
+
+interface validatePasswordInputLengthInterface {
+  passwordRef: React.RefObject<HTMLInputElement>;
+  setPassLengthValidity: (newValue: boolean) => void;
+}
+export const validatePasswordInputLength = ({ passwordRef, setPassLengthValidity }: validatePasswordInputLengthInterface) => {
+  if (passwordRef.current) {
+    if (passwordRef.current.value.length >= 1) {
+      return setPassLengthValidity(true);
+    }
+    return setPassLengthValidity(false);
+  }
+  setPassLengthValidity(false);
+};
