@@ -71,7 +71,7 @@ interface RegisterUserInterface {
   password: string;
   registerUserCb: {
     forwardError: (error: string) => void;
-    updateUserData: () => void;
+    updateUserData: ({ email, displayName, photoURL }: UserDataInterface) => void;
   };
 }
 

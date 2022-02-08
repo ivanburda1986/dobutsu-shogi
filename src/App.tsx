@@ -29,8 +29,6 @@ export interface ProvidedContextInterface {
   loggedInUserUserId: string;
   loggedInUserPhotoURL: string | null;
   setUserData: ({ email, displayName, photoURL }: UserDataInterface) => void;
-  setCreatingNewGameStarted: Function;
-  setCreatingNewGameFinished: Function;
 }
 
 export const App = () => {
@@ -39,8 +37,6 @@ export const App = () => {
   const [loggedInUserDisplayName, setLoggedInUserDisplayName] = React.useState<string | null>("Username");
   const [loggedInUserUserId, setLoggedInUserUserId] = React.useState<string>("");
   const [loggedInUserPhotoURL, setLoggedInUserPhotoURL] = React.useState<string | null>("placeholder");
-  const [creatingNewGameStarted, setCreatingNewGameStarted] = useState<boolean>(false);
-  const [creatingNewGameFinished, setCreatingNewGameFinished] = useState<boolean>(false);
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -77,8 +73,6 @@ export const App = () => {
     loggedInUserUserId,
     loggedInUserPhotoURL,
     setUserData,
-    setCreatingNewGameStarted,
-    setCreatingNewGameFinished,
   };
 
   React.useEffect(() => {

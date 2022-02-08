@@ -1,14 +1,14 @@
 import { FC, useEffect, useState, useContext, useRef } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 
 import { AppContext } from "../context/AppContext";
 import { useRegisterUser } from "../api/firestore";
-import { validateEmail } from "./validateEmail";
 import { ProvidedContextInterface } from "../App";
+import { validatePasswordInputLength, validateUsernameInputLength, validatePasswordMatch, validateEmail } from "./RegisterScreenService";
 
 export const RegisterScreen: FC = () => {
-  const appContext = useContext(AppContext);
+  const appContext: ProvidedContextInterface = useContext(AppContext);
   const emailRef = useRef<HTMLInputElement>(null);
   const [emailInput, setEmailInput] = useState<string>("");
   const [emailValidity, setEmailValidity] = useState<boolean>(false);
@@ -30,7 +30,6 @@ export const RegisterScreen: FC = () => {
 
   const [formValid, setFormValid] = useState<boolean>(false);
   const registerUser = useRegisterUser;
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (emailValidity && usernameValidity && passLengthValidity && passMatchValidity) {
@@ -38,39 +37,6 @@ export const RegisterScreen: FC = () => {
     }
     return setFormValid(false);
   }, [emailValidity, usernameValidity, passLengthValidity, passMatchValidity]);
-
-  const validateEmailInput = () => {
-    setEmailValidity(validateEmail(emailRef.current?.value));
-  };
-
-  const validatePasswordInputLength = () => {
-    if (passwordRef.current?.value) {
-      if (passwordRef.current.value.length >= 6) {
-        return setPassLengthValidity(true);
-      }
-      return setPassLengthValidity(false);
-    }
-    setPassLengthValidity(false);
-  };
-
-  const validateUsernameInputLength = () => {
-    if (usernameRef.current?.value) {
-      if (usernameRef.current.value.length >= 2) {
-        return setUsernameValidity(true);
-      }
-      return setUsernameValidity(false);
-    }
-    setUsernameValidity(false);
-  };
-
-  const validatePasswordMatch = () => {
-    if (passwordRef.current?.value && confirmPasswordRef.current?.value) {
-      if (passwordRef.current?.value === confirmPasswordRef.current?.value) {
-        return setPassMatchValidity(true);
-      }
-    }
-    return setPassMatchValidity(false);
-  };
 
   const onRegistration = () => {
     registerUser({ email: emailRef.current!.value, username: usernameRef.current!.value, password: passwordRef.current!.value, registerUserCb: { forwardError, updateUserData: appContext.setUserData } });
@@ -106,7 +72,7 @@ export const RegisterScreen: FC = () => {
                 onChange={() => {
                   setEmailInput(emailRef.current!.value);
                   setStartedEmailEntry(true);
-                  validateEmailInput();
+                  setEmailValidity(validateEmail(emailRef.current?.value));
                 }}
               />
               {startedEmailEntry && !emailValidity && <Form.Text className="text-danger">Invalid email address</Form.Text>}
@@ -123,7 +89,7 @@ export const RegisterScreen: FC = () => {
                 onChange={() => {
                   setUsernameInput(usernameRef.current!.value);
                   setStartedUsernameEntry(true);
-                  validateUsernameInputLength();
+                  validateUsernameInputLength({ usernameRef, setUsernameValidity });
                 }}
               />
               {startedUsernameEntry && !usernameValidity && <Form.Text className="text-danger">Choose a longer username</Form.Text>}
@@ -139,11 +105,11 @@ export const RegisterScreen: FC = () => {
                 onChange={() => {
                   setPasswordInput(passwordRef.current!.value);
                   setStartedPassEntry(true);
-                  validatePasswordInputLength();
-                  validatePasswordMatch();
+                  validatePasswordInputLength({ passwordRef, setPassLengthValidity });
+                  validatePasswordMatch({ passwordRef, confirmPasswordRef, setPassMatchValidity });
                 }}
               />
-              {startedPassEntry && !passLengthValidity && <Form.Text className="text-danger">Your password is too short</Form.Text>}
+              {startedPassEntry && !passLengthValidity && <Form.Text className="text-danger">At least 6 characters please.</Form.Text>}
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Confirm password</Form.Label>
@@ -156,10 +122,10 @@ export const RegisterScreen: FC = () => {
                 onChange={() => {
                   setConfirmPasswordInput(confirmPasswordRef.current!.value);
                   setStartedPassEntry(true);
-                  validatePasswordMatch();
+                  validatePasswordMatch({ passwordRef, confirmPasswordRef, setPassMatchValidity });
                 }}
               />
-              {startedPassEntry && !passMatchValidity && <Form.Text className="text-danger">The passwords do not match.</Form.Text>}
+              {startedPassEntry && !passMatchValidity && <Form.Text className="text-danger">Passwords do not match.</Form.Text>}
             </Form.Group>
             <Button variant="primary" type="button" disabled={!formValid} onClick={() => onRegistration()}>
               Register

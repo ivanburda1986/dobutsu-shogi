@@ -2,9 +2,9 @@ import { FC, useEffect, useState, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 
-import { validateEmail } from "../RegisterScreen/validateEmail";
 import { useLoginUser, useRequestPasswordReset } from "../api/firestore";
 import { onRequestPasswordReset, validatePasswordInputLength } from "./LoginScreenService";
+import { validateEmail } from "../RegisterScreen/RegisterScreenService";
 
 export const LoginScreen: FC = () => {
   const emailRef = useRef<HTMLInputElement>(null);
