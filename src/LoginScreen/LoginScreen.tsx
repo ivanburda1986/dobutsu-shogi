@@ -1,9 +1,10 @@
-import React, { FC, useEffect, useState, useRef } from "react";
+import { FC, useEffect, useState, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 
 import { validateEmail } from "../RegisterScreen/validateEmail";
 import { useLoginUser, useRequestPasswordReset } from "../api/firestore";
+import { onRequestPasswordReset } from "./LoginScreenService";
 
 export const LoginScreen: FC = () => {
   const emailRef = useRef<HTMLInputElement>(null);
@@ -30,9 +31,6 @@ export const LoginScreen: FC = () => {
     return setFormValid(false);
   }, [emailValidity, passLengthValidity]);
 
-  const validateEmailInput = () => {
-    setEmailValidity(validateEmail(emailRef.current?.value));
-  };
   const validatePasswordInputLength = () => {
     if (passwordRef.current?.value) {
       if (passwordRef.current.value.length >= 1) {
@@ -45,16 +43,6 @@ export const LoginScreen: FC = () => {
 
   const onLogin = () => {
     loginUser({ email: emailRef.current!.value, password: passwordRef.current!.value, loginUserCb: { forwardError } });
-  };
-
-  const onRequestPasswordReset = () => {
-    if (emailRef.current) {
-      requestPasswordReset({ email: emailRef.current?.value });
-      setPassResetLinkSent(true);
-      setTimeout(() => {
-        setPassResetLinkSent(false);
-      }, 3000);
-    }
   };
 
   const forwardError = (error: string) => {
@@ -94,7 +82,7 @@ export const LoginScreen: FC = () => {
                 onChange={() => {
                   setEmailInput(emailRef.current!.value);
                   setStartedEmailEntry(true);
-                  validateEmailInput();
+                  setEmailValidity(validateEmail(emailRef.current?.value));
                 }}
               />
               {startedEmailEntry && !emailValidity && <Form.Text className="text-danger ">Incomplete email address.</Form.Text>}
@@ -124,7 +112,7 @@ export const LoginScreen: FC = () => {
           </Form>
         </Col>
         {emailValidity && !passResetLinkSent && (
-          <Button variant="link" className="mx-auto" onClick={() => onRequestPasswordReset()}>
+          <Button variant="link" className="mx-auto" onClick={() => onRequestPasswordReset({ emailRef, requestPasswordReset, setPassResetLinkSent })}>
             Email password reset link
           </Button>
         )}
