@@ -47,6 +47,11 @@ export const App = () => {
       navigate("../", { replace: false });
       return;
     }
+    if (userLoggedIn && location.pathname === "/register") {
+      console.log("App navigated from registration");
+      navigate("../", { replace: false });
+      return;
+    }
     if (!userLoggedIn && location.pathname === "/") {
       console.log("App navigated from login");
       navigate("../login", { replace: false });

@@ -78,22 +78,7 @@ export const RegisterScreen: FC = () => {
               {startedEmailEntry && !emailValidity && <Form.Text className="text-danger">Invalid email address</Form.Text>}
               {emailAlreadyUsed && <Form.Text className="text-danger">Email already used. Try to login instead.</Form.Text>}
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Your username</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Min. 2 characters"
-                ref={usernameRef}
-                value={usernameInput}
-                autoComplete="username"
-                onChange={() => {
-                  setUsernameInput(usernameRef.current!.value);
-                  setStartedUsernameEntry(true);
-                  validateUsernameInputLength({ usernameRef, setUsernameValidity });
-                }}
-              />
-              {startedUsernameEntry && !usernameValidity && <Form.Text className="text-danger">Choose a longer username</Form.Text>}
-            </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicEmail"></Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>
               <Form.Control
@@ -126,6 +111,22 @@ export const RegisterScreen: FC = () => {
                 }}
               />
               {startedPassEntry && !passMatchValidity && <Form.Text className="text-danger">Passwords do not match.</Form.Text>}
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Your username</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Min. 2 characters"
+                ref={usernameRef}
+                value={usernameInput}
+                autoComplete="username"
+                onChange={() => {
+                  setUsernameInput(usernameRef.current!.value);
+                  setStartedUsernameEntry(true);
+                  validateUsernameInputLength({ usernameRef, setUsernameValidity });
+                }}
+              />
+              {startedUsernameEntry && !usernameValidity && <Form.Text className="text-danger">Choose a longer username</Form.Text>}
             </Form.Group>
             <Button variant="primary" type="button" disabled={!formValid} onClick={() => onRegistration()}>
               Register
