@@ -1,3 +1,4 @@
+import bg from "../../images/bg-clean.png";
 import { FC, useEffect, useState } from "react";
 import { Container, Row } from "react-bootstrap";
 import { gameType } from "../../api/firestore";
@@ -16,9 +17,11 @@ export const Board: FC<BoardInterface> = ({ type }) => {
 
   return (
     <Container className={`d-grid justify-content-center ${styles.Board}`}>
-      {rowNumbers.map((item) => (
-        <BoardRow rowNumber={item} columnLetters={columnLetters} />
-      ))}
+      <div style={{ backgroundImage: `url(${bg})` }} className={`${styles.BoardBg}`}>
+        {rowNumbers.map((item) => (
+          <BoardRow rowNumber={item} columnLetters={columnLetters} />
+        ))}
+      </div>
     </Container>
   );
 };
