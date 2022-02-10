@@ -1,12 +1,12 @@
 import React from "react";
 import { Container } from "react-bootstrap";
-import { BoardDobutsu } from "./BoardDobutsu/BoardDobutsu";
+import { Board } from "./Board/Board";
+import styles from "./Session.module.css";
 
 export const Session = () => {
   return (
-    <Container>
-      Session
-      <BoardDobutsu />
+    <Container className={styles.Session}>
+      <Board type="DOBUTSU" />
     </Container>
   );
 };
