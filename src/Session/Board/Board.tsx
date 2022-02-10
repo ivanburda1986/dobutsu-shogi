@@ -4,7 +4,7 @@ import { Container, Row } from "react-bootstrap";
 import { gameType } from "../../api/firestore";
 import { getBoardSize } from "./BoardService";
 import { BoardRow } from "./BoardRow/BoardRow";
-import { Field } from "./Field/Field";
+
 import styles from "./Board.module.css";
 
 interface BoardInterface {

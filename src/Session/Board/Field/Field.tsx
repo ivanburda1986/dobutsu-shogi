@@ -10,7 +10,7 @@ interface FieldInterface {
 
 export const Field: FC<FieldInterface> = ({ rowNumber, columnLetter }) => {
   return (
-    <div data-row={rowNumber} data-letter={columnLetter} className={`${styles.Field}`}>
+    <div data-row={rowNumber} data-letter={columnLetter} className={`${styles.Field} noselect`}>
       {isLetterLabelVisible({ rowNumber, columnLetter }) && <span className={styles.columnLetter}>{columnLetter}</span>}
       {isNumberLabelVisible({ rowNumber, columnLetter }) && <span className={styles.rowNumber}>{rowNumber}</span>}
     </div>
