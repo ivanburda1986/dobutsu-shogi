@@ -35,8 +35,8 @@ export const Stone = ({ id, type, empowered, originalOwner, currentOwner, stashe
   const getStoneTargetCoordinates = ({ positionLetter, positionNumber }: { positionLetter: string; positionNumber: number }) => {
     let targetPosition = document.querySelector(`[data-letter="${positionLetter}"][data-number="${positionNumber}"]`);
     let rect = targetPosition?.getBoundingClientRect();
-    setPositionX(Math.floor(rect!.x));
-    setPositionY(Math.floor(rect!.y));
+    setPositionX(Math.floor(rect!.x + 8));
+    setPositionY(Math.floor(rect!.y + 8));
     console.log(rect);
   };
 
