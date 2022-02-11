@@ -23,11 +23,25 @@ const db = getFirestore();
 //Init authentication
 export const auth = getAuth();
 
-// GAME CREATION AND MANAGEMENT
-// ======================================================
-
+//TYPES
 export type gameType = "DOBUTSU" | "GOROGORO" | "GREENWOOD";
 export type statusType = "WAITING" | "VICTORY" | "CANCELLED" | "RESIGNED";
+export type stoneType = "CHICKEN" | "ELEPHANT" | "GIRAFFE" | "LION";
+
+//STONES
+export interface StoneInterface {
+  id: string;
+  type: stoneType;
+  empowered: boolean;
+  originalOwner: string;
+  currentOwner: string;
+  stashed: boolean;
+  positionLetter: string;
+  positionNumber: number;
+}
+
+// GAME CREATION AND MANAGEMENT
+// ======================================================
 export interface CreateGameInputInterface {
   creatorId: string;
   creatorName: string;
