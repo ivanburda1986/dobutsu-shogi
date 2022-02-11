@@ -28,7 +28,6 @@ export const Stone = ({ id, type, empowered, originalOwner, currentOwner, stashe
     setPositionX(Math.floor(rect!.x));
     setPositionY(Math.floor(rect!.y));
     console.log(rect);
-    // console.log("y", Math.floor(rect!.y));
   };
   return <div id={id} style={{ backgroundImage: `url(${getImgReference(type)})` }} className={styles.Stone} onClick={() => getStoneTargetCoordinates({ positionLetter, positionNumber })}></div>;
 };
