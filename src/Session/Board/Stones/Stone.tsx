@@ -6,18 +6,18 @@ import LION from "./images/lion.png";
 import styles from "./Stone.module.css";
 
 import { StoneInterface, stoneType } from "../../../api/firestore";
+import { useSetStonePosition } from "./StoneService";
 
 export const Stone = ({ id, type, empowered, originalOwner, currentOwner, stashed, positionLetter, positionNumber }: StoneInterface) => {
-  const [positionX, setPositionX] = useState<number>();
-  const [positionY, setPositionY] = useState<number>();
   const [turnDegrees, setTurnDegrees] = useState<string>();
   const loggedInUserUserId = "player1";
+  const [positionX, setPositionX] = useState<number>(0);
+  const [positionY, setPositionY] = useState<number>(0);
+  const setStonePosition = useSetStonePosition;
   useEffect(() => {
-    let div = document.getElementById(id);
-    div!.style.left = positionX + "px";
-    div!.style.top = positionY + "px";
-    getStoneTargetCoordinates({ positionLetter, positionNumber });
+    setStonePosition({ stoneId: id, targetPositionLetter: positionLetter, targetPositionNumber: positionNumber, positionX, positionY, setPositionX, setPositionY });
   }, [id, positionLetter, positionNumber, positionX, positionY]);
+
   useEffect(() => {
     if (originalOwner === loggedInUserUserId) {
       return setTurnDegrees("0deg");
@@ -32,13 +32,12 @@ export const Stone = ({ id, type, empowered, originalOwner, currentOwner, stashe
     return LION;
   };
 
-  const getStoneTargetCoordinates = ({ positionLetter, positionNumber }: { positionLetter: string; positionNumber: number }) => {
-    let targetPosition = document.querySelector(`[data-letter="${positionLetter}"][data-number="${positionNumber}"]`);
-    let rect = targetPosition?.getBoundingClientRect();
-    setPositionX(Math.floor(rect!.x + 8));
-    setPositionY(Math.floor(rect!.y + 8));
-    console.log(rect);
-  };
-
-  return <div id={id} style={{ backgroundImage: `url(${getImgReference(type)})`, transform: `rotate(${turnDegrees})` }} className={styles.Stone} onClick={() => getStoneTargetCoordinates({ positionLetter, positionNumber })}></div>;
+  return (
+    <div
+      id={id}
+      style={{ backgroundImage: `url(${getImgReference(type)})`, transform: `rotate(${turnDegrees})` }}
+      className={styles.Stone}
+      onClick={() => setStonePosition({ stoneId: id, targetPositionLetter: positionLetter, targetPositionNumber: positionNumber, positionX, positionY, setPositionX, setPositionY })}
+    ></div>
+  );
 };

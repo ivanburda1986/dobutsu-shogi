@@ -1,15 +1,14 @@
-import { useState } from "react";
-
 interface useSetStonePositionInterface {
   stoneId: string;
   targetPositionLetter: string;
   targetPositionNumber: number;
+  positionX: number;
+  setPositionX: (position: number) => void;
+  positionY: number;
+  setPositionY: (position: number) => void;
 }
 
-export const useSetStonePosition = ({ stoneId, targetPositionLetter, targetPositionNumber }: useSetStonePositionInterface) => {
-  const [positionX, setPositionX] = useState<number>();
-  const [positionY, setPositionY] = useState<number>();
-
+export const useSetStonePosition = ({ stoneId, targetPositionLetter, targetPositionNumber, positionX, setPositionX, positionY, setPositionY }: useSetStonePositionInterface) => {
   let targetPosition = document.querySelector(`[data-letter="${targetPositionLetter}"][data-number="${targetPositionNumber}"]`);
   let rect = targetPosition?.getBoundingClientRect();
   setPositionX(Math.floor(rect!.x + 8));

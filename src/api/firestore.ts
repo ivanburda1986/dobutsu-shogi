@@ -25,7 +25,7 @@ export const auth = getAuth();
 
 //TYPES
 export type gameType = "DOBUTSU" | "GOROGORO" | "GREENWOOD";
-export type statusType = "WAITING" | "VICTORY" | "CANCELLED" | "RESIGNED";
+export type statusType = "WAITING" | "INPROGRESS" | "VICTORY" | "CANCELLED" | "RESIGNED";
 export type stoneType = "CHICKEN" | "ELEPHANT" | "GIRAFFE" | "LION";
 
 //STONES
@@ -61,7 +61,8 @@ export const useCreateGame = ({ creatorId, creatorName, name, type, createGameCb
     name: name,
     type: type,
     status: "WAITING",
-    oponent: null,
+    opponentId: null,
+    opponentName: null,
     startingPlayer: null,
     winner: null,
     finishedTimeStamp: null,
@@ -75,6 +76,20 @@ export const useDeleteGame = (id: string) => {
   deleteDoc(deleteGameRef).then(() => {
     console.log("Game deleted");
   });
+};
+
+interface useUpdateGameInterface {
+  id: string;
+  updatedDetails: any;
+}
+export const useUpdateGame = ({ id, updatedDetails }: useUpdateGameInterface) => {
+  const updateGameRef = doc(db, "games", id);
+  console.log(updatedDetails.opponentId);
+  updateDoc(updateGameRef, { ...updatedDetails })
+    .then(() => console.log("Game updated"))
+    .catch((err) => {
+      console.log(err.message);
+    });
 };
 
 // USER REGISTRATION

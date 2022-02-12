@@ -17,7 +17,7 @@ export const Board: FC<BoardInterface> = ({ type }) => {
   const [stones, setStones] = useState<StoneInterface[]>([]);
 
   useEffect(() => {
-    setStones(getStones({ creatorId: "player1", oponentId: "player2", type: "DOBUTSU" }));
+    setStones(getStones({ creatorId: "player1", opponentId: "player2", type: "DOBUTSU" }));
   }, []);
 
   let rowNumbers = getBoardSize({ type }).rowNumbers;

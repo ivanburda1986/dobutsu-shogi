@@ -13,6 +13,7 @@ export interface ReturnedGameInterface {
   name: string;
   status: statusType;
   type: gameType;
+  opponentId: string | null;
 }
 
 export const WaitingGamesList: FC = () => {
@@ -43,7 +44,7 @@ export const WaitingGamesList: FC = () => {
       <Container fluid>
         <Row>
           {games.map((game) => (
-            <WaitingGame key={game.id} id={game.id} createdOn={game.createdOn} creatorId={game.creatorId} creatorName={game.creatorName} name={game.name} status={game.status} type={game.type} />
+            <WaitingGame key={game.id} id={game.id} createdOn={game.createdOn} creatorId={game.creatorId} creatorName={game.creatorName} opponentId={game.opponentId !== null ? game.opponentId : null} name={game.name} status={game.status} type={game.type} />
           ))}
         </Row>
       </Container>

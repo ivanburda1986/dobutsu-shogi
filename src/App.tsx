@@ -97,7 +97,7 @@ export const App = () => {
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/creategame" element={<CreateGame />} />
-          <Route path="/session" element={<Session />} />
+          <Route path="/session/:gameId" element={<Session />} />
         </Routes>
       </AppContext.Provider>
     </>
