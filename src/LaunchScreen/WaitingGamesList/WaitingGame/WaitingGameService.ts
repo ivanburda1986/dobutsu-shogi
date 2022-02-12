@@ -17,3 +17,24 @@ export const displayDeleteOption = ({ creatorId, appContext }: { creatorId: stri
   }
   return false;
 };
+
+interface shouldShowButtonInterface {
+  loggedInUserUserId: string;
+  creatorId: string;
+  opponentId: string | null;
+}
+export const shouldShowAcceptButton = ({ loggedInUserUserId, creatorId, opponentId }: shouldShowButtonInterface) => {
+  if (opponentId === null && loggedInUserUserId !== creatorId) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+export const shouldShowGoToGameButton = ({ loggedInUserUserId, creatorId, opponentId }: shouldShowButtonInterface) => {
+  if (loggedInUserUserId === creatorId || loggedInUserUserId === opponentId) {
+    return true;
+  } else {
+    return false;
+  }
+};

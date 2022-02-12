@@ -1,4 +1,5 @@
 .Field {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -9,7 +10,7 @@
   color: rgb(243, 117, 117);
 }
 
-/* .columnLetter {
+.columnLetter {
   position: absolute;
   top: -25px;
 }
@@ -17,4 +18,4 @@
 .rowNumber {
   position: absolute;
   left: -20px;
-} */
+}

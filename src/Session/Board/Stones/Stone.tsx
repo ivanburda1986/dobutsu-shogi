@@ -6,23 +6,21 @@ import LION from "./images/lion.png";
 import styles from "./Stone.module.css";
 
 import { StoneInterface, stoneType } from "../../../api/firestore";
-import { useSetStonePosition } from "./StoneService";
+import { useSetStonePosition, rotateOponentStones } from "./StoneService";
 
 export const Stone = ({ id, type, empowered, originalOwner, currentOwner, stashed, positionLetter, positionNumber }: StoneInterface) => {
-  const [turnDegrees, setTurnDegrees] = useState<string>();
+  const [rotateDegrees, setRotateDegrees] = useState<number>(0);
   const loggedInUserUserId = "player1";
   const [positionX, setPositionX] = useState<number>(0);
   const [positionY, setPositionY] = useState<number>(0);
   const setStonePosition = useSetStonePosition;
+
   useEffect(() => {
     setStonePosition({ stoneId: id, targetPositionLetter: positionLetter, targetPositionNumber: positionNumber, positionX, positionY, setPositionX, setPositionY });
   }, [id, positionLetter, positionNumber, positionX, positionY]);
 
   useEffect(() => {
-    if (originalOwner === loggedInUserUserId) {
-      return setTurnDegrees("0deg");
-    }
-    return setTurnDegrees("180deg");
+    rotateOponentStones({ originalOwner, loggedInUserUserId, setRotateDegrees });
   }, []);
 
   const getImgReference = (type: stoneType) => {
@@ -35,7 +33,7 @@ export const Stone = ({ id, type, empowered, originalOwner, currentOwner, stashe
   return (
     <div
       id={id}
-      style={{ backgroundImage: `url(${getImgReference(type)})`, transform: `rotate(${turnDegrees})` }}
+      style={{ backgroundImage: `url(${getImgReference(type)})`, transform: `rotate(${rotateDegrees}deg)` }}
       className={styles.Stone}
       onClick={() => setStonePosition({ stoneId: id, targetPositionLetter: positionLetter, targetPositionNumber: positionNumber, positionX, positionY, setPositionX, setPositionY })}
     ></div>
