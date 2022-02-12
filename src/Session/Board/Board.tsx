@@ -55,3 +55,5 @@ export const Board: FC<BoardInterface> = ({ type }) => {
     </Container>
   );
 };
+
+// transform: `rotate(${rotateByDeg}deg)`

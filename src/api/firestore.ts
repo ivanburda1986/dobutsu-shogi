@@ -73,13 +73,13 @@ export const useCreateGame = ({ creatorId, creatorName, name, type, createGameCb
   });
 };
 
-interface createCreatorStones {
+interface createJoiningPlayerStones {
   gameId: string;
   joiningPlayerType: playerType;
   joiningPlayerId: string;
   type: gameType;
 }
-export const useJoinGame = ({ gameId, joiningPlayerType, joiningPlayerId, type }: createCreatorStones) => {
+export const useJoinGame = ({ gameId, joiningPlayerType, joiningPlayerId, type }: createJoiningPlayerStones) => {
   let gameStones: StoneInterface[] = [];
   if (joiningPlayerType === "CREATOR") {
     gameStones = getCreatorStones({ creatorId: joiningPlayerId, type: type });
@@ -112,6 +112,14 @@ export const useUpdateGame = ({ id, updatedDetails }: useUpdateGameInterface) =>
     .catch((err) => {
       console.log(err.message);
     });
+};
+
+//Get one game details
+
+export const getSingleGameDetails = (gameId: string) => {
+  getDoc(doc(db, "games", gameId)).then((doc) => {
+    console.log(doc.data());
+  });
 };
 
 // USER REGISTRATION
