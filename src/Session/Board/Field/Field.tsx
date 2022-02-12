@@ -9,6 +9,7 @@ interface FieldInterface {
 }
 
 export const Field: FC<FieldInterface> = ({ rowNumber, columnLetter }) => {
+  // Just an info function for dev purposes - remove afterwards
   const getStoneTargetCoordinates = ({ positionLetter, positionNumber }: { positionLetter: string; positionNumber: number }) => {
     let targetPosition = document.querySelector(`[data-letter="${positionLetter}"][data-number="${positionNumber}"]`);
     let rect = targetPosition?.getBoundingClientRect();

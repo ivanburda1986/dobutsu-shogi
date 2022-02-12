@@ -1,32 +1,19 @@
 DESIGN 
-Launch screen: 
--recently played games
--waiting for an opponent games
+LAUNCH SCREEN
+-Your games in progress
+-Games waiting for an oponent
 
 Profile settings
--username
--avatar image
--statistics
+-Statistics (Played, Won, Lost)
 
 
 
-
-2)Game session creation 
-A registered player can create a new game session waiting for another player
-Creation time, id, createdBy, player1, player2, type, state, gameplayTimeframe
-
-3)Game session displaying 
-All sessions where the game is waiting to start or is in progress are listed to join
- 
-4)Game sesseion deletion 
-A session can be deleted by the person who has created it or by the main admin
-A deleted session will disappear completely
 
 
 Gameplay
 Display session details 
 The player who starts is decided randomly
-Display the game area: desk, stones
+
 Display areas where players can place stones outside of the desk
 Stone collision - stones cannot overlap
 Drag and drop movement. Stones can be dropped on the desk only to specific areas (slots) to keep a neat look.
