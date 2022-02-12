@@ -1,3 +1,9 @@
+import CHICKEN from "./images/chicken.png";
+import ELEPHANT from "./images/elephant.png";
+import GIRAFFE from "./images/giraffe.png";
+import LION from "./images/lion.png";
+import { stoneType } from "../../../api/firestore";
+
 interface useSetStonePositionInterface {
   stoneId: string;
   targetPositionLetter: string;
@@ -29,4 +35,11 @@ export const rotateOponentStones = ({ originalOwner, loggedInUserUserId, setRota
     return setRotateDegrees(0);
   }
   return setRotateDegrees(180);
+};
+
+export const getImgReference = (type: stoneType) => {
+  if (type === "CHICKEN") return CHICKEN;
+  if (type === "ELEPHANT") return ELEPHANT;
+  if (type === "GIRAFFE") return GIRAFFE;
+  return LION;
 };

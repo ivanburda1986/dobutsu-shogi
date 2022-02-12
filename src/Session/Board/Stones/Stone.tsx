@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
-import CHICKEN from "./images/chicken.png";
-import ELEPHANT from "./images/elephant.png";
-import GIRAFFE from "./images/giraffe.png";
-import LION from "./images/lion.png";
 import styles from "./Stone.module.css";
 
-import { StoneInterface, stoneType } from "../../../api/firestore";
-import { useSetStonePosition, rotateOponentStones } from "./StoneService";
+import { StoneInterface } from "../../../api/firestore";
+import { useSetStonePosition, rotateOponentStones, getImgReference } from "./StoneService";
 
 export const Stone = ({ id, type, empowered, originalOwner, currentOwner, stashed, positionLetter, positionNumber }: StoneInterface) => {
   const [rotateDegrees, setRotateDegrees] = useState<number>(0);
@@ -22,13 +18,6 @@ export const Stone = ({ id, type, empowered, originalOwner, currentOwner, stashe
   useEffect(() => {
     rotateOponentStones({ originalOwner, loggedInUserUserId, setRotateDegrees });
   }, []);
-
-  const getImgReference = (type: stoneType) => {
-    if (type === "CHICKEN") return CHICKEN;
-    if (type === "ELEPHANT") return ELEPHANT;
-    if (type === "GIRAFFE") return GIRAFFE;
-    return LION;
-  };
 
   return (
     <div
