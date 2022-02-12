@@ -1,23 +1,42 @@
 import bg from "../../images/bg-clean.png";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { Container, Row } from "react-bootstrap";
-import { gameType, StoneInterface } from "../../api/firestore";
-import { getBoardSize, getStones } from "./BoardService";
+import { db, gameType, StoneInterface } from "../../api/firestore";
+import { getBoardSize } from "./BoardService";
 import { BoardRow } from "./BoardRow/BoardRow";
 import { v4 as uuidv4 } from "uuid";
 
 import styles from "./Board.module.css";
 import { Stone } from "./Stones/Stone";
+import { useParams } from "react-router";
+import { collection, onSnapshot } from "firebase/firestore";
 
 interface BoardInterface {
   type: gameType;
 }
 
 export const Board: FC<BoardInterface> = ({ type }) => {
+  const { gameId } = useParams();
   const [stones, setStones] = useState<StoneInterface[]>([]);
+  const isComponentMountedRef = useRef(true);
 
   useEffect(() => {
-    setStones(getStones({ creatorId: "player1", opponentId: "player2", type: "DOBUTSU" }));
+    return () => {
+      isComponentMountedRef.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    const stonesCollectionRef = collection(db, `games/${gameId}/stones`);
+    onSnapshot(stonesCollectionRef, (snapshot) => {
+      if (isComponentMountedRef.current) {
+        let returnedStones: StoneInterface[] = [];
+        snapshot.docs.forEach((doc) => {
+          returnedStones.push({ ...doc.data() } as StoneInterface);
+        });
+        setStones(returnedStones);
+      }
+    });
   }, []);
 
   let rowNumbers = getBoardSize({ type }).rowNumbers;

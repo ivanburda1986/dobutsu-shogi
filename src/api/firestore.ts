@@ -2,6 +2,7 @@ import { UserDataInterface } from "../App";
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, Timestamp, getDocs, addDoc, getDoc, setDoc, deleteDoc, doc, onSnapshot, orderBy, serverTimestamp, query, updateDoc, where, documentId, DocumentData } from "firebase/firestore";
 import { createUserWithEmailAndPassword, getAuth, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile, onAuthStateChanged } from "firebase/auth";
+import { getCreatorStones, getOpponentStones } from "./firestoreService";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCBnawTeOf0cVa7m7aKFQoIqrXbJOorW2c",
@@ -18,7 +19,7 @@ const firebaseConfig = {
 initializeApp(firebaseConfig);
 
 //Init services
-const db = getFirestore();
+export const db = getFirestore();
 
 //Init authentication
 export const auth = getAuth();
@@ -27,6 +28,7 @@ export const auth = getAuth();
 export type gameType = "DOBUTSU" | "GOROGORO" | "GREENWOOD";
 export type statusType = "WAITING" | "INPROGRESS" | "VICTORY" | "CANCELLED" | "RESIGNED";
 export type stoneType = "CHICKEN" | "ELEPHANT" | "GIRAFFE" | "LION";
+export type playerType = "CREATOR" | "OPPONENT";
 
 //STONES
 export interface StoneInterface {
@@ -66,8 +68,28 @@ export const useCreateGame = ({ creatorId, creatorName, name, type, createGameCb
     startingPlayer: null,
     winner: null,
     finishedTimeStamp: null,
-  }).then(() => {
+  }).then((docRef) => {
     createGameCb.redirect();
+  });
+};
+
+interface createCreatorStones {
+  gameId: string;
+  joiningPlayerType: playerType;
+  joiningPlayerId: string;
+  type: gameType;
+}
+export const useJoinGame = ({ gameId, joiningPlayerType, joiningPlayerId, type }: createCreatorStones) => {
+  let gameStones: StoneInterface[] = [];
+  if (joiningPlayerType === "CREATOR") {
+    gameStones = getCreatorStones({ creatorId: joiningPlayerId, type: type });
+  } else {
+    gameStones = getOpponentStones({ opponentId: joiningPlayerId, type: type });
+  }
+  gameStones.forEach((stone) => {
+    setDoc(doc(db, `games/${gameId}/stones`, stone.id), {
+      ...stone,
+    }).then(() => console.log("Stone added"));
   });
 };
 

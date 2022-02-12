@@ -4,7 +4,7 @@ import { Card, Button } from "react-bootstrap";
 
 import { AppContext } from "../../../context/AppContext";
 import { ProvidedContextInterface } from "../../../App";
-import { useDeleteGame, useUpdateGame } from "../../../api/firestore";
+import { useDeleteGame, useUpdateGame, useJoinGame } from "../../../api/firestore";
 import { ReturnedGameInterface } from "../WaitingGamesList";
 import { whichBackroundToUse, displayDeleteOption, shouldShowAcceptButton, shouldShowGoToGameButton } from "./WaitingGameService";
 
@@ -12,6 +12,7 @@ export const WaitingGame: FC<ReturnedGameInterface> = ({ id, creatorId, creatorN
   const appContext: ProvidedContextInterface = useContext(AppContext);
   const deleteGame = useDeleteGame;
   const updateGame = useUpdateGame;
+  const joinGame = useJoinGame;
 
   return (
     <Card style={{ width: "18rem" }} className={`p-0 m-2 border-radius border-4 text-white bg-${whichBackroundToUse(type)}`}>
@@ -30,12 +31,25 @@ export const WaitingGame: FC<ReturnedGameInterface> = ({ id, creatorId, creatorN
       </Card.Body>
       <Card.Footer>
         {shouldShowAcceptButton({ loggedInUserUserId: appContext.loggedInUserUserId, creatorId: creatorId, opponentId: opponentId }) && (
-          <Link to={`/session/${id}`} className={`btn btn-primary btn-sm me-2 `} onClick={() => updateGame({ id: id, updatedDetails: { opponentId: appContext.loggedInUserUserId, opponentName: appContext.loggedInUserDisplayName, status: "INPROGRESS" } })}>
+          <Link
+            to={`/session/${id}`}
+            className={`btn btn-primary btn-sm me-2 `}
+            onClick={() => {
+              updateGame({ id: id, updatedDetails: { opponentId: appContext.loggedInUserUserId, opponentName: appContext.loggedInUserDisplayName, status: "INPROGRESS" } });
+              joinGame({ gameId: id, joiningPlayerType: "OPPONENT", joiningPlayerId: appContext.loggedInUserUserId, type: type });
+            }}
+          >
             <span>Accept the game</span>
           </Link>
         )}
         {shouldShowGoToGameButton({ loggedInUserUserId: appContext.loggedInUserUserId, creatorId, opponentId }) && (
-          <Link to={`/session/${id}`} className={`btn btn-primary btn-sm `}>
+          <Link
+            to={`/session/${id}`}
+            className={`btn btn-primary btn-sm `}
+            onClick={() => {
+              joinGame({ gameId: id, joiningPlayerType: "CREATOR", joiningPlayerId: appContext.loggedInUserUserId, type: type });
+            }}
+          >
             Go to the game
           </Link>
         )}
