@@ -1,18 +1,18 @@
 import { FC, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Card, Button } from "react-bootstrap";
 
 import { AppContext } from "../../../context/AppContext";
 import { ProvidedContextInterface } from "../../../App";
-import { useDeleteGame, useUpdateGame, useJoinGame } from "../../../api/firestore";
+import { useDeleteGame, useUpdateGame, useJoinGame, getSingleGameDetails } from "../../../api/firestore";
 import { ReturnedGameInterface } from "../WaitingGamesList";
 import { whichBackroundToUse, displayDeleteOption, shouldShowAcceptButton, shouldShowGoToGameButton } from "./WaitingGameService";
 
 export const WaitingGame: FC<ReturnedGameInterface> = ({ id, creatorId, creatorName, opponentId, name, status, type }) => {
   const appContext: ProvidedContextInterface = useContext(AppContext);
   const deleteGame = useDeleteGame;
-  const updateGame = useUpdateGame;
   const joinGame = useJoinGame;
+  const { gameId } = useParams();
 
   return (
     <Card style={{ width: "18rem" }} className={`p-0 m-2 border-radius border-4 text-white bg-${whichBackroundToUse(type)}`}>
@@ -35,8 +35,13 @@ export const WaitingGame: FC<ReturnedGameInterface> = ({ id, creatorId, creatorN
             to={`/session/${id}`}
             className={`btn btn-primary btn-sm me-2 `}
             onClick={() => {
-              updateGame({ id: id, updatedDetails: { opponentId: appContext.loggedInUserUserId, opponentName: appContext.loggedInUserDisplayName, status: "INPROGRESS" } });
-              joinGame({ gameId: id, joiningPlayerType: "OPPONENT", joiningPlayerId: appContext.loggedInUserUserId, type: type });
+              getSingleGameDetails({ gameId: id }).then((doc) => {
+                let data = doc.data();
+                if (!data?.opponentJoined) {
+                  joinGame({ gameId: id, joiningPlayerType: "OPPONENT", joiningPlayerId: appContext.loggedInUserUserId, joiningPlayerName: appContext.loggedInUserDisplayName, type: type });
+                }
+                return;
+              });
             }}
           >
             <span>Accept the game</span>
@@ -47,7 +52,13 @@ export const WaitingGame: FC<ReturnedGameInterface> = ({ id, creatorId, creatorN
             to={`/session/${id}`}
             className={`btn btn-primary btn-sm `}
             onClick={() => {
-              joinGame({ gameId: id, joiningPlayerType: "CREATOR", joiningPlayerId: appContext.loggedInUserUserId, type: type });
+              getSingleGameDetails({ gameId: id }).then((doc) => {
+                let data = doc.data();
+                if (!data?.creatorJoined) {
+                  joinGame({ gameId: id, joiningPlayerType: "CREATOR", joiningPlayerId: appContext.loggedInUserUserId, joiningPlayerName: appContext.loggedInUserDisplayName, type: type });
+                }
+                return;
+              });
             }}
           >
             Go to the game

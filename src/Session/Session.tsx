@@ -15,7 +15,7 @@ export const Session = () => {
   const { gameId } = useParams();
   const appContext: ProvidedContextInterface = useContext(AppContext);
   useEffect(() => {
-    getSingleGameDetails(gameId!);
+    getSingleGameDetails({ gameId: gameId! });
   }, []);
   return (
     <Container className={styles.Session}>
