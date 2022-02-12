@@ -16,7 +16,7 @@ export const Stone = ({ id, type, empowered, originalOwner, currentOwner, stashe
   }, [id, positionLetter, positionNumber, positionX, positionY]);
 
   useEffect(() => {
-    rotateOponentStones({ originalOwner, loggedInUserUserId, setRotateDegrees });
+    rotateOponentStones({ owner: currentOwner, loggedInUserUserId, setRotateDegrees });
   }, []);
 
   return (
