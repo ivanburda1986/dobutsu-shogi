@@ -6,7 +6,7 @@ import { useSetStonePosition, rotateOponentStones, getImgReference } from "./Sto
 import { ProvidedContextInterface } from "../../../App";
 import { AppContext } from "../../../context/AppContext";
 
-export const Stone = ({ id, type, empowered, originalOwner, currentOwner, stashed, positionLetter, positionNumber }: StoneInterface) => {
+export const Stone = ({ amIOpponent, id, type, empowered, originalOwner, currentOwner, stashed, positionLetter, positionNumber }: StoneInterface) => {
   const appContext: ProvidedContextInterface = useContext(AppContext);
   const [rotateDegrees, setRotateDegrees] = useState<number>(0);
   const [positionX, setPositionX] = useState<number>(0);

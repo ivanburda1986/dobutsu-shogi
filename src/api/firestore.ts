@@ -40,6 +40,7 @@ export interface StoneInterface {
   stashed: boolean;
   positionLetter: string;
   positionNumber: number;
+  amIOpponent?: boolean;
 }
 
 // GAME CREATION AND MANAGEMENT

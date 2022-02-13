@@ -63,11 +63,11 @@ export const Board: FC<BoardInterface> = ({ type }) => {
   return (
     <Container fluid className={`d-flex justify-content-center ${styles.Board}`}>
       <div style={{ backgroundImage: `url(${amIOpponent ? bgRotated : bg})` }} className={`${styles.BoardBg}`}>
-        {stones.map((stone) => (
-          <Stone key={stone.id} id={stone.id} type={stone.type} empowered={stone.empowered} originalOwner={stone.originalOwner} currentOwner={stone.currentOwner} stashed={stone.stashed} positionLetter={stone.positionLetter} positionNumber={stone.positionNumber} />
-        ))}
         {rowNumbers.map((item) => (
           <BoardRow key={uuidv4()} rowNumber={item} columnLetters={columnLetters} amIOpponent={amIOpponent} />
+        ))}
+        {stones.map((stone) => (
+          <Stone key={stone.id} id={stone.id} type={stone.type} empowered={stone.empowered} originalOwner={stone.originalOwner} currentOwner={stone.currentOwner} stashed={stone.stashed} positionLetter={stone.positionLetter} positionNumber={stone.positionNumber} />
         ))}
       </div>
     </Container>
