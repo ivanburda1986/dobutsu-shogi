@@ -1,9 +1,10 @@
 import bg from "../../images/bg-clean.png";
+
 import bgRotated from "../../images/bg-clean-rotated.png";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useContext, useEffect, useRef, useState } from "react";
 import { Container, Row } from "react-bootstrap";
-import { db, gameType, StoneInterface } from "../../api/firestore";
-import { getBoardSize } from "./BoardService";
+import { db, gameType, getSingleGameDetails, StoneInterface } from "../../api/firestore";
+import { getBoardSize, shouldRotateOpponentUI } from "./BoardService";
 import { BoardRow } from "./BoardRow/BoardRow";
 import { v4 as uuidv4 } from "uuid";
 
@@ -11,16 +12,35 @@ import styles from "./Board.module.css";
 import { Stone } from "./Stones/Stone";
 import { useParams } from "react-router";
 import { collection, onSnapshot } from "firebase/firestore";
+import { AppContext } from "../../context/AppContext";
+import { ProvidedContextInterface } from "../../App";
 
 interface BoardInterface {
   type: gameType;
 }
 
 export const Board: FC<BoardInterface> = ({ type }) => {
-  const { gameId } = useParams();
+  const params = useParams();
+  const [gameId, setGameId] = useState(params.gameId);
+  const appContext: ProvidedContextInterface = useContext(AppContext);
   const [stones, setStones] = useState<StoneInterface[]>([]);
-  const isComponentMountedRef = useRef(true);
+  const [rowNumbers, setRowNumbers] = useState(getBoardSize({ type }).rowNumbers);
+  const [columnLetters, setColumnLetters] = useState(getBoardSize({ type }).columnLetters);
+  const [amIOpponent, setAmIOpponent] = useState(false);
 
+  useEffect(() => {
+    setGameId(params.gameId);
+    getSingleGameDetails({ gameId: gameId! }).then((doc) => {
+      let data = doc.data();
+      if (shouldRotateOpponentUI({ creatorId: data!.creatorId, loggedInUserUserId: appContext.loggedInUserUserId })) {
+        setAmIOpponent(true);
+        setRowNumbers(getBoardSize({ type }).rowNumbers.reverse());
+        setColumnLetters(getBoardSize({ type }).columnLetters.reverse());
+      }
+    });
+  }, [gameId]);
+
+  const isComponentMountedRef = useRef(true);
   useEffect(() => {
     return () => {
       isComponentMountedRef.current = false;
@@ -40,17 +60,14 @@ export const Board: FC<BoardInterface> = ({ type }) => {
     });
   }, []);
 
-  let rowNumbers = getBoardSize({ type }).rowNumbers;
-  let columnLetters = getBoardSize({ type }).columnLetters;
-
   return (
     <Container fluid className={`d-flex justify-content-center ${styles.Board}`}>
-      <div style={{ backgroundImage: `url(${bgRotated})` }} className={`${styles.BoardBg}`}>
+      <div style={{ backgroundImage: `url(${amIOpponent ? bgRotated : bg})` }} className={`${styles.BoardBg}`}>
         {stones.map((stone) => (
           <Stone key={stone.id} id={stone.id} type={stone.type} empowered={stone.empowered} originalOwner={stone.originalOwner} currentOwner={stone.currentOwner} stashed={stone.stashed} positionLetter={stone.positionLetter} positionNumber={stone.positionNumber} />
         ))}
         {rowNumbers.map((item) => (
-          <BoardRow key={uuidv4()} rowNumber={item} columnLetters={columnLetters} />
+          <BoardRow key={uuidv4()} rowNumber={item} columnLetters={columnLetters} amIOpponent={amIOpponent} />
         ))}
       </div>
     </Container>

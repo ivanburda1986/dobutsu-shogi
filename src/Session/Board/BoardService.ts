@@ -10,3 +10,10 @@ export const getBoardSize = ({ type }: { type: gameType }): BoardInterface => {
     return { rowNumbers: [1, 2, 3, 4], columnLetters: ["A", "B", "C"] };
   } else return { rowNumbers: [1, 2, 3, 4, 5, 6, 7, 8, 9], columnLetters: ["A", "B", "C", "D", "E", "F", "G", "H", "I"] };
 };
+
+export const shouldRotateOpponentUI = ({ creatorId, loggedInUserUserId }: { creatorId: string; loggedInUserUserId: string }) => {
+  if (creatorId !== loggedInUserUserId) {
+    return true;
+  }
+  return false;
+};

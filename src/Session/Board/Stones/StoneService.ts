@@ -28,12 +28,12 @@ export const useSetStonePosition = ({ stoneId, targetPositionLetter, targetPosit
 };
 
 interface rotateOponentStones {
-  owner: string;
+  currentOwner: string;
   loggedInUserUserId: string;
   setRotateDegrees: (numberOfDegrees: number) => void;
 }
-export const rotateOponentStones = ({ owner, loggedInUserUserId, setRotateDegrees }: rotateOponentStones) => {
-  if (owner === loggedInUserUserId) {
+export const rotateOponentStones = ({ currentOwner, loggedInUserUserId, setRotateDegrees }: rotateOponentStones) => {
+  if (currentOwner === loggedInUserUserId) {
     return setRotateDegrees(0);
   }
   return setRotateDegrees(180);

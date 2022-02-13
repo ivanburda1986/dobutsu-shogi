@@ -7,15 +7,14 @@ import styles from "./BoardRow.module.css";
 interface BoardRowInterface {
   columnLetters: string[];
   rowNumber: number;
+  amIOpponent: boolean;
 }
 
-export const BoardRow: FC<BoardRowInterface> = ({ rowNumber, columnLetters }) => {
-  console.log(rowNumber);
-  console.log(columnLetters.reverse());
+export const BoardRow: FC<BoardRowInterface> = ({ rowNumber, columnLetters, amIOpponent }) => {
   return (
     <div className={`${styles.BoardRow}`}>
-      {columnLetters.reverse().map((letter) => (
-        <Field key={uuidv4()} rowNumber={rowNumber} columnLetter={letter} />
+      {columnLetters.map((letter) => (
+        <Field key={uuidv4()} rowNumber={rowNumber} columnLetter={letter} amIOpponent={amIOpponent} />
       ))}
     </div>
   );
