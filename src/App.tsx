@@ -87,7 +87,7 @@ export const App = () => {
   };
 
   return (
-    <>
+    <div>
       <AppContext.Provider value={providedContext}>
         <Header />
         <Routes>
@@ -100,6 +100,6 @@ export const App = () => {
           <Route path="/session/:gameId" element={<Session />} />
         </Routes>
       </AppContext.Provider>
-    </>
+    </div>
   );
 };

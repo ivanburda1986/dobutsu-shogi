@@ -43,7 +43,7 @@ export const Board: FC<BoardInterface> = ({ type }) => {
   let columnLetters = getBoardSize({ type }).columnLetters;
 
   return (
-    <Container className={`d-grid justify-content-center ${styles.Board}`}>
+    <Container className={`d-flex justify-content-center ${styles.Board}`}>
       <div style={{ backgroundImage: `url(${bg})` }} className={`${styles.BoardBg}`}>
         {stones.map((stone) => (
           <Stone key={stone.id} id={stone.id} type={stone.type} empowered={stone.empowered} originalOwner={stone.originalOwner} currentOwner={stone.currentOwner} stashed={stone.stashed} positionLetter={stone.positionLetter} positionNumber={stone.positionNumber} />
@@ -57,3 +57,4 @@ export const Board: FC<BoardInterface> = ({ type }) => {
 };
 
 // transform: `rotate(${rotateByDeg}deg)`
+// style={{ transform: `rotate(${180}deg)` }}
