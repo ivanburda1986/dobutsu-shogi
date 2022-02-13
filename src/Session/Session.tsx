@@ -18,7 +18,7 @@ export const Session = () => {
     getSingleGameDetails({ gameId: gameId! });
   }, []);
   return (
-    <Container className={styles.Session}>
+    <Container fluid className={styles.Session}>
       <Board type="DOBUTSU" />
     </Container>
   );

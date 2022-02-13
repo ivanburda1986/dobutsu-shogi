@@ -1,8 +1,5 @@
 .Board {
   font-size: 0.9rem;
-  border: 1px solid green;
-  max-width: 300px;
-  background: pink;
 }
 
 .BoardBg {
