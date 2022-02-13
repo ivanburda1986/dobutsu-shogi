@@ -7,19 +7,29 @@ import { ProvidedContextInterface } from "../App";
 import { AppContext } from "../context/AppContext";
 
 import { Board } from "./Board/Board";
-import { rotateOponentUI } from "./SessionService";
 
 import styles from "./Session.module.css";
+import { evaluateBeingOpponent } from "./SessionService";
 
 export const Session = () => {
+  const [amIOpponent, setAmIOpponent] = useState(false);
   const { gameId } = useParams();
   const appContext: ProvidedContextInterface = useContext(AppContext);
+
   useEffect(() => {
-    getSingleGameDetails({ gameId: gameId! });
-  }, []);
+    getSingleGameDetails({ gameId: gameId! }).then((doc) => {
+      let data = doc.data();
+      console.log("creatorId:", data!.creatorId);
+      console.log("loggedInUserUserId:", appContext.loggedInUserUserId);
+      if (evaluateBeingOpponent({ creatorId: data!.creatorId, loggedInUserUserId: appContext.loggedInUserUserId })) {
+        setAmIOpponent(true);
+      }
+    });
+  }, [appContext, gameId]);
+
   return (
     <Container fluid className={styles.Session}>
-      <Board type="DOBUTSU" />
+      <Board type="DOBUTSU" amIOpponent={amIOpponent} />
     </Container>
   );
 };

@@ -17,7 +17,7 @@ export const Field: FC<FieldInterface> = ({ rowNumber, columnLetter, amIOpponent
     console.log(rect);
   };
   return (
-    <div style={{ transform: `rotate(${amIOpponent ? 180 : 0}deg)` }} data-number={rowNumber} data-letter={columnLetter} className={`${styles.Field} noselect`} onClick={() => getStoneTargetCoordinates({ positionLetter: columnLetter, positionNumber: rowNumber })}>
+    <div style={{ transform: `rotate(${amIOpponent === true ? 180 : 0}deg)` }} data-number={rowNumber} data-letter={columnLetter} className={`${styles.Field} noselect`} onClick={() => getStoneTargetCoordinates({ positionLetter: columnLetter, positionNumber: rowNumber })}>
       {isLetterLabelVisible({ rowNumber, columnLetter }) && <span className={styles.columnLetter}>{columnLetter}</span>}
       {isNumberLabelVisible({ rowNumber, columnLetter }) && <span className={styles.rowNumber}>{rowNumber}</span>}
     </div>
