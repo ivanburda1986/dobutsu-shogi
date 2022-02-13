@@ -1,4 +1,5 @@
 import bg from "../../images/bg-clean.png";
+import bgRotated from "../../images/bg-clean-rotated.png";
 import { FC, useEffect, useRef, useState } from "react";
 import { Container, Row } from "react-bootstrap";
 import { db, gameType, StoneInterface } from "../../api/firestore";
@@ -43,8 +44,8 @@ export const Board: FC<BoardInterface> = ({ type }) => {
   let columnLetters = getBoardSize({ type }).columnLetters;
 
   return (
-    <Container fluid className={`d-flex justify-content-center ${styles.Board}`} style={{ transform: `rotate(${180}deg)` }}>
-      <div style={{ backgroundImage: `url(${bg})` }} className={`${styles.BoardBg}`}>
+    <Container fluid className={`d-flex justify-content-center ${styles.Board}`}>
+      <div style={{ backgroundImage: `url(${bgRotated})` }} className={`${styles.BoardBg}`}>
         {stones.map((stone) => (
           <Stone key={stone.id} id={stone.id} type={stone.type} empowered={stone.empowered} originalOwner={stone.originalOwner} currentOwner={stone.currentOwner} stashed={stone.stashed} positionLetter={stone.positionLetter} positionNumber={stone.positionNumber} />
         ))}

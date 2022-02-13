@@ -17,8 +17,10 @@ export const Field: FC<FieldInterface> = ({ rowNumber, columnLetter }) => {
   };
   return (
     <div data-number={rowNumber} data-letter={columnLetter} className={`${styles.Field} noselect`} onClick={() => getStoneTargetCoordinates({ positionLetter: columnLetter, positionNumber: rowNumber })}>
-      {isLetterLabelVisible({ rowNumber, columnLetter }) && <span className={styles.columnLetter}>{columnLetter}</span>}
-      {isNumberLabelVisible({ rowNumber, columnLetter }) && <span className={styles.rowNumber}>{rowNumber}</span>}
+      {/* {isLetterLabelVisible({ rowNumber, columnLetter }) && <span className={styles.columnLetter}>{columnLetter}</span>}
+      {isNumberLabelVisible({ rowNumber, columnLetter }) && <span className={styles.rowNumber}>{rowNumber}</span>} */}
+      <span className={styles.columnLetter}>{columnLetter}</span>
+      <span className={styles.rowNumber}>{rowNumber}</span>
     </div>
   );
 };
