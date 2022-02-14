@@ -19,8 +19,6 @@ export const Session = () => {
   useEffect(() => {
     getSingleGameDetails({ gameId: gameId! }).then((doc) => {
       let data = doc.data();
-      console.log("creatorId:", data!.creatorId);
-      console.log("loggedInUserUserId:", appContext.loggedInUserUserId);
       if (evaluateBeingOpponent({ creatorId: data!.creatorId, loggedInUserUserId: appContext.loggedInUserUserId })) {
         setAmIOpponent(true);
       }

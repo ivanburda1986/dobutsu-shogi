@@ -20,8 +20,6 @@ export const useSetStonePosition = ({ stoneId, targetPositionLetter, targetPosit
 
   setPositionX(Math.floor(rect!.left));
   setPositionY(Math.floor(rect!.top));
-  console.log("left", Math.floor(rect!.left));
-  console.log("top", Math.floor(rect!.top));
   let div = document.getElementById(stoneId);
   div!.style.left = positionX + "px";
   div!.style.top = positionY + "px";
