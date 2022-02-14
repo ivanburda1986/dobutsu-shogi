@@ -15,8 +15,6 @@ interface AvatarProps {
 }
 
 export const Avatar: FC<AvatarProps> = ({ name }) => {
-  console.log("Avatar name is:");
-  console.log(name);
   return <div className={`${styles.avatarIco} d-flex flex-row justify-content-between align-items-center`} style={{ backgroundImage: `url(${getImgReference(name)})` }}></div>;
 };
 
