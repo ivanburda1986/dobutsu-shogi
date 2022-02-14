@@ -31,5 +31,3 @@ export const Session = () => {
     </Container>
   );
 };
-
-// rotateByDeg={rotateOponentUI({ creatorId, loggedInUserUserId: appContext.loggedInUserUserId })}

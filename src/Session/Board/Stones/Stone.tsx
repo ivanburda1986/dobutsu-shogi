@@ -6,7 +6,7 @@ import { useSetStonePosition, rotateOponentStones, getImgReference } from "./Sto
 import { ProvidedContextInterface } from "../../../App";
 import { AppContext } from "../../../context/AppContext";
 
-export const Stone = ({ amIOpponent, id, type, empowered, originalOwner, currentOwner, stashed, positionLetter, positionNumber }: StoneInterface) => {
+export const Stone = ({ amIOpponent, id, type, empowered, originalOwner, currentOwner, stashed, positionLetter, positionNumber, rowNumbers, columnLetters }: StoneInterface) => {
   const appContext: ProvidedContextInterface = useContext(AppContext);
   const [rotateDegrees, setRotateDegrees] = useState<number>(0);
   const [positionX, setPositionX] = useState<number>(0);
@@ -15,11 +15,8 @@ export const Stone = ({ amIOpponent, id, type, empowered, originalOwner, current
 
   useEffect(() => {
     setStonePosition({ stoneId: id, targetPositionLetter: positionLetter, targetPositionNumber: positionNumber, positionX, positionY, setPositionX, setPositionY });
-  }, [id, positionLetter, positionNumber, positionX, positionY]);
-
-  useEffect(() => {
     rotateOponentStones({ currentOwner: currentOwner, loggedInUserUserId: appContext.loggedInUserUserId, setRotateDegrees });
-  }, []);
+  }, [id, positionLetter, positionNumber, positionX, positionY, amIOpponent, rowNumbers, columnLetters]);
 
   return (
     <div
@@ -27,6 +24,8 @@ export const Stone = ({ amIOpponent, id, type, empowered, originalOwner, current
       style={{ backgroundImage: `url(${getImgReference(type)})`, transform: `rotate(${rotateDegrees}deg)` }}
       className={styles.Stone}
       onClick={() => setStonePosition({ stoneId: id, targetPositionLetter: positionLetter, targetPositionNumber: positionNumber, positionX, positionY, setPositionX, setPositionY })}
-    ></div>
+    >
+      {currentOwner.substr(0, 2)}
+    </div>
   );
 };

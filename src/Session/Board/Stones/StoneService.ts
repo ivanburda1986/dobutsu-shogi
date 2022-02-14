@@ -31,10 +31,17 @@ interface rotateOponentStones {
   setRotateDegrees: (numberOfDegrees: number) => void;
 }
 export const rotateOponentStones = ({ currentOwner, loggedInUserUserId, setRotateDegrees }: rotateOponentStones) => {
+  if (!currentOwner || !loggedInUserUserId) {
+    return setRotateDegrees(0);
+  }
   if (currentOwner === loggedInUserUserId) {
     return setRotateDegrees(0);
   }
-  return setRotateDegrees(180);
+  if (currentOwner !== loggedInUserUserId) {
+    return setRotateDegrees(180);
+  }
+
+  return setRotateDegrees(0);
 };
 
 export const getImgReference = (type: stoneType) => {

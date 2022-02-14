@@ -25,8 +25,8 @@ export const Board: FC<BoardInterface> = ({ type, amIOpponent }) => {
   const gameId = params.gameId;
   const appContext: ProvidedContextInterface = useContext(AppContext);
   const [stones, setStones] = useState<StoneInterface[]>([]);
-  const [rowNumbers, setRowNumbers] = useState(getBoardSize({ type }).rowNumbers);
-  const [columnLetters, setColumnLetters] = useState(getBoardSize({ type }).columnLetters);
+  const [rowNumbers, setRowNumbers] = useState<number[]>(getBoardSize({ type }).rowNumbers);
+  const [columnLetters, setColumnLetters] = useState<string[]>(getBoardSize({ type }).columnLetters);
 
   const isComponentMountedRef = useRef(true);
   useEffect(() => {
@@ -62,7 +62,19 @@ export const Board: FC<BoardInterface> = ({ type, amIOpponent }) => {
           <BoardRow key={uuidv4()} rowNumber={item} columnLetters={columnLetters} amIOpponent={amIOpponent} />
         ))}
         {stones.map((stone) => (
-          <Stone key={stone.id} id={stone.id} type={stone.type} empowered={stone.empowered} originalOwner={stone.originalOwner} currentOwner={stone.currentOwner} stashed={stone.stashed} positionLetter={stone.positionLetter} positionNumber={stone.positionNumber} />
+          <Stone
+            key={stone.id}
+            id={stone.id}
+            type={stone.type}
+            empowered={stone.empowered}
+            originalOwner={stone.originalOwner}
+            currentOwner={stone.currentOwner}
+            stashed={stone.stashed}
+            positionLetter={stone.positionLetter}
+            positionNumber={stone.positionNumber}
+            rowNumbers={rowNumbers}
+            columnLetters={columnLetters}
+          />
         ))}
       </div>
     </Container>

@@ -41,6 +41,8 @@ export interface StoneInterface {
   positionLetter: string;
   positionNumber: number;
   amIOpponent?: boolean;
+  rowNumbers?: number[];
+  columnLetters?: string[];
 }
 
 // GAME CREATION AND MANAGEMENT

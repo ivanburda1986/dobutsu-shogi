@@ -3,8 +3,15 @@ interface evaluateBeingOpponentInterface {
   loggedInUserUserId: string;
 }
 export const evaluateBeingOpponent = ({ creatorId, loggedInUserUserId }: evaluateBeingOpponentInterface) => {
+  if (!creatorId || !loggedInUserUserId) {
+    return 0;
+  }
   if (creatorId === loggedInUserUserId) {
     return 0;
   }
-  return 180;
+  if (creatorId !== loggedInUserUserId) {
+    return 180;
+  }
+
+  return 0;
 };
