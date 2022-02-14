@@ -7,9 +7,6 @@ Profile settings
 -Statistics (Played, Won, Lost)
 
 
-
-
-
 Gameplay
 Display session details 
 The player who starts is decided randomly
@@ -17,9 +14,7 @@ The player who starts is decided randomly
 Display areas where players can place stones outside of the desk
 Stone collision - stones cannot overlap
 Drag and drop movement. Stones can be dropped on the desk only to specific areas (slots) to keep a neat look.
-Each player sees the desk from their perspective
 The rules of the game are evaluated by players themselves - not by the game itself. The game detects only the game end.
-The game tracks the history of all moves
 When one player wins the game shows a congratulation and a quote inspiring the players to thank each other for the game.
 A player can surrender which ends the game.
 
