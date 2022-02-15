@@ -46,7 +46,7 @@ export const Board: FC<BoardInterface> = ({ type, amIOpponent }) => {
         setStones(returnedStones);
       }
     });
-  }, []);
+  }, [gameId]);
 
   useEffect(() => {
     if (amIOpponent === true) {

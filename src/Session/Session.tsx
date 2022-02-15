@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Container } from "react-bootstrap";
 import { useParams } from "react-router";
-
 import { getSingleGameDetails } from "../api/firestore";
-import { ProvidedContextInterface } from "../App";
 import { AppContext } from "../context/AppContext";
 
+import { ProvidedContextInterface } from "../App";
 import { Board } from "./Board/Board";
 
-import styles from "./Session.module.css";
 import { evaluateBeingOpponent } from "./SessionService";
+
+import styles from "./Session.module.css";
 
 export const Session = () => {
   const [amIOpponent, setAmIOpponent] = useState(false);

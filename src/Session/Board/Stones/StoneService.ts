@@ -25,12 +25,12 @@ export const useSetStonePosition = ({ stoneId, targetPositionLetter, targetPosit
   div!.style.top = positionY + "px";
 };
 
-interface rotateOponentStones {
+interface rotateOponentStonesInterface {
   currentOwner: string;
   loggedInUserUserId: string;
   setRotateDegrees: (numberOfDegrees: number) => void;
 }
-export const rotateOponentStones = ({ currentOwner, loggedInUserUserId, setRotateDegrees }: rotateOponentStones) => {
+export const rotateOponentStones = ({ currentOwner, loggedInUserUserId, setRotateDegrees }: rotateOponentStonesInterface) => {
   if (!currentOwner || !loggedInUserUserId) {
     return setRotateDegrees(0);
   }
