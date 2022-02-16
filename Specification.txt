@@ -1,3 +1,29 @@
+Next steps: 
+Players can drag&drop stones on the board; they see the other's move in real time 
+Stashes
+Players can drag&drop stones to/from their own stash
+A player can take the other's player stone
+-P1 places a chicken over P2's chicken
+-P1 chicken drops, P2 chicken gets lifted 
+-P1 can drop P2's chicken back and take the P1 chicken 
+-P1 can can let the P1 chicken lying and drop the P2 chicken into P1's stash
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 DESIGN 
 LAUNCH SCREEN
 -Your games in progress

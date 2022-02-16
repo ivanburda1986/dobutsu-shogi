@@ -4,6 +4,14 @@ import GIRAFFE from "./images/giraffe.png";
 import LION from "./images/lion.png";
 import { stoneType } from "../../../api/firestore";
 
+interface amIStoneOwnerInterface {
+  currentOwner: string;
+  loggedInUserUserId: string;
+}
+export const amIStoneOwner = ({ currentOwner, loggedInUserUserId }: amIStoneOwnerInterface) => {
+  return currentOwner === loggedInUserUserId;
+};
+
 interface useSetStonePositionInterface {
   stoneId: string;
   targetPositionLetter: string;
