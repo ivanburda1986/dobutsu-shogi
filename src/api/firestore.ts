@@ -45,6 +45,32 @@ export interface StoneInterface {
   columnLetters?: string[];
 }
 
+interface useUpdateStonePositionInterface {
+  gameId: string;
+  stoneId: string;
+  positionLetter: string;
+  positionNumber: number;
+}
+export const useUpdateStonePosition = ({ gameId, stoneId, positionLetter, positionNumber }: useUpdateStonePositionInterface) => {
+  updateDoc(doc(db, `games/${gameId}/stones`, stoneId), { positionLetter: positionLetter, positionNumber: positionNumber })
+    .then(() => console.log("Stone position updated"))
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+interface useUpdateStoneTypeInterface {
+  gameId: string;
+  stoneId: string;
+  type: stoneType;
+}
+export const useUpdateStoneType = ({ gameId, stoneId, type }: useUpdateStoneTypeInterface) => {
+  updateDoc(doc(db, `games/${gameId}/stones`, stoneId), { type: type })
+    .then(() => console.log("Stone position updated"))
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+
 // GAME CREATION AND MANAGEMENT
 // ======================================================
 export interface CreateGameInputInterface {

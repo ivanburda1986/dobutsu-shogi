@@ -1,5 +1,4 @@
 Next steps: 
-Players can drag&drop stones on the board; they see the other's move in real time 
 Stashes
 Players can drag&drop stones to/from their own stash
 A player can take the other's player stone
