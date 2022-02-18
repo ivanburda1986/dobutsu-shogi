@@ -14,6 +14,7 @@ import { useParams } from "react-router";
 import { collection, onSnapshot } from "firebase/firestore";
 import { AppContext } from "../../context/AppContext";
 import { ProvidedContextInterface } from "../../App";
+import { PlayerInterface } from "../PlayerInterface/PlayerInterface";
 
 interface BoardInterface {
   type: gameType;
@@ -76,6 +77,10 @@ export const Board: FC<BoardInterface> = ({ type, amIOpponent }) => {
             columnLetters={columnLetters}
           />
         ))}
+      </div>
+      <div className="d-flex justify-content-between flex-column align-items-center">
+        <PlayerInterface type={type} amIOpponent={amIOpponent} />
+        <PlayerInterface type={type} amIOpponent={amIOpponent} />
       </div>
     </Container>
   );

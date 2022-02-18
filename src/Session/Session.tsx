@@ -10,6 +10,7 @@ import { Board } from "./Board/Board";
 import { evaluateBeingOpponent } from "./SessionService";
 
 import styles from "./Session.module.css";
+import { PlayerInterface } from "./PlayerInterface/PlayerInterface";
 
 export const Session = () => {
   const [amIOpponent, setAmIOpponent] = useState(false);
