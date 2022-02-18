@@ -7,6 +7,8 @@ import { BoardRow } from "../Board/BoardRow/BoardRow";
 import styles from "./PlayerInterface.module.css";
 import { getStashSize } from "./PlayerInterfaceService";
 import { v4 as uuidv4 } from "uuid";
+import { Button } from "react-bootstrap";
+import { FaRegFlag } from "react-icons/fa";
 
 interface PlayerInterfaceInterface {
   type: gameType;
@@ -19,10 +21,12 @@ export const PlayerInterface: FC<PlayerInterfaceInterface> = ({ type, amIOpponen
   const [columnLetters, setColumnLetters] = useState<string[]>(getStashSize({ type }).columnLetters);
   return (
     <div className={`${styles.PlayerInterface} mx-3`}>
-      <div className={`${styles.Header} d-flex`}>
+      <div className={`${styles.Header} d-flex justify-content-between align-items-center rounded bg-primary mb-1 p-1`}>
         <Avatar name={appContext.loggedInUserPhotoURL} />
         <span className="ms-1 fs-6">{appContext.loggedInUserDisplayName ? appContext.loggedInUserDisplayName : "Username"}</span>
-        <button>Resign</button>
+        <Button variant="outline-dark" size="sm" className="btn-height-30">
+          <FaRegFlag />
+        </Button>
       </div>
       <div>
         {rowNumbers.map((item) => (
