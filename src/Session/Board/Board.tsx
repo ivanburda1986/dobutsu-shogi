@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 import styles from "./Board.module.css";
 import { Stone } from "./Stones/Stone";
 import { useParams } from "react-router";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, DocumentData, onSnapshot } from "firebase/firestore";
 import { AppContext } from "../../context/AppContext";
 import { ProvidedContextInterface } from "../../App";
 import { PlayerInterface } from "../PlayerInterface/PlayerInterface";
@@ -19,9 +19,10 @@ import { PlayerInterface } from "../PlayerInterface/PlayerInterface";
 interface BoardInterface {
   type: gameType;
   amIOpponent: boolean;
+  gameData: DocumentData | undefined;
 }
 
-export const Board: FC<BoardInterface> = ({ type, amIOpponent }) => {
+export const Board: FC<BoardInterface> = ({ type, amIOpponent, gameData }) => {
   const params = useParams();
   const gameId = params.gameId;
   const appContext: ProvidedContextInterface = useContext(AppContext);
@@ -60,7 +61,7 @@ export const Board: FC<BoardInterface> = ({ type, amIOpponent }) => {
     <Container fluid className={`d-flex justify-content-center ${styles.Board}`}>
       <div style={{ backgroundImage: `url(${amIOpponent === true ? bgRotated : bg})` }} className={`${styles.BoardBg}`}>
         {rowNumbers.map((item) => (
-          <BoardRow key={uuidv4()} rowNumber={item} columnLetters={columnLetters} amIOpponent={amIOpponent} />
+          <BoardRow key={uuidv4()} rowNumber={item} columnLetters={columnLetters} amIOpponent={amIOpponent} fieldType="BOARDFIELD" />
         ))}
         {stones.map((stone) => (
           <Stone
@@ -78,13 +79,10 @@ export const Board: FC<BoardInterface> = ({ type, amIOpponent }) => {
           />
         ))}
       </div>
-      <div className="d-flex justify-content-between flex-column align-items-center">
-        <PlayerInterface type={type} amIOpponent={amIOpponent} />
-        <PlayerInterface type={type} amIOpponent={amIOpponent} />
+      <div className="d-flex justify-content-between flex-column align-items-center" style={{ transform: `rotate(${amIOpponent === true ? 180 : 0}deg)` }}>
+        <PlayerInterface type={type} amIOpponent={amIOpponent} isOpponentsInterface={true} gameData={gameData} />
+        <PlayerInterface type={type} amIOpponent={amIOpponent} isOpponentsInterface={false} gameData={gameData} />
       </div>
     </Container>
   );
 };
-
-// transform: `rotate(${rotateByDeg}deg)`
-// style={{ transform: `rotate(${180}deg)` }}

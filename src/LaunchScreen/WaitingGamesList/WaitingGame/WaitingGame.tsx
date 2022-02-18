@@ -38,7 +38,7 @@ export const WaitingGame: FC<ReturnedGameInterface> = ({ id, creatorId, creatorN
               getSingleGameDetails({ gameId: id }).then((doc) => {
                 let data = doc.data();
                 if (!data?.opponentJoined) {
-                  joinGame({ gameId: id, joiningPlayerType: "OPPONENT", joiningPlayerId: appContext.loggedInUserUserId, joiningPlayerName: appContext.loggedInUserDisplayName, type: type });
+                  joinGame({ gameId: id, joiningPlayerType: "OPPONENT", joiningPlayerId: appContext.loggedInUserUserId, joiningPlayerName: appContext.loggedInUserDisplayName, joiningPlayerPhotoURL: appContext.loggedInUserPhotoURL, type: type });
                 }
                 return;
               });

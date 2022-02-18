@@ -109,9 +109,10 @@ interface createJoiningPlayerStones {
   joiningPlayerType: playerType;
   joiningPlayerId: string;
   joiningPlayerName: string | null;
+  joiningPlayerPhotoURL?: string | null;
   type: gameType;
 }
-export const useJoinGame = ({ gameId, joiningPlayerType, joiningPlayerId, joiningPlayerName, type }: createJoiningPlayerStones) => {
+export const useJoinGame = ({ gameId, joiningPlayerType, joiningPlayerId, joiningPlayerName, joiningPlayerPhotoURL, type }: createJoiningPlayerStones) => {
   if (joiningPlayerType === "CREATOR") {
     //Update game details
     updateDoc(doc(db, "games", gameId), { creatorJoined: true })
@@ -128,7 +129,7 @@ export const useJoinGame = ({ gameId, joiningPlayerType, joiningPlayerId, joinin
     });
   } else {
     //Update game details
-    updateDoc(doc(db, "games", gameId), { opponentId: joiningPlayerId, opponentName: joiningPlayerName, opponentJoined: true, status: "INPROGRESS" })
+    updateDoc(doc(db, "games", gameId), { opponentId: joiningPlayerId, opponentName: joiningPlayerName, opponentPhotoURL: joiningPlayerPhotoURL, opponentJoined: true, status: "INPROGRESS" })
       .then(() => console.log("Game updated"))
       .catch((err) => {
         console.log(err.message);
