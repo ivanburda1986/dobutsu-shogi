@@ -109,13 +109,13 @@ interface createJoiningPlayerStones {
   joiningPlayerType: playerType;
   joiningPlayerId: string;
   joiningPlayerName: string | null;
-  joiningPlayerPhotoURL?: string | null;
+  joiningPlayerPhotoURL: string | null;
   type: gameType;
 }
 export const useJoinGame = ({ gameId, joiningPlayerType, joiningPlayerId, joiningPlayerName, joiningPlayerPhotoURL, type }: createJoiningPlayerStones) => {
   if (joiningPlayerType === "CREATOR") {
     //Update game details
-    updateDoc(doc(db, "games", gameId), { creatorJoined: true })
+    updateDoc(doc(db, "games", gameId), { creatorJoined: true, creatorPhotoURL: joiningPlayerPhotoURL })
       .then(() => console.log("Game updated"))
       .catch((err) => {
         console.log(err.message);

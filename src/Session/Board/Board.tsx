@@ -80,8 +80,8 @@ export const Board: FC<BoardInterface> = ({ type, amIOpponent, gameData }) => {
         ))}
       </div>
       <div className="d-flex justify-content-between flex-column align-items-center" style={{ transform: `rotate(${amIOpponent === true ? 180 : 0}deg)` }}>
-        <PlayerInterface type={type} amIOpponent={amIOpponent} isOpponentsInterface={true} gameData={gameData} />
-        <PlayerInterface type={type} amIOpponent={amIOpponent} isOpponentsInterface={false} gameData={gameData} />
+        <PlayerInterface type={type} amIOpponent={amIOpponent} creatorInterface={false} gameData={gameData} />
+        <PlayerInterface type={type} amIOpponent={amIOpponent} creatorInterface={true} gameData={gameData} />
       </div>
     </Container>
   );

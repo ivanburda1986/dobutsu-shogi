@@ -14,31 +14,31 @@ import { DocumentData } from "firebase/firestore";
 interface PlayerInterfaceInterface {
   type: gameType;
   amIOpponent: boolean;
-  isOpponentsInterface: boolean;
+  creatorInterface: boolean;
   gameData: DocumentData | undefined;
 }
 
-export const PlayerInterface: FC<PlayerInterfaceInterface> = ({ type, amIOpponent, isOpponentsInterface, gameData }) => {
+export const PlayerInterface: FC<PlayerInterfaceInterface> = ({ type, amIOpponent, creatorInterface, gameData }) => {
   const appContext: ProvidedContextInterface = useContext(AppContext);
   const [rowNumbers, setRowNumbers] = useState<number[]>(getStashSize({ type }).rowNumbers);
   const [columnLetters, setColumnLetters] = useState<string[]>(getStashSize({ type }).columnLetters);
 
   const whatNameToDisplay = () => {
-    if (isOpponentsInterface) {
-      return gameData?.opponentName;
+    if (creatorInterface) {
+      return gameData?.creatorName;
     }
-    return appContext.loggedInUserDisplayName ? appContext.loggedInUserDisplayName : "Username";
+    return gameData?.opponentName;
   };
   return (
-    <div className={`${styles.PlayerInterface} mx-3`} style={{ transform: `rotate(${isOpponentsInterface === true ? 180 : 0}deg)` }}>
-      <div className={`${isOpponentsInterface ? styles.OpponentHeader : styles.CreatorHeader} d-flex justify-content-between align-items-center rounded mb-1 p-1`}>
-        <Avatar name={isOpponentsInterface ? gameData?.opponentPhotoURL : appContext.loggedInUserPhotoURL} />
+    <div className={`${styles.PlayerInterface} mx-3`} style={{ transform: `rotate(${creatorInterface === true ? 0 : 180}deg)` }}>
+      <div className={`${creatorInterface ? styles.CreatorHeader : styles.OpponentHeader} d-flex justify-content-between align-items-center rounded mb-1 p-1`}>
+        <Avatar name={creatorInterface ? gameData?.creatorPhotoURL : gameData?.opponentPhotoURL} />
         <span className="ms-1 fs-5 text-primary">{whatNameToDisplay()}</span>
-        {!isOpponentsInterface && (
+        {/* {!creatorInterface && (
           <Button variant="outline-dark" size="sm" className="btn-height-30">
             <FaRegFlag />
           </Button>
-        )}
+        )} */}
       </div>
       <div>
         {rowNumbers.map((item) => (

@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { Col } from "react-bootstrap";
+import { useParams } from "react-router";
 import { useUpdateStonePosition } from "../../../api/firestore";
 import styles from "./Field.module.css";
 import { isLetterLabelVisible, isNumberLabelVisible } from "./FieldService";
@@ -12,6 +13,7 @@ interface FieldInterface {
 
 export const Field: FC<FieldInterface> = ({ rowNumber, columnLetter, amIOpponent }) => {
   const updateStonePosition = useUpdateStonePosition;
+  const { gameId } = useParams();
 
   // Just an info function for dev purposes - remove afterwards
   const getStoneTargetCoordinates = ({ positionLetter, positionNumber }: { positionLetter: string; positionNumber: number }) => {
@@ -28,7 +30,7 @@ export const Field: FC<FieldInterface> = ({ rowNumber, columnLetter, amIOpponent
   const onDropHandler = (event: React.DragEvent<HTMLDivElement>) => {
     let placedStoneId = event.dataTransfer!.getData("placedStoneId");
     console.log(columnLetter);
-    updateStonePosition({ gameId: "Qv3RW08itHgEJsyTlWal", stoneId: placedStoneId, positionLetter: columnLetter, positionNumber: rowNumber });
+    updateStonePosition({ gameId: gameId!, stoneId: placedStoneId, positionLetter: columnLetter, positionNumber: rowNumber });
   };
 
   return (

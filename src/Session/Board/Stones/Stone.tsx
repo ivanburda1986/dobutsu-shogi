@@ -5,9 +5,11 @@ import { StoneInterface, useUpdateStonePosition, useUpdateStoneType } from "../.
 import { useSetStonePosition, rotateOponentStones, getImgReference, amIStoneOwner } from "./StoneService";
 import { ProvidedContextInterface } from "../../../App";
 import { AppContext } from "../../../context/AppContext";
+import { useParams } from "react-router";
 
 export const Stone = ({ amIOpponent, id, type, empowered, originalOwner, currentOwner, stashed, positionLetter, positionNumber, rowNumbers, columnLetters }: StoneInterface) => {
   const appContext: ProvidedContextInterface = useContext(AppContext);
+  const { gameId } = useParams();
   const [rotateDegrees, setRotateDegrees] = useState<number>(0);
   const [positionX, setPositionX] = useState<number>(0);
   const [positionY, setPositionY] = useState<number>(0);
@@ -28,8 +30,8 @@ export const Stone = ({ amIOpponent, id, type, empowered, originalOwner, current
     const overLayingStoneId = event.dataTransfer!.getData("placedStoneId");
     console.log("Dragged over stone id:", overLayingStoneId);
 
-    if (overLayingStoneId !== "f314ba1b-71a5-4eb0-9634-b9bcc24321ed") {
-      updateStoneType({ gameId: "Qv3RW08itHgEJsyTlWal", stoneId: "f314ba1b-71a5-4eb0-9634-b9bcc24321ed", type: "GIRAFFE" });
+    if (overLayingStoneId !== id) {
+      updateStoneType({ gameId: gameId!, stoneId: id, type: type });
     }
   };
 
