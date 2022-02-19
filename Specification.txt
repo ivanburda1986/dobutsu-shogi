@@ -8,7 +8,6 @@ A player can take the other's player stone
 -P1 can can let the P1 chicken lying and drop the P2 chicken into P1's stash
 
 Stash: 
-Players name, icon 
 Resign button
 Indication whether its the players turn or not 
 Slots for taken stones - 1 slot for a stone type, with an indication of a count 
