@@ -29,7 +29,6 @@ export const Field: FC<FieldInterface> = ({ rowNumber, columnLetter, amIOpponent
 
   const onDropHandler = (event: React.DragEvent<HTMLDivElement>) => {
     let placedStoneId = event.dataTransfer!.getData("placedStoneId");
-    console.log(columnLetter);
     updateStonePosition({ gameId: gameId!, stoneId: placedStoneId, positionLetter: columnLetter, positionNumber: rowNumber });
   };
 

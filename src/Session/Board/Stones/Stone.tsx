@@ -35,12 +35,18 @@ export const Stone = ({ amIOpponent, id, type, empowered, originalOwner, current
     }
   };
 
+  const enableDropping = (event: React.DragEvent<HTMLDivElement>) => {
+    console.log("Rain it over me!");
+    event.preventDefault();
+  };
+
   return (
     <div
       id={id}
       onDragEnter={onDragEnter}
       draggable={amIStoneOwner({ currentOwner: currentOwner, loggedInUserUserId: appContext.loggedInUserUserId })}
       onDragStart={onDragHandler}
+      onDragOver={enableDropping}
       style={{ backgroundImage: `url(${getImgReference(type)})`, transform: `rotate(${rotateDegrees}deg)` }}
       className={`${styles.Stone} noselect`}
       onClick={() => setStonePosition({ stoneId: id, targetPositionLetter: positionLetter, targetPositionNumber: positionNumber, positionX, positionY, setPositionX, setPositionY })}
