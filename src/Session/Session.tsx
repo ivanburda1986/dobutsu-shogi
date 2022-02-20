@@ -10,7 +10,6 @@ import { Board } from "./Board/Board";
 import { evaluateBeingOpponent } from "./SessionService";
 
 import styles from "./Session.module.css";
-import { PlayerInterface } from "./PlayerInterface/PlayerInterface";
 import { DocumentData } from "firebase/firestore";
 
 export const Session = () => {
@@ -26,7 +25,7 @@ export const Session = () => {
             if (evaluateBeingOpponent({
                 creatorId: data!.creatorId,
                 loggedInUserUserId: appContext.loggedInUserUserId
-            })) {
+            } )) {
                 setAmIOpponent(true);
             }
         });
