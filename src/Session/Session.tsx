@@ -16,16 +16,16 @@ export const Session = () => {
     const [amIOpponent, setAmIOpponent] = useState(false);
     const {gameId} = useParams();
     const appContext: ProvidedContextInterface = useContext(AppContext);
-    const [gameData, setGamedata] = useState<DocumentData | undefined>();
+    const [gameData, setGameData] = useState<DocumentData | undefined>();
 
     useEffect(() => {
         getSingleGameDetails({gameId: gameId!}).then((doc) => {
             let data = doc.data();
-            setGamedata(data);
+            setGameData(data);
             if (evaluateBeingOpponent({
                 creatorId: data!.creatorId,
                 loggedInUserUserId: appContext.loggedInUserUserId
-            } )) {
+            })) {
                 setAmIOpponent(true);
             }
         });
