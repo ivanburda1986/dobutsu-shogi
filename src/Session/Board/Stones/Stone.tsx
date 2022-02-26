@@ -24,16 +24,17 @@ export const Stone = ({ amIOpponent, id, type, empowered, originalOwner, current
 
   const onDragHandler = (event: React.DragEvent<HTMLDivElement>) => {
     event.dataTransfer.setData("placedStoneId", id);
+    //console.log(id)
   };
 
-  const onDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
-    const overLayingStoneId = event.dataTransfer!.getData("placedStoneId");
-    console.log("Dragged over stone id:", overLayingStoneId);
-
-    if (overLayingStoneId !== id) {
-      updateStoneType({ gameId: gameId!, stoneId: id, type: type });
-    }
-  };
+  // const onDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
+  //   const overLayingStoneId = event.dataTransfer!.getData("placedStoneId");
+  //   console.log("Dragged over stone id:", overLayingStoneId);
+  //
+  //   if (overLayingStoneId !== id) {
+  //     updateStoneType({ gameId: gameId!, stoneId: id, type: type });
+  //   }
+  // };
 
   const enableDropping = (event: React.DragEvent<HTMLDivElement>) => {
     console.log("Rain it over me!");
@@ -43,7 +44,7 @@ export const Stone = ({ amIOpponent, id, type, empowered, originalOwner, current
   return (
     <div
       id={id}
-      onDragEnter={onDragEnter}
+      // onDragEnter={onDragEnter}
       draggable={amIStoneOwner({ currentOwner: currentOwner, loggedInUserUserId: appContext.loggedInUserUserId })}
       onDragStart={onDragHandler}
       onDragOver={enableDropping}
