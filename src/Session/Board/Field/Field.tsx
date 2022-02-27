@@ -1,7 +1,6 @@
 import React, { FC } from "react";
-import { Col } from "react-bootstrap";
 import { useParams } from "react-router";
-import {useGetSingleStoneDetails, useUpdateStonePosition } from "../../../api/firestore";
+import { useGetSingleStoneDetails, useUpdateStonePosition } from "../../../api/firestore";
 import styles from "./Field.module.css";
 import { isLetterLabelVisible, isNumberLabelVisible } from "./FieldService";
 
@@ -46,8 +45,6 @@ export const Field: FC<FieldInterface> = ({ rowNumber, columnLetter, amIOpponent
     console.log("Something is over me");
     event.preventDefault();
   };
-
-
 
   const onDropHandler = (event: React.DragEvent<HTMLDivElement>) => {
     let placedStoneId = event.dataTransfer!.getData("placedStoneId");
