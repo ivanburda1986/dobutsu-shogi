@@ -42,7 +42,7 @@ export const Field: FC<FieldInterface> = ({ rowNumber, columnLetter, amIOpponent
     let placedStoneId = event.dataTransfer!.getData("placedStoneId")
     console.log('id je:', placedStoneId);
     //const result = getSingleStoneDetails({gameId:gameId!, stoneId:placedStoneId})
-    console.log("Something is over me!!");
+    console.log("Something is over me!!!");
     event.preventDefault();
   };
 
