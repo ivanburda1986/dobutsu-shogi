@@ -1,5 +1,4 @@
 import bg from "../../images/bg-clean.png";
-
 import bgRotated from "../../images/bg-clean-rotated.png";
 import { FC, useContext, useEffect, useRef, useState } from "react";
 import { Container, Row } from "react-bootstrap";
@@ -17,72 +16,75 @@ import { ProvidedContextInterface } from "../../App";
 import { PlayerInterface } from "../PlayerInterface/PlayerInterface";
 
 interface BoardInterface {
-  type: gameType;
-  amIOpponent: boolean;
-  gameData: DocumentData | undefined;
+    type: gameType;
+    amIOpponent: boolean;
+    gameData: DocumentData | undefined;
 }
 
-export const Board: FC<BoardInterface> = ({ type, amIOpponent, gameData }) => {
-  const params = useParams();
-  const gameId = params.gameId;
-  const appContext: ProvidedContextInterface = useContext(AppContext);
-  const [stones, setStones] = useState<StoneInterface[]>([]);
-  const [rowNumbers, setRowNumbers] = useState<number[]>(getBoardSize({ type }).rowNumbers);
-  const [columnLetters, setColumnLetters] = useState<string[]>(getBoardSize({ type }).columnLetters);
+export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
+    const params = useParams();
+    const gameId = params.gameId;
+    const appContext: ProvidedContextInterface = useContext(AppContext);
+    const [stones, setStones] = useState<StoneInterface[]>([]);
+    const [rowNumbers, setRowNumbers] = useState<number[]>(getBoardSize({type}).rowNumbers);
+    const [columnLetters, setColumnLetters] = useState<string[]>(getBoardSize({type}).columnLetters);
 
-  const isComponentMountedRef = useRef(true);
-  useEffect(() => {
-    return () => {
-      isComponentMountedRef.current = false;
-    };
-  }, []);
+    const isComponentMountedRef = useRef(true);
+    useEffect(() => {
+        return () => {
+            isComponentMountedRef.current = false;
+        };
+    }, []);
 
-  useEffect(() => {
-    const stonesCollectionRef = collection(db, `games/${gameId}/stones`);
-    onSnapshot(stonesCollectionRef, (snapshot) => {
-      if (isComponentMountedRef.current) {
-        let returnedStones: StoneInterface[] = [];
-        snapshot.docs.forEach((doc) => {
-          returnedStones.push({ ...doc.data() } as StoneInterface);
+    useEffect(() => {
+        const stonesCollectionRef = collection(db, `games/${gameId}/stones`);
+        onSnapshot(stonesCollectionRef, (snapshot) => {
+            if (isComponentMountedRef.current) {
+                let returnedStones: StoneInterface[] = [];
+                snapshot.docs.forEach((doc) => {
+                    returnedStones.push({...doc.data()} as StoneInterface);
+                });
+                setStones(returnedStones);
+            }
         });
-        setStones(returnedStones);
-      }
-    });
-  }, [gameId]);
+    }, [gameId]);
 
-  useEffect(() => {
-    if (amIOpponent === true) {
-      setRowNumbers(getBoardSize({ type }).rowNumbers.reverse());
-      setColumnLetters(getBoardSize({ type }).columnLetters.reverse());
-    }
-  }, [amIOpponent]);
+    useEffect(() => {
+        if (amIOpponent === true) {
+            setRowNumbers(getBoardSize({type}).rowNumbers.reverse());
+            setColumnLetters(getBoardSize({type}).columnLetters.reverse());
+        }
+    }, [amIOpponent]);
 
-  return (
-    <Container fluid className={`d-flex justify-content-center ${styles.Board}`}>
-      <div style={{ backgroundImage: `url(${amIOpponent === true ? bgRotated : bg})` }} className={`${styles.BoardBg}`}>
-        {rowNumbers.map((item) => (
-          <BoardRow key={uuidv4()} rowNumber={item} columnLetters={columnLetters} amIOpponent={amIOpponent} fieldType="BOARDFIELD" />
-        ))}
-        {stones.map((stone) => (
-          <Stone
-            key={stone.id}
-            id={stone.id}
-            type={stone.type}
-            empowered={stone.empowered}
-            originalOwner={stone.originalOwner}
-            currentOwner={stone.currentOwner}
-            stashed={stone.stashed}
-            positionLetter={stone.positionLetter}
-            positionNumber={stone.positionNumber}
-            rowNumbers={rowNumbers}
-            columnLetters={columnLetters}
-          />
-        ))}
-      </div>
-      <div className="d-flex justify-content-between flex-column align-items-center" style={{ transform: `rotate(${amIOpponent === true ? 180 : 0}deg)` }}>
-        <PlayerInterface type={type} amIOpponent={amIOpponent} creatorInterface={false} gameData={gameData} />
-        <PlayerInterface type={type} amIOpponent={amIOpponent} creatorInterface={true} gameData={gameData} />
-      </div>
-    </Container>
-  );
+    return (
+        <Container fluid className={`d-flex justify-content-center ${styles.Board}`}>
+            <div style={{backgroundImage: `url(${amIOpponent === true ? bgRotated : bg})`}}
+                 className={`${styles.BoardBg}`}>
+                {rowNumbers.map((item) => (
+                    <BoardRow key={uuidv4()} rowNumber={item} columnLetters={columnLetters} amIOpponent={amIOpponent}
+                              fieldType="BOARDFIELD"/>
+                ))}
+                {stones.map((stone) => (
+                    <Stone
+                        key={stone.id}
+                        id={stone.id}
+                        type={stone.type}
+                        empowered={stone.empowered}
+                        originalOwner={stone.originalOwner}
+                        currentOwner={stone.currentOwner}
+                        stashed={stone.stashed}
+                        positionLetter={stone.positionLetter}
+                        positionNumber={stone.positionNumber}
+                        rowNumbers={rowNumbers}
+                        columnLetters={columnLetters}
+                    />
+                ))}
+            </div>
+            <div className="d-flex justify-content-between flex-column align-items-center"
+                 style={{transform: `rotate(${amIOpponent === true ? 180 : 0}deg)`}}>
+                <PlayerInterface type={type} amIOpponent={amIOpponent} creatorInterface={false} gameData={gameData}/>
+                <PlayerInterface type={type} amIOpponent={amIOpponent} creatorInterface={true} gameData={gameData}/>
+            </div>
+        </Container>
+    );
 };
