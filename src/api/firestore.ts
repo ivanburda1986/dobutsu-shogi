@@ -114,8 +114,14 @@ interface useGetSingleStoneDetailsInterface {
     stoneId: string;
 }
 
-export const useGetSingleStoneDetails = ({gameId, stoneId}: useGetSingleStoneDetailsInterface) => {
-    return getDoc(doc(db, `games/${gameId}/stones/${stoneId}`));
+export const useGetSingleStoneDetails = async ({gameId, stoneId}: useGetSingleStoneDetailsInterface) => {
+    const stoneRef = doc(db, `games/${gameId}/stones/${stoneId}`);
+    const singleStoneData = await getDoc(stoneRef);
+    if(singleStoneData.exists()){
+        return singleStoneData;
+    } else{
+        console.log('The stone does not exist');
+    }
 };
 
 // GAME CREATION AND MANAGEMENT

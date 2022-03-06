@@ -10,7 +10,15 @@ interface FieldInterface {
     amIOpponent: boolean;
 }
 
-export const evaluateStoneMove = () => {
+interface EvaluateStoneMoveInterface {
+    placedStoneId: string;
+    gameId: string;
+}
+
+export const evaluateStoneMove = ({placedStoneId, gameId}:EvaluateStoneMoveInterface) => {
+    const getSingleStoneDetails = useGetSingleStoneDetails;
+    const stone = getSingleStoneDetails({gameId, stoneId: placedStoneId});
+    stone.then((received)=>console.log(received?.data()))
     // -did I move in the direction allowed for the stone? If OK, continue
     //What is the current position of the stone?
     //Where can the stone move to?
@@ -28,7 +36,7 @@ export const evaluateStoneMove = () => {
 
 export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent}) => {
     const updateStonePosition = useUpdateStonePosition;
-    const getSingleStoneDetails = useGetSingleStoneDetails;
+
     const {gameId} = useParams();
 
     // Just an info function for dev purposes - remove afterwards
@@ -49,7 +57,7 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent}
 
     const onDropHandler = (event: React.DragEvent<HTMLDivElement>) => {
         let placedStoneId = event.dataTransfer!.getData("placedStoneId");
-        evaluateStoneMove();
+        evaluateStoneMove({placedStoneId:placedStoneId, gameId:gameId!});
         updateStonePosition({
             gameId: gameId!,
             stoneId: placedStoneId,

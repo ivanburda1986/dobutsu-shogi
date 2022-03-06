@@ -46,18 +46,24 @@ export const Stone = ({
         });
     }, [id, positionLetter, positionNumber, positionX, positionY, amIOpponent, rowNumbers, columnLetters]);
 
-    const onDragHandler = (event: React.DragEvent<HTMLDivElement>) => {
+    const onDragStartHandler = (event: React.DragEvent<HTMLDivElement>) => {
         event.dataTransfer.setData("placedStoneId", id);
         console.log("Dragged stone ID: ", id);
         console.log("Dragged coordinates: ", positionLetter, "-", positionNumber);
     };
+
+    const onDragEndHandler = () => {
+        console.log("Dragged stone ID: ", id);
+        console.log("Dragged coordinates: ", positionLetter, "-", positionNumber);
+    }
 
 
     return (
         <div
             id={id}
             draggable={amIStoneOwner({currentOwner: currentOwner, loggedInUserUserId: appContext.loggedInUserUserId})}
-            onDragStart={onDragHandler}
+            onDragStart={onDragStartHandler}
+            onDragEnter={onDragEndHandler}
             style={{backgroundImage: `url(${getImgReference(type)})`, transform: `rotate(${rotateDegrees}deg)`}}
             className={`${styles.Stone} noselect`}
             onClick={() => setStonePosition({
