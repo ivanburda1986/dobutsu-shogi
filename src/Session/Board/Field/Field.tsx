@@ -19,6 +19,7 @@ export const evaluateStoneMove = ({placedStoneId, gameId}:EvaluateStoneMoveInter
     const getSingleStoneDetails = useGetSingleStoneDetails;
     const stone = getSingleStoneDetails({gameId, stoneId: placedStoneId});
     stone.then((received)=>console.log(received?.data()))
+    console.log('stone move');
     // -did I move in the direction allowed for the stone? If OK, continue
     //What is the current position of the stone?
     //Where can the stone move to?
