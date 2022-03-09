@@ -48,6 +48,8 @@ export const Stone = ({
 
     const onDragStartHandler = (event: React.DragEvent<HTMLDivElement>) => {
         event.dataTransfer.setData("placedStoneId", id);
+        event.dataTransfer.setData("movedFromLetter", positionLetter);
+        event.dataTransfer.setData("movedFromNumber", String(positionNumber));
         console.log("Dragged stone ID: ", id);
         console.log("Dragged coordinates: ", positionLetter, "-", positionNumber);
     };
@@ -55,7 +57,7 @@ export const Stone = ({
     const onDragEndHandler = () => {
         console.log("Dragged stone ID: ", id);
         console.log("Dragged coordinates: ", positionLetter, "-", positionNumber);
-    }
+    };
 
 
     return (

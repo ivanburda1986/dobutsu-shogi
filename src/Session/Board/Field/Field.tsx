@@ -3,6 +3,7 @@ import {useParams} from "react-router";
 import {useGetSingleStoneDetails, useUpdateStonePosition} from "../../../api/firestore";
 import {isLetterLabelVisible, isNumberLabelVisible} from "./FieldService";
 import styles from "./Field.module.css";
+import {canStoneMoveThisWay} from "../Stones/StoneService";
 
 interface FieldInterface {
     rowNumber: number;
@@ -13,13 +14,36 @@ interface FieldInterface {
 interface EvaluateStoneMoveInterface {
     placedStoneId: string;
     gameId: string;
+    movedFromLetter: string;
+    movedFromNumber: number;
+    movingToLetter: string;
+    movingToNumber: number;
 }
 
-export const evaluateStoneMove = ({placedStoneId, gameId}:EvaluateStoneMoveInterface) => {
+export const evaluateStoneMove = ({
+                                      placedStoneId,
+                                      gameId,
+                                      movedFromLetter,
+                                      movedFromNumber,
+                                      movingToLetter,
+                                      movingToNumber
+                                  }: EvaluateStoneMoveInterface) => {
     const getSingleStoneDetails = useGetSingleStoneDetails;
     const stone = getSingleStoneDetails({gameId, stoneId: placedStoneId});
-    stone.then((received)=>console.log(received?.data()))
-    console.log('stone move');
+    stone.then((received) => {
+            let stoneData = received?.data();
+            console.log(received?.data());
+            return(canStoneMoveThisWay({
+                stoneType: stoneData!.type,
+                movedFromLetter,
+                movedFromNumber,
+                movingToLetter,
+                movingToNumber,
+                isRotated: true
+            }));
+        }
+    );
+
     // -did I move in the direction allowed for the stone? If OK, continue
     //What is the current position of the stone?
     //Where can the stone move to?
@@ -58,7 +82,15 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent}
 
     const onDropHandler = (event: React.DragEvent<HTMLDivElement>) => {
         let placedStoneId = event.dataTransfer!.getData("placedStoneId");
-        evaluateStoneMove({placedStoneId:placedStoneId, gameId:gameId!});
+        let movedFromLetter = event.dataTransfer!.getData("movedFromLetter");
+        let movedFromNumber = event.dataTransfer!.getData("movedFromNumber");
+        console.log("placed stone id", placedStoneId);
+        console.log("movedFromLetter", movedFromLetter);
+        console.log("movedFromNumber", movedFromNumber);
+        evaluateStoneMove({
+            placedStoneId: placedStoneId, gameId: gameId!, movedFromLetter, movedFromNumber:parseInt(movedFromNumber), movingToLetter: columnLetter,
+            movingToNumber: rowNumber
+        })
         updateStonePosition({
             gameId: gameId!,
             stoneId: placedStoneId,
