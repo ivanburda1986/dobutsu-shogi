@@ -50,13 +50,13 @@ export const Stone = ({
         event.dataTransfer.setData("placedStoneId", id);
         event.dataTransfer.setData("movedFromLetter", positionLetter);
         event.dataTransfer.setData("movedFromNumber", String(positionNumber));
-        console.log("Dragged stone ID: ", id);
-        console.log("Dragged coordinates: ", positionLetter, "-", positionNumber);
+        // console.log("Dragged stone ID: ", id);
+        // console.log("Dragged coordinates: ", positionLetter, "-", positionNumber);
     };
 
     const onDragEndHandler = () => {
-        console.log("Dragged stone ID: ", id);
-        console.log("Dragged coordinates: ", positionLetter, "-", positionNumber);
+        // console.log("Dragged stone ID: ", id);
+        // console.log("Dragged coordinates: ", positionLetter, "-", positionNumber);
     };
 
 

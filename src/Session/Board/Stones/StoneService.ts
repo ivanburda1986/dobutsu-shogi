@@ -20,18 +20,22 @@ export const canStoneMoveThisWay = ({
                                         movedFromNumber,
                                         movingToLetter,
                                         movingToNumber,
-                                        isRotated
+                                        isRotated,
                                     }: canStoneMoveThisWayInterface) => {
     const letters = ["A", "B", "C"];
     const numbers = [1, 2, 3, 4];
+
     if (stoneType === "CHICKEN") {
         const allowedLetters = movedFromLetter;
-        console.log(allowedLetters);
+        // console.log("allowedLetters", allowedLetters);
         let allowedNumbers = [];
-        console.log("movedFromNumber",movedFromNumber);
-         isRotated ? allowedNumbers.push(movedFromNumber -1) : allowedNumbers.push(movedFromNumber+1);
-        console.log(allowedNumbers);
-        return allowedLetters.includes(movingToLetter) && allowedNumbers.includes(movingToNumber);
+        // console.log("movedFromNumber", movedFromNumber);
+        isRotated ? allowedNumbers.push(movedFromNumber - 1) : allowedNumbers.push(movedFromNumber + 1);
+        // console.log("allowedNumbers", allowedNumbers);
+        // console.log('movingToLetter', movingToLetter);
+        // console.log('movingToNumber', movingToNumber);
+        // console.log(allowedLetters.includes(movingToLetter) && allowedNumbers.includes(movingToNumber)) ;
+        return (allowedLetters.includes(movingToLetter) && allowedNumbers.includes(movingToNumber));
 
     }
 
