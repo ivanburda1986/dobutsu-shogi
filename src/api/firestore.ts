@@ -114,7 +114,7 @@ interface useGetSingleStoneDetailsInterface {
     stoneId: string;
 }
 
-export const useGetSingleStoneDetails = async ({gameId, stoneId}: useGetSingleStoneDetailsInterface) => {
+export const getSingleStoneDetails = async ({gameId, stoneId}: useGetSingleStoneDetailsInterface) => {
     const stoneRef = doc(db, `games/${gameId}/stones/${stoneId}`);
     const singleStoneData = await getDoc(stoneRef);
     if(singleStoneData.exists()){

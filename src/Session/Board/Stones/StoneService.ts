@@ -36,7 +36,18 @@ export const canStoneMoveThisWay = ({
         // console.log('movingToNumber', movingToNumber);
         // console.log(allowedLetters.includes(movingToLetter) && allowedNumbers.includes(movingToNumber)) ;
         return (allowedLetters.includes(movingToLetter) && allowedNumbers.includes(movingToNumber));
-
+    }
+    if (stoneType === "GIRAFFE") {
+        const allowedLetters = [letters[letters.indexOf(movedFromLetter) - 1], movedFromLetter, letters[letters.indexOf(movedFromLetter) + 1]];
+        console.log("allowedLetters", allowedLetters);
+        let allowedNumbers: number[] = [];
+        console.log("movedFromNumber", movedFromNumber);
+        isRotated ? allowedNumbers = [numbers[numbers.indexOf(movedFromNumber) - 1], movedFromNumber, numbers[numbers.indexOf(movedFromNumber) + 1]] : allowedNumbers = [numbers[numbers.indexOf(movedFromNumber) + 1], movedFromNumber, numbers[numbers.indexOf(movedFromNumber) - 1]];
+        console.log("allowedNumbers", allowedNumbers);
+        // console.log('movingToLetter', movingToLetter);
+        // console.log('movingToNumber', movingToNumber);
+        // console.log(allowedLetters.includes(movingToLetter) && allowedNumbers.includes(movingToNumber)) ;
+        return (allowedLetters.includes(movingToLetter) && allowedNumbers.includes(movingToNumber));
     }
 
 };
