@@ -72,7 +72,6 @@ interface useSetStonePositionInterface {
     setPositionY: (position: number) => void;
 }
 
-//test
 
 export const useSetStonePosition = ({
                                         stoneId,
