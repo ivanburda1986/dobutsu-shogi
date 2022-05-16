@@ -1,5 +1,5 @@
-import { UserDataInterface } from "../App";
-import { initializeApp } from "firebase/app";
+import {UserDataInterface} from "../App";
+import {initializeApp} from "firebase/app";
 import {
     getFirestore,
     collection,
@@ -19,6 +19,7 @@ import {
     documentId,
     DocumentData
 } from "firebase/firestore";
+
 import {
     createUserWithEmailAndPassword,
     getAuth,
@@ -28,7 +29,7 @@ import {
     updateProfile,
     onAuthStateChanged
 } from "firebase/auth";
-import { getCreatorStones, getOpponentStones } from "./firestoreService";
+import {getCreatorStones, getOpponentStones} from "./firestoreService";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCBnawTeOf0cVa7m7aKFQoIqrXbJOorW2c",
@@ -53,7 +54,7 @@ export const auth = getAuth();
 //TYPES
 export type gameType = "DOBUTSU" | "GOROGORO" | "GREENWOOD";
 export type statusType = "WAITING" | "INPROGRESS" | "VICTORY" | "CANCELLED" | "RESIGNED";
-export type stoneType = "CHICKEN" | "ELEPHANT" | "GIRAFFE" | "LION";
+export type stoneType = "CHICKEN" | "ELEPHANT" | "GIRAFFE" | "LION" | "HEN";
 export type playerType = "CREATOR" | "OPPONENT";
 
 //STONES
@@ -117,9 +118,9 @@ interface useGetSingleStoneDetailsInterface {
 export const getSingleStoneDetails = async ({gameId, stoneId}: useGetSingleStoneDetailsInterface) => {
     const stoneRef = doc(db, `games/${gameId}/stones/${stoneId}`);
     const singleStoneData = await getDoc(stoneRef);
-    if(singleStoneData.exists()){
+    if (singleStoneData.exists()) {
         return singleStoneData;
-    } else{
+    } else {
         console.log('The stone does not exist');
     }
 };
