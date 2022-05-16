@@ -18,6 +18,7 @@ interface EvaluateStoneMoveInterface {
     movedFromNumber: number;
     movingToLetter: string;
     movingToNumber: number;
+    amIOpponent: boolean;
     cb: Function;
 }
 
@@ -28,6 +29,7 @@ export const evaluateStoneMove = ({
                                       movedFromNumber,
                                       movingToLetter,
                                       movingToNumber,
+                                      amIOpponent,
                                       cb
                                   }: EvaluateStoneMoveInterface): void => {
     const stone = getSingleStoneDetails({gameId, stoneId: placedStoneId});
@@ -41,7 +43,8 @@ export const evaluateStoneMove = ({
                 movedFromNumber,
                 movingToLetter,
                 movingToNumber,
-                isRotated: true
+                isRotated: true,
+                amIOpponent: amIOpponent
             }));
             console.log("directionAllowed", directionAllowed);
             return cb(directionAllowed);
@@ -113,6 +116,7 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent}
             movedFromNumber: parseInt(movedFromNumber),
             movingToLetter: columnLetter,
             movingToNumber: rowNumber,
+            amIOpponent: amIOpponent,
             cb: callbackFc
         });
 

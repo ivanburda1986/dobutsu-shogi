@@ -3,6 +3,7 @@ import ELEPHANT from "./images/elephant.png";
 import GIRAFFE from "./images/giraffe.png";
 import LION from "./images/lion.png";
 import {stoneType} from "../../../api/firestore";
+import {stoneMovements} from "./StoneMovements";
 
 
 interface canStoneMoveThisWayInterface {
@@ -12,6 +13,7 @@ interface canStoneMoveThisWayInterface {
     movingToLetter: string;
     movingToNumber: number;
     isRotated: boolean;
+    amIOpponent: boolean;
 }
 
 export const canStoneMoveThisWay = ({
@@ -21,33 +23,37 @@ export const canStoneMoveThisWay = ({
                                         movingToLetter,
                                         movingToNumber,
                                         isRotated,
+                                        amIOpponent,
                                     }: canStoneMoveThisWayInterface) => {
-    const letters = ["A", "B", "C"];
-    const numbers = [1, 2, 3, 4];
 
     if (stoneType === "CHICKEN") {
-        const allowedLetters = movedFromLetter;
-        // console.log("allowedLetters", allowedLetters);
-        let allowedNumbers = [];
-        // console.log("movedFromNumber", movedFromNumber);
-        isRotated ? allowedNumbers.push(movedFromNumber - 1) : allowedNumbers.push(movedFromNumber + 1);
-        // console.log("allowedNumbers", allowedNumbers);
-        // console.log('movingToLetter', movingToLetter);
-        // console.log('movingToNumber', movingToNumber);
-        // console.log(allowedLetters.includes(movingToLetter) && allowedNumbers.includes(movingToNumber)) ;
-        return (allowedLetters.includes(movingToLetter) && allowedNumbers.includes(movingToNumber));
+        const originatingCoordinate = `${movedFromLetter}${movedFromNumber}`;
+        const targetCoordinate = `${movingToLetter}${movingToNumber}`;
+        console.log('amIOpponent', amIOpponent);
+        const allowedLetters = stoneMovements.CHICKEN[amIOpponent ? 'opponent' : 'creator'][originatingCoordinate];
+        console.log(allowedLetters.includes(targetCoordinate));
+        return allowedLetters.includes(targetCoordinate);
     }
     if (stoneType === "GIRAFFE") {
-        const allowedLetters = [letters[letters.indexOf(movedFromLetter) - 1], movedFromLetter, letters[letters.indexOf(movedFromLetter) + 1]];
-        console.log("allowedLetters", allowedLetters);
-        let allowedNumbers: number[] = [];
-        console.log("movedFromNumber", movedFromNumber);
-        isRotated ? allowedNumbers = [numbers[numbers.indexOf(movedFromNumber) - 1], movedFromNumber, numbers[numbers.indexOf(movedFromNumber) + 1]] : allowedNumbers = [numbers[numbers.indexOf(movedFromNumber) + 1], movedFromNumber, numbers[numbers.indexOf(movedFromNumber) - 1]];
-        console.log("allowedNumbers", allowedNumbers);
-        // console.log('movingToLetter', movingToLetter);
-        // console.log('movingToNumber', movingToNumber);
-        // console.log(allowedLetters.includes(movingToLetter) && allowedNumbers.includes(movingToNumber)) ;
-        return (allowedLetters.includes(movingToLetter) && allowedNumbers.includes(movingToNumber));
+        const originatingCoordinate = `${movedFromLetter}${movedFromNumber}`;
+        const targetCoordinate = `${movingToLetter}${movingToNumber}`;
+        const allowedLetters = stoneMovements.GIRAFFE[originatingCoordinate];
+        console.log(allowedLetters.includes(targetCoordinate));
+        return allowedLetters.includes(targetCoordinate);
+    }
+    if (stoneType === "ELEPHANT") {
+        const originatingCoordinate = `${movedFromLetter}${movedFromNumber}`;
+        const targetCoordinate = `${movingToLetter}${movingToNumber}`;
+        const allowedLetters = stoneMovements.ELEPHANT[originatingCoordinate];
+        console.log(allowedLetters.includes(targetCoordinate));
+        return allowedLetters.includes(targetCoordinate);
+    }
+    if (stoneType === "LION") {
+        const originatingCoordinate = `${movedFromLetter}${movedFromNumber}`;
+        const targetCoordinate = `${movingToLetter}${movingToNumber}`;
+        const allowedLetters = stoneMovements.LION[originatingCoordinate];
+        console.log(allowedLetters.includes(targetCoordinate));
+        return allowedLetters.includes(targetCoordinate);
     }
 
 };
