@@ -1,19 +1,18 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import { Route, Routes, useLocation } from "react-router-dom";
-import _ from "lodash";
+import {useEffect, useState} from "react";
+import {useNavigate} from "react-router";
+import {Route, Routes, useLocation} from "react-router-dom";
 
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./api/firestore";
-import { AppContext } from "./context/AppContext";
+import {onAuthStateChanged} from "firebase/auth";
+import {auth} from "./api/firestore";
+import {AppContext} from "./context/AppContext";
 
-import { Header } from "./Header/Header";
-import { LaunchScreen } from "./LaunchScreen/LaunchScreen";
-import { RegisterScreen } from "./RegisterScreen/RegisterScreen";
-import { LoginScreen } from "./LoginScreen/LoginScreen";
-import { Profile } from "./Profile/Profile";
-import { CreateGame } from "./CreateGame/CreateGame";
-import { Session } from "./Session/Session";
+import {Header} from "./Header/Header";
+import {LaunchScreen} from "./LaunchScreen/LaunchScreen";
+import {RegisterScreen} from "./RegisterScreen/RegisterScreen";
+import {LoginScreen} from "./LoginScreen/LoginScreen";
+import {Profile} from "./Profile/Profile";
+import {CreateGame} from "./CreateGame/CreateGame";
+import {Session} from "./Session/Session";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -43,21 +42,18 @@ export const App = () => {
 
     useEffect(() => {
         if (userLoggedIn && location.pathname === "/login") {
-            console.log("App navigated from login");
             navigate("../", {replace: false});
             return;
         }
         if (userLoggedIn && location.pathname === "/register") {
-            console.log("App navigated from registration");
             navigate("../", {replace: false});
             return;
         }
         if (!userLoggedIn && location.pathname === "/") {
-            console.log("App navigated from login");
             navigate("../login", {replace: false});
             return;
         }
-    }, [userLoggedIn, navigate]);
+    }, [userLoggedIn, navigate, location.pathname]);
 
     onAuthStateChanged(auth, (user) => {
         if (user) {

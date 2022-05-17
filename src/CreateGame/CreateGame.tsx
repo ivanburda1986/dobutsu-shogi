@@ -1,10 +1,10 @@
 import {FC, useContext, useEffect, useRef, useState} from "react";
-import {Button, Container, Form, Row} from "react-bootstrap";
 import {useNavigate} from "react-router";
+import {useCreateGame, gameType} from "../api/firestore";
+import {Button, Container, Form, Row} from "react-bootstrap";
 
 import {AppContext} from "../context/AppContext";
 import {ProvidedContextInterface} from "../App";
-import {useCreateGame, gameType} from "../api/firestore";
 
 export const CreateGame: FC = () => {
     const [newGameNameInput, setNewGameNameInput] = useState<string | undefined>("");
@@ -13,8 +13,8 @@ export const CreateGame: FC = () => {
 
     const appContext: ProvidedContextInterface = useContext(AppContext);
     const gameNameRef = useRef<HTMLInputElement>(null);
-    const createGame = useCreateGame;
     const navigate = useNavigate();
+    const createGame = useCreateGame;
 
     const navigateToLaunchScreen = () => {
         navigate("../", {replace: false});
@@ -43,7 +43,7 @@ export const CreateGame: FC = () => {
                                 value={newGameNameInput}
                                 placeholder="New game name"
                                 onChange={() => {
-                                    setNewGameNameInput(gameNameRef.current!.value);
+                                    setNewGameNameInput(gameNameRef.current?.value);
                                 }}
                             />
                         </Form.Group>
