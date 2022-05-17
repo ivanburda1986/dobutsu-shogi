@@ -1,6 +1,6 @@
 import React from "react";
 import {render, screen} from "@testing-library/react";
-import App from "./firestore";
+import App from "./firestoreTutorial";
 
 test("renders learn react link", () => {
     render(<App/>);
