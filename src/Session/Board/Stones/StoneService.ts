@@ -2,8 +2,8 @@ import CHICKEN from "./images/chicken.png";
 import ELEPHANT from "./images/elephant.png";
 import GIRAFFE from "./images/giraffe.png";
 import LION from "./images/lion.png";
-import {stoneType} from "../../../api/firestore";
 import {stoneMovements} from "./StoneMovements";
+import {stoneType} from "./Stone";
 
 
 interface canStoneMoveThisWayInterface {

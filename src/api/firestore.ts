@@ -1,35 +1,18 @@
 import {UserDataInterface} from "../App";
 import {initializeApp} from "firebase/app";
-import {
-    getFirestore,
-    collection,
-    Timestamp,
-    getDocs,
-    addDoc,
-    getDoc,
-    setDoc,
-    deleteDoc,
-    doc,
-    onSnapshot,
-    orderBy,
-    serverTimestamp,
-    query,
-    updateDoc,
-    where,
-    documentId,
-    DocumentData
-} from "firebase/firestore";
+import {addDoc, collection, deleteDoc, doc, getDoc, getFirestore, setDoc, updateDoc} from "firebase/firestore";
 
 import {
     createUserWithEmailAndPassword,
     getAuth,
-    signOut,
-    signInWithEmailAndPassword,
+    onAuthStateChanged,
     sendPasswordResetEmail,
-    updateProfile,
-    onAuthStateChanged
+    signInWithEmailAndPassword,
+    signOut,
+    updateProfile
 } from "firebase/auth";
 import {getCreatorStones, getOpponentStones} from "./firestoreService";
+import {StoneInterface, stoneType} from "../Session/Board/Stones/Stone";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCBnawTeOf0cVa7m7aKFQoIqrXbJOorW2c",
@@ -54,24 +37,10 @@ export const auth = getAuth();
 //TYPES
 export type gameType = "DOBUTSU" | "GOROGORO" | "GREENWOOD";
 export type statusType = "WAITING" | "INPROGRESS" | "VICTORY" | "CANCELLED" | "RESIGNED";
-export type stoneType = "CHICKEN" | "ELEPHANT" | "GIRAFFE" | "LION" | "HEN";
 export type playerType = "CREATOR" | "OPPONENT";
 
-//STONES
-export interface StoneInterface {
-    id: string;
-    type: stoneType;
-    empowered: boolean;
-    originalOwner: string;
-    currentOwner: string;
-    stashed: boolean;
-    positionLetter: string;
-    positionNumber: number;
-    amIOpponent?: boolean;
-    rowNumbers?: number[];
-    columnLetters?: string[];
-}
 
+// Update stone position
 interface useUpdateStonePositionInterface {
     gameId: string;
     stoneId: string;
@@ -103,13 +72,13 @@ interface useUpdateStoneTypeInterface {
 
 export const useUpdateStoneType = ({gameId, stoneId, type}: useUpdateStoneTypeInterface) => {
     updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {type: type})
-        .then(() => console.log("Stone position updated"))
+        .then(() => console.log("Stone type updated"))
         .catch((err) => {
             console.log(err.message);
         });
 };
 
-//Get one game details
+//Get stone details
 interface useGetSingleStoneDetailsInterface {
     gameId: string;
     stoneId: string;
@@ -158,7 +127,7 @@ export const useCreateGame = ({creatorId, creatorName, name, type, createGameCb}
     });
 };
 
-interface createJoiningPlayerStones {
+interface JoinGame {
     gameId: string;
     joiningPlayerType: playerType;
     joiningPlayerId: string;
@@ -174,11 +143,11 @@ export const useJoinGame = ({
                                 joiningPlayerName,
                                 joiningPlayerPhotoURL,
                                 type
-                            }: createJoiningPlayerStones) => {
+                            }: JoinGame) => {
     if (joiningPlayerType === "CREATOR") {
         //Update game details
         updateDoc(doc(db, "games", gameId), {creatorJoined: true, creatorPhotoURL: joiningPlayerPhotoURL})
-            .then(() => console.log("Game updated"))
+            .then(() => console.log("The creator has joined the game."))
             .catch((err) => {
                 console.log(err.message);
             });
@@ -187,7 +156,7 @@ export const useJoinGame = ({
         gameStones.forEach((stone) => {
             setDoc(doc(db, `games/${gameId}/stones`, stone.id), {
                 ...stone,
-            }).then(() => console.log("Stone added"));
+            }).then(() => console.log("Creators stones got created."));
         });
     } else {
         //Update game details
@@ -198,7 +167,7 @@ export const useJoinGame = ({
             opponentJoined: true,
             status: "INPROGRESS"
         })
-            .then(() => console.log("Game updated"))
+            .then(() => console.log("The opponent has joined the game."))
             .catch((err) => {
                 console.log(err.message);
             });
@@ -207,7 +176,7 @@ export const useJoinGame = ({
         gameStones.forEach((stone) => {
             setDoc(doc(db, `games/${gameId}/stones`, stone.id), {
                 ...stone,
-            }).then(() => console.log("Stone added"));
+            }).then(() => console.log("Opponents stone got created."));
         });
     }
 };
@@ -280,7 +249,7 @@ interface LoginUserInterface {
 export const useLoginUser = ({email, password, loginUserCb}: LoginUserInterface) => {
     signInWithEmailAndPassword(auth, email, password)
         .then((cred) => {
-            console.log(cred);
+            console.log('User logged in:', cred);
         })
         .catch((err) => {
             loginUserCb.forwardError(err.message);

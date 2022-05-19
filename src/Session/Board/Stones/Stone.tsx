@@ -1,11 +1,28 @@
 import React, {useContext, useEffect, useState} from "react";
 import styles from "./Stone.module.css";
 
-import {StoneInterface, useUpdateStonePosition, useUpdateStoneType} from "../../../api/firestore";
-import {useSetStonePosition, rotateOponentStones, getImgReference, amIStoneOwner} from "./StoneService";
+import {useUpdateStonePosition, useUpdateStoneType} from "../../../api/firestore";
+import {amIStoneOwner, getImgReference, rotateOponentStones, useSetStonePosition} from "./StoneService";
 import {ProvidedContextInterface} from "../../../App";
 import {AppContext} from "../../../context/AppContext";
 import {useParams} from "react-router";
+
+export type stoneType = "CHICKEN" | "ELEPHANT" | "GIRAFFE" | "LION" | "HEN";
+
+//STONES
+export interface StoneInterface {
+    id: string;
+    type: stoneType;
+    empowered: boolean;
+    originalOwner: string;
+    currentOwner: string;
+    stashed: boolean;
+    positionLetter: string;
+    positionNumber: number;
+    amIOpponent?: boolean;
+    rowNumbers?: number[];
+    columnLetters?: string[];
+}
 
 export const Stone = ({
                           amIOpponent,

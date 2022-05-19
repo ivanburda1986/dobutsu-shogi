@@ -1,19 +1,19 @@
 import bg from "../../images/bg-clean.png";
 import bgRotated from "../../images/bg-clean-rotated.png";
-import { FC, useContext, useEffect, useRef, useState } from "react";
-import { Container, Row } from "react-bootstrap";
-import { db, gameType, getSingleGameDetails, StoneInterface } from "../../api/firestore";
-import { getBoardSize } from "./BoardService";
-import { BoardRow } from "./BoardRow/BoardRow";
-import { v4 as uuidv4 } from "uuid";
+import {FC, useContext, useEffect, useRef, useState} from "react";
+import {Container, Row} from "react-bootstrap";
+import {db, gameType, getSingleGameDetails} from "../../api/firestore";
+import {getBoardSize} from "./BoardService";
+import {BoardRow} from "./BoardRow/BoardRow";
+import {v4 as uuidv4} from "uuid";
 
 import styles from "./Board.module.css";
-import { Stone } from "./Stones/Stone";
-import { useParams } from "react-router";
-import { collection, DocumentData, onSnapshot } from "firebase/firestore";
-import { AppContext } from "../../context/AppContext";
-import { ProvidedContextInterface } from "../../App";
-import { PlayerInterface } from "../PlayerInterface/PlayerInterface";
+import {Stone, StoneInterface} from "./Stones/Stone";
+import {useParams} from "react-router";
+import {collection, DocumentData, onSnapshot} from "firebase/firestore";
+import {AppContext} from "../../context/AppContext";
+import {ProvidedContextInterface} from "../../App";
+import {PlayerInterface} from "../PlayerInterface/PlayerInterface";
 
 interface BoardInterface {
     type: gameType;
