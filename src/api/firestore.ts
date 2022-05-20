@@ -58,7 +58,7 @@ export const useUpdateStonePosition = ({
         positionLetter: positionLetter,
         positionNumber: positionNumber
     })
-        .then(() => console.log("Stone position updated"))
+        .then(() => console.log("Stone position updated on server"))
         .catch((err) => {
             console.log(err.message);
         });
@@ -72,7 +72,7 @@ interface useUpdateStoneTypeInterface {
 
 export const useUpdateStoneType = ({gameId, stoneId, type}: useUpdateStoneTypeInterface) => {
     updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {type: type})
-        .then(() => console.log("Stone type updated"))
+        .then(() => console.log("Stone type updated on server"))
         .catch((err) => {
             console.log(err.message);
         });

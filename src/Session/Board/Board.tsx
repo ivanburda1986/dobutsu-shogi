@@ -28,6 +28,9 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
     const [stones, setStones] = useState<StoneInterface[]>([]);
     const [rowNumbers, setRowNumbers] = useState<number[]>(getBoardSize({type}).rowNumbers);
     const [columnLetters, setColumnLetters] = useState<string[]>(getBoardSize({type}).columnLetters);
+    const [draggedStone, setDraggedStone] = useState<StoneInterface | undefined>();
+    const [lyingStone, setLyingStone] = useState<StoneInterface | undefined>();
+    const [canTakeStone, setCanTakeStone] = useState<boolean>(false);
 
     const isComponentMountedRef = useRef(true);
     useEffect(() => {
@@ -66,6 +69,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
                 ))}
                 {stones.map((stone) => (
                     <Stone
+                        amIOpponent={amIOpponent}
                         key={stone.id}
                         id={stone.id}
                         type={stone.type}
@@ -77,6 +81,12 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
                         positionNumber={stone.positionNumber}
                         rowNumbers={rowNumbers}
                         columnLetters={columnLetters}
+                        draggedStone={draggedStone}
+                        lyingStone={lyingStone}
+                        setDraggedStone={setDraggedStone}
+                        setLyingStone={setLyingStone}
+                        canTakeStone={canTakeStone}
+                        setCanTakeStone={setCanTakeStone}
                     />
                 ))}
             </div>

@@ -1,8 +1,14 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {FC, useContext, useEffect, useState} from "react";
 import styles from "./Stone.module.css";
 
 import {useUpdateStonePosition, useUpdateStoneType} from "../../../api/firestore";
-import {amIStoneOwner, getImgReference, rotateOponentStones, useSetStonePosition} from "./StoneService";
+import {
+    amIStoneOwner,
+    canStoneMoveThisWay,
+    getImgReference,
+    rotateOponentStones,
+    useSetStonePosition
+} from "./StoneService";
 import {ProvidedContextInterface} from "../../../App";
 import {AppContext} from "../../../context/AppContext";
 import {useParams} from "react-router";
@@ -22,21 +28,33 @@ export interface StoneInterface {
     amIOpponent?: boolean;
     rowNumbers?: number[];
     columnLetters?: string[];
+    draggedStone?: StoneInterface;
+    lyingStone?: StoneInterface;
+    setDraggedStone?: Function;
+    setLyingStone?: Function;
+    canTakeStone?: boolean;
+    setCanTakeStone?: Function;
 }
 
-export const Stone = ({
-                          amIOpponent,
-                          id,
-                          type,
-                          empowered,
-                          originalOwner,
-                          currentOwner,
-                          stashed,
-                          positionLetter,
-                          positionNumber,
-                          rowNumbers,
-                          columnLetters
-                      }: StoneInterface) => {
+export const Stone: FC<StoneInterface> = ({
+                                              amIOpponent,
+                                              id,
+                                              type,
+                                              empowered,
+                                              originalOwner,
+                                              currentOwner,
+                                              stashed,
+                                              positionLetter,
+                                              positionNumber,
+                                              rowNumbers,
+                                              columnLetters,
+                                              draggedStone,
+                                              lyingStone,
+                                              setDraggedStone,
+                                              setLyingStone,
+                                              canTakeStone,
+                                              setCanTakeStone
+                                          }) => {
     const appContext: ProvidedContextInterface = useContext(AppContext);
     const {gameId} = useParams();
     const [rotateDegrees, setRotateDegrees] = useState<number>(0);
@@ -68,12 +86,101 @@ export const Stone = ({
         event.dataTransfer.setData("movedFromLetter", positionLetter);
         event.dataTransfer.setData("movedFromNumber", String(positionNumber));
         // console.log("Dragged stone ID: ", id);
-        // console.log("Dragged coordinates: ", positionLetter, "-", positionNumber);
+        // console.log("Dragged stone coordinates: ", positionLetter, "-", positionNumber);
+        setDraggedStone && setDraggedStone({
+            amIOpponent,
+            id,
+            type,
+            empowered,
+            originalOwner,
+            currentOwner,
+            stashed,
+            positionLetter,
+            positionNumber,
+            rowNumbers,
+            columnLetters,
+        });
     };
 
-    const onDragEndHandler = () => {
+    const onDragEnterHandler = () => {
         // console.log("Dragged stone ID: ", id);
-        // console.log("Dragged coordinates: ", positionLetter, "-", positionNumber);
+        // console.log("Lying stone coordinates: ", positionLetter, "-", positionNumber);
+        setLyingStone && setLyingStone({
+            amIOpponent,
+            id,
+            type,
+            empowered,
+            originalOwner,
+            currentOwner,
+            stashed,
+            positionLetter,
+            positionNumber,
+            rowNumbers,
+            columnLetters,
+        });
+    };
+
+    const onStoneTakeOverAttemptHandler = (event: React.DragEvent<HTMLDivElement>) => {
+        //Make sure details of a lying stone and dragged stone are available
+        if (!lyingStone || !draggedStone || !setCanTakeStone) {
+            return;
+        }
+
+        //Do not do anything if the stone I am dragging is still above itself
+        if (lyingStone.id === draggedStone.id) {
+            console.log('Ignoring dragging above the stone which is being moved');
+            setCanTakeStone(false);
+            return;
+        }
+
+        // Is the lying stone an opponents stone?
+        //no do not allow dropping
+        //yes: continue
+        if (lyingStone.currentOwner === draggedStone.currentOwner) {
+            console.log('You cannot take your own stone');
+            setCanTakeStone(false);
+            return;
+        }
+
+        // Can the dragged stone move to the coordinates of the lying stone?
+        if (!canStoneMoveThisWay({
+            stoneType: draggedStone.type,
+            movedFromLetter: draggedStone.positionLetter,
+            movedFromNumber: draggedStone.positionNumber,
+            movingToLetter: lyingStone.positionLetter,
+            movingToNumber: lyingStone.positionNumber,
+            amIOpponent: !!draggedStone.amIOpponent,
+        })) {
+            console.log('Your stone cannot move to this position');
+            setCanTakeStone(false);
+            return;
+        }
+        console.log('Your stone can take this stone.');
+        setCanTakeStone(true);
+        return;
+        event.preventDefault();
+    };
+
+    const onStoneDropHandler = (event: React.DragEvent<HTMLDivElement>) => {
+        if (!lyingStone || !draggedStone || !canTakeStone) {
+            return;
+        }
+        if (canTakeStone) {
+            updateStonePosition({
+                gameId: gameId!,
+                stoneId: lyingStone.id,
+                positionLetter: 'M',
+                positionNumber: 1
+            });
+            updateStonePosition({
+                gameId: gameId!,
+                stoneId: draggedStone.id,
+                positionLetter: lyingStone.positionLetter,
+                positionNumber: lyingStone.positionNumber
+            });
+        }
+        console.log('Cannot drop');
+        return;
     };
 
 
@@ -82,7 +189,9 @@ export const Stone = ({
             id={id}
             draggable={amIStoneOwner({currentOwner: currentOwner, loggedInUserUserId: appContext.loggedInUserUserId})}
             onDragStart={onDragStartHandler}
-            onDragEnter={onDragEndHandler}
+            onDragEnter={onDragEnterHandler}
+            onDragOver={onStoneTakeOverAttemptHandler}
+            onDragEnd={onStoneDropHandler}
             style={{backgroundImage: `url(${getImgReference(type)})`, transform: `rotate(${rotateDegrees}deg)`}}
             className={`${styles.Stone} noselect`}
             onClick={() => setStonePosition({
