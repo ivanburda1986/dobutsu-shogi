@@ -1,6 +1,12 @@
 Next steps:
-a stash owner can take a stone and place it on the board
+a stash owner can take a stone and place it to an empty slot on the board
+a chicken turns into a hen when moved while being on board to the opponents edge
+a chicken does not turn into a hen when moved from stash to opponents edge
+a hen turns into a chicken when it gets taken
 taking the opponent's lion -> victory/defeat
+getting with lion to opponents edge, while not getting endangered by opponents stone -> victory/defeat
+repeating the same row of moves 3x -> a tie
+
 a finished game stats are saved to each players data to serve as stats input
 stashed stones of the same type get a number to indicate decking
 indicate whose turn it is
@@ -12,6 +18,10 @@ players profile shows stats: played, won, lost
 when creating a game, a limit can be added for individual moves
 a player not moving within the limit loses
 a created game can be password protected
+emphasise politeness - advise players to show courtesy and thankfulness
+
+Question:
+What happens if 2 alone lions remain on the board?
 
 Reference 
 https://getbootstrap.com/docs/5.0/layout/containers/
