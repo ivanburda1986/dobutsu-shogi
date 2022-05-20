@@ -1,6 +1,8 @@
 import React, {FC} from "react";
 import {useParams} from "react-router";
 import styles from "./StashField.module.css";
+import {getImgReference} from "../../../Header/Avatar/Avatar";
+import {columnLetterType} from "../../PlayerInterface/PlayerInterfaceService";
 
 interface FieldInterface {
     rowNumber: number;
@@ -10,12 +12,20 @@ interface FieldInterface {
 
 export const StashField: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent}) => {
 
+
     return (
-        <div
-            style={{transform: `rotate(${amIOpponent === true ? 180 : 0}deg)`}}
-            data-number={rowNumber}
-            data-letter={columnLetter}
-            className={`${styles.Field} noselect`}
-        />
+        <div style={{
+            // transform: `rotate(${amIOpponent === true ? 180 : 0}deg)`,
+            backgroundImage: `url(${getImgReference(columnLetter)})`,
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            opacity: '0.1'
+        }}>
+            <div
+                data-number={rowNumber}
+                data-letter={columnLetter}
+                className={`${styles.Field} noselect`}
+            />
+        </div>
     );
 };
