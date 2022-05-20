@@ -5,7 +5,7 @@ import {useUpdateStoneOnTakeOver, useUpdateStonePosition, useUpdateStoneType} fr
 import {
     amIStoneOwner,
     canStoneMoveThisWay,
-    getImgReference,
+    getImgReference, getStashTargetPosition,
     rotateOponentStones,
     useSetStonePosition
 } from "./StoneService";
@@ -176,7 +176,10 @@ export const Stone: FC<StoneInterface> = ({
                     originalOwner: lyingStone.originalOwner,
                     currentOwner: draggedStone.currentOwner,
                     stashed: true,
-                    positionLetter: 'N',
+                    positionLetter: getStashTargetPosition({
+                        type: lyingStone.type,
+                        amIOpponent: amIOpponent!
+                    }),
                     positionNumber: 1
                 }
             });

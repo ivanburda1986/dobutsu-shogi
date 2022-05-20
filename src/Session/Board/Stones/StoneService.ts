@@ -5,9 +5,16 @@ import LION from "./images/lion.png";
 import {stoneMovements} from "./StoneMovements";
 import {stoneType} from "./Stone";
 
+interface getStashTargetPositionInterface {
+    type: stoneType;
+    amIOpponent: boolean;
+}
 
-export const getStashTargetPosition = () => {
-    
+export const getStashTargetPosition = ({type, amIOpponent}: getStashTargetPositionInterface): string => {
+    if (amIOpponent) {
+        return `OPPONENT-${type}`;
+    }
+    return `CREATOR-${type}`;
 };
 
 
