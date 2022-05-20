@@ -1,76 +1,17 @@
-Next step: Movement evaluation 
-I start moving a stone which is in the board: 
-When I want to place it, evaluation happens: 
--did I move in the direction allowed for the stone? If OK, continue
--did I move to an allowed distance for the stone? If OK, continue
--is the target field on the board? If yes, continue
--is the target field free or is there an opponent's stone? If yes, continue 
---if it is free: place the stone 
---if there is an opponents stone and it is not the Lion 
----the opponent's stone should turn into my own stone
----the opponent's stone should land in my stash; if there is already a stone of this type, lay over it and increase the count 
-
-I want to take a stone from the stash and place it on the board: 
-
-
-
-
-
-
-
-
-
-
-
-Stash: 
-Resign button
-Indication whether its the players turn or not 
-Slots for taken stones - 1 slot for a stone type, with an indication of a count 
-Number of slots depends on the game type: 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-DESIGN 
-LAUNCH SCREEN
--Your games in progress
--Games waiting for an oponent
-
-Profile settings
--Statistics (Played, Won, Lost)
-
-
-Gameplay
-Display session details 
-The player who starts is decided randomly
-
-Display areas where players can place stones outside of the desk
-Stone collision - stones cannot overlap
-Drag and drop movement. Stones can be dropped on the desk only to specific areas (slots) to keep a neat look.
-The rules of the game are evaluated by players themselves - not by the game itself. The game detects only the game end.
-When one player wins the game shows a congratulation and a quote inspiring the players to thank each other for the game.
-A player can surrender which ends the game.
-
-
-Additional ideas: 
-Game timeframe - can be specified by the admin when creating a session
-Game can be saved so that the players can continue later 
-A game session can be password protected
-Statistics - stats for a specific games are visible only to its participants
-Players can set a limit even during an ongoing game to speed it up. This option gets suggested automatically if the game is going on for some time. 
-
+Next steps:
+a stash owner can take a stone and place it on the board
+taking the opponent's lion -> victory/defeat
+a finished game stats are saved to each players data to serve as stats input
+stashed stones of the same type get a number to indicate decking
+indicate whose turn it is
+the player who starts is decided randomly
+resign option
+launch screen indicates games in progress
+launch screen indicates games waiting for an opponent
+players profile shows stats: played, won, lost
+when creating a game, a limit can be added for individual moves
+a player not moving within the limit loses
+a created game can be password protected
 
 Reference 
 https://getbootstrap.com/docs/5.0/layout/containers/
