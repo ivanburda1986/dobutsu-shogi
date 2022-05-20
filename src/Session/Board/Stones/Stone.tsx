@@ -1,7 +1,7 @@
 import React, {FC, useContext, useEffect, useState} from "react";
 import styles from "./Stone.module.css";
 
-import {useUpdateStonePosition, useUpdateStoneType} from "../../../api/firestore";
+import {useUpdateStoneOnTakeOver, useUpdateStonePosition, useUpdateStoneType} from "../../../api/firestore";
 import {
     amIStoneOwner,
     canStoneMoveThisWay,
@@ -62,6 +62,7 @@ export const Stone: FC<StoneInterface> = ({
     const [positionY, setPositionY] = useState<number>(0);
     const setStonePosition = useSetStonePosition;
     const updateStonePosition = useUpdateStonePosition;
+    const updateStoneOnTakeOver = useUpdateStoneOnTakeOver;
     const updateStoneType = useUpdateStoneType;
 
     useEffect(() => {
@@ -166,11 +167,18 @@ export const Stone: FC<StoneInterface> = ({
             return;
         }
         if (canTakeStone) {
-            updateStonePosition({
+            updateStoneOnTakeOver({
                 gameId: gameId!,
-                stoneId: lyingStone.id,
-                positionLetter: 'M',
-                positionNumber: 1
+                stone: {
+                    id: lyingStone.id,
+                    type: lyingStone.type,
+                    empowered: false,
+                    originalOwner: lyingStone.originalOwner,
+                    currentOwner: draggedStone.currentOwner,
+                    stashed: true,
+                    positionLetter: 'N',
+                    positionNumber: 1
+                }
             });
             updateStonePosition({
                 gameId: gameId!,

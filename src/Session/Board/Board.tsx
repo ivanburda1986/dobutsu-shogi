@@ -65,7 +65,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
                  className={`${styles.BoardBg}`}>
                 {rowNumbers.map((item) => (
                     <BoardRow key={uuidv4()} rowNumber={item} columnLetters={columnLetters} amIOpponent={amIOpponent}
-                              fieldType="BOARDFIELD"/>
+                    />
                 ))}
                 {stones.map((stone) => (
                     <Stone

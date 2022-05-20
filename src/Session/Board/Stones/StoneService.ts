@@ -6,6 +6,11 @@ import {stoneMovements} from "./StoneMovements";
 import {stoneType} from "./Stone";
 
 
+export const getStashTargetPosition = () => {
+    
+};
+
+
 interface canStoneMoveThisWayInterface {
     stoneType: stoneType;
     movedFromLetter: string;

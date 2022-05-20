@@ -78,6 +78,15 @@ export const useUpdateStoneType = ({gameId, stoneId, type}: useUpdateStoneTypeIn
         });
 };
 
+
+export const useUpdateStoneOnTakeOver = ({gameId, stone}: { gameId: string, stone: StoneInterface }) => {
+    updateDoc(doc(db, `games/${gameId}/stones`, stone.id), {...stone})
+        .then(() => console.log("Taken stone updated on server"))
+        .catch((err) => {
+            console.log(err.message);
+        });
+};
+
 //Get stone details
 interface useGetSingleStoneDetailsInterface {
     gameId: string;
