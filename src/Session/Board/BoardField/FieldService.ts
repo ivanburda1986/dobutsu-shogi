@@ -53,7 +53,8 @@ export const evaluateStoneMove = ({
                 movedFromNumber,
                 movingToLetter,
                 movingToNumber,
-                amIOpponent: amIOpponent
+                amIOpponent: amIOpponent,
+                stashed: stoneData!.stashed
             }));
             return cb(directionAllowed);
         }

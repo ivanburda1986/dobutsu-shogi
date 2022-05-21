@@ -33,7 +33,8 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent}
                     gameId: gameId!,
                     stoneId: placedStoneId,
                     positionLetter: columnLetter,
-                    positionNumber: rowNumber
+                    positionNumber: rowNumber,
+                    stashed: false
                 });
                 console.log('The stone can move here');
             } else {

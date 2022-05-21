@@ -25,6 +25,7 @@ interface canStoneMoveThisWayInterface {
     movingToLetter: string;
     movingToNumber: number;
     amIOpponent: boolean;
+    stashed: boolean;
 }
 
 export const canStoneMoveThisWay = ({
@@ -34,9 +35,13 @@ export const canStoneMoveThisWay = ({
                                         movingToLetter,
                                         movingToNumber,
                                         amIOpponent,
+                                        stashed
                                     }: canStoneMoveThisWayInterface) => {
 
     if (stoneType === "CHICKEN") {
+        if (stashed) {
+            return true;
+        }
         const originatingCoordinate = `${movedFromLetter}${movedFromNumber}`;
         const targetCoordinate = `${movingToLetter}${movingToNumber}`;
         console.log('amIOpponent', amIOpponent);
@@ -45,6 +50,9 @@ export const canStoneMoveThisWay = ({
         return allowedLetters.includes(targetCoordinate);
     }
     if (stoneType === "GIRAFFE") {
+        if (stashed) {
+            return true;
+        }
         const originatingCoordinate = `${movedFromLetter}${movedFromNumber}`;
         const targetCoordinate = `${movingToLetter}${movingToNumber}`;
         const allowedLetters = stoneMovements.GIRAFFE[originatingCoordinate];
@@ -52,6 +60,9 @@ export const canStoneMoveThisWay = ({
         return allowedLetters.includes(targetCoordinate);
     }
     if (stoneType === "ELEPHANT") {
+        if (stashed) {
+            return true;
+        }
         const originatingCoordinate = `${movedFromLetter}${movedFromNumber}`;
         const targetCoordinate = `${movingToLetter}${movingToNumber}`;
         const allowedLetters = stoneMovements.ELEPHANT[originatingCoordinate];

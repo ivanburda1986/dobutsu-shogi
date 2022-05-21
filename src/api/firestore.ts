@@ -46,17 +46,20 @@ interface useUpdateStonePositionInterface {
     stoneId: string;
     positionLetter: string;
     positionNumber: number;
+    stashed: boolean;
 }
 
 export const useUpdateStonePosition = ({
                                            gameId,
                                            stoneId,
                                            positionLetter,
-                                           positionNumber
+                                           positionNumber,
+                                           stashed
                                        }: useUpdateStonePositionInterface) => {
     updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {
         positionLetter: positionLetter,
-        positionNumber: positionNumber
+        positionNumber: positionNumber,
+        stashed: false
     })
         .then(() => console.log("Stone position updated on server"))
         .catch((err) => {

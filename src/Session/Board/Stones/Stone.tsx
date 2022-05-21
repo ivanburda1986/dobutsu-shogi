@@ -134,6 +134,12 @@ export const Stone: FC<StoneInterface> = ({
             return;
         }
 
+        // Prevent takeover if the stone I am dragging is going from the stash
+        if (draggedStone.stashed) {
+            console.log('A stone you are dragging from the stash cannot be place on top of another stone');
+            return;
+        }
+
         // Is the lying stone an opponents stone?
         //no do not allow dropping
         //yes: continue
@@ -151,6 +157,7 @@ export const Stone: FC<StoneInterface> = ({
             movingToLetter: lyingStone.positionLetter,
             movingToNumber: lyingStone.positionNumber,
             amIOpponent: !!draggedStone.amIOpponent,
+            stashed: draggedStone.stashed
         })) {
             console.log('Your stone cannot move to this position');
             setCanTakeStone(false);
@@ -187,7 +194,8 @@ export const Stone: FC<StoneInterface> = ({
                 gameId: gameId!,
                 stoneId: draggedStone.id,
                 positionLetter: lyingStone.positionLetter,
-                positionNumber: lyingStone.positionNumber
+                positionNumber: lyingStone.positionNumber,
+                stashed: false
             });
         }
         console.log('Cannot drop');
