@@ -1,5 +1,5 @@
 import {getSingleStoneDetails} from "../../../api/firestore";
-import {canStoneMoveThisWay} from "../Stones/StoneService";
+import {canStoneMoveThisWay, shouldChickenTurnIntoHen} from "../Stones/StoneService";
 
 const rowNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const columnLetters = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
@@ -56,15 +56,13 @@ export const evaluateStoneMove = ({
                 amIOpponent: amIOpponent,
                 stashed: stoneData!.stashed
             }));
-            return cb(directionAllowed);
+            let turnChickenToHen = shouldChickenTurnIntoHen({
+                amIOpponent: amIOpponent,
+                stashed: stoneData!.stashed,
+                movingToLetter: movingToLetter,
+                movingToNumber: movingToNumber
+            });
+            return cb(directionAllowed, turnChickenToHen);
         }
     );
-
-    // -did I move to an allowed distance for the stone? If OK, continue
-    // -is the target field on the board? If yes, continue
-    // -is the target field free or is there an opponent's stone? If yes, continue
-    // --if it is free: place the stone
-    // --if there is an opponents stone and it is not the Lion
-    // ---the opponent's stone should turn into my own stone
-    // ---the opponent's stone should land in my stash; if there is already a stone of this type, lay over it and increase the count
 };

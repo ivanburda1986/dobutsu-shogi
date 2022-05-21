@@ -1,7 +1,7 @@
 import React, {FC, useContext, useEffect, useState} from "react";
 import styles from "./Stone.module.css";
 
-import {useUpdateStoneOnTakeOver, useUpdateStonePosition, useUpdateStoneType} from "../../../api/firestore";
+import {useUpdateStoneOnTakeOver, useUpdateStonePosition, useEmpowerStone} from "../../../api/firestore";
 import {
     amIStoneOwner,
     canStoneMoveThisWay,
@@ -63,7 +63,7 @@ export const Stone: FC<StoneInterface> = ({
     const setStonePosition = useSetStonePosition;
     const updateStonePosition = useUpdateStonePosition;
     const updateStoneOnTakeOver = useUpdateStoneOnTakeOver;
-    const updateStoneType = useUpdateStoneType;
+    const updateStoneType = useEmpowerStone;
 
     useEffect(() => {
         setStonePosition({
@@ -195,7 +195,6 @@ export const Stone: FC<StoneInterface> = ({
                 stoneId: draggedStone.id,
                 positionLetter: lyingStone.positionLetter,
                 positionNumber: lyingStone.positionNumber,
-                stashed: false
             });
         }
         console.log('Cannot drop');

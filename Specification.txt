@@ -1,7 +1,8 @@
 Next steps:
 --a stash owner can take a stone and place it to an empty slot on the board
-a chicken turns into a hen when moved while being on board to the opponents edge
-a chicken does not turn into a hen when moved from stash to opponents edge
+--a chicken turns into a hen when moved while being on board to the opponents edge
+--a chicken does not turn into a hen when moved from stash to opponents edge
+a hen can move around
 a hen turns into a chicken when it gets taken
 taking the opponent's lion -> victory/defeat
 getting with lion to opponents edge, while not getting endangered by opponents stone -> victory/defeat

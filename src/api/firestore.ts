@@ -46,7 +46,6 @@ interface useUpdateStonePositionInterface {
     stoneId: string;
     positionLetter: string;
     positionNumber: number;
-    stashed: boolean;
 }
 
 export const useUpdateStonePosition = ({
@@ -54,7 +53,6 @@ export const useUpdateStonePosition = ({
                                            stoneId,
                                            positionLetter,
                                            positionNumber,
-                                           stashed
                                        }: useUpdateStonePositionInterface) => {
     updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {
         positionLetter: positionLetter,
@@ -70,12 +68,13 @@ export const useUpdateStonePosition = ({
 interface useUpdateStoneTypeInterface {
     gameId: string;
     stoneId: string;
+    empowered: boolean;
     type: stoneType;
 }
 
-export const useUpdateStoneType = ({gameId, stoneId, type}: useUpdateStoneTypeInterface) => {
-    updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {type: type})
-        .then(() => console.log("Stone type updated on server"))
+export const useEmpowerStone = ({gameId, stoneId, empowered, type}: useUpdateStoneTypeInterface) => {
+    updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {empowered: empowered, type: type})
+        .then(() => console.log("Stone empower has been updated on the server on server"))
         .catch((err) => {
             console.log(err.message);
         });

@@ -1,3 +1,8 @@
+export const chickenTurningToHenCoordinates: any = {
+    'opponent': ['A4', 'B4', 'C4'],
+    'creator': ['A1', 'B1', 'C1']
+};
+
 export const stoneMovements: any = {
     'CHICKEN': {
         'opponent': {

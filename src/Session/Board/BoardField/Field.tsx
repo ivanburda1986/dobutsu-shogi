@@ -1,6 +1,6 @@
 import React, {FC} from "react";
 import {useParams} from "react-router";
-import {useUpdateStonePosition} from "../../../api/firestore";
+import {useUpdateStonePosition, useEmpowerStone} from "../../../api/firestore";
 import {evaluateStoneMove, isLetterLabelVisible, isNumberLabelVisible} from "./FieldService";
 import styles from "./Field.module.css";
 
@@ -14,6 +14,7 @@ interface FieldInterface {
 export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent}) => {
     const {gameId} = useParams();
     const updateStonePosition = useUpdateStonePosition;
+    const empowerStone = useEmpowerStone;
 
     const enableDropping = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
@@ -27,14 +28,18 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent}
         // console.log("movedFromLetter", movedFromLetter);
         // console.log("movedFromNumber", movedFromNumber);
 
-        const callbackFc = (stoneMoveAllowed: boolean) => {
+        const callbackFc = (stoneMoveAllowed: boolean, shouldChickenTransformToHen: boolean) => {
+            console.log('shouldChickenTransformToHen', shouldChickenTransformToHen);
+            if (shouldChickenTransformToHen) {
+                console.log('empowering!');
+                empowerStone({gameId: gameId!, stoneId: placedStoneId, empowered: true, type: "HEN"});
+            }
             if (stoneMoveAllowed!) {
                 updateStonePosition({
                     gameId: gameId!,
                     stoneId: placedStoneId,
                     positionLetter: columnLetter,
                     positionNumber: rowNumber,
-                    stashed: false
                 });
                 console.log('The stone can move here');
             } else {

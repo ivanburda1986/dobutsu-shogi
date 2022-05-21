@@ -2,7 +2,9 @@ import CHICKEN from "./images/chicken.png";
 import ELEPHANT from "./images/elephant.png";
 import GIRAFFE from "./images/giraffe.png";
 import LION from "./images/lion.png";
-import {stoneMovements} from "./StoneMovements";
+import HEN from "./images/hen.png"
+
+import {chickenTurningToHenCoordinates, stoneMovements} from "./StoneMovements";
 import {stoneType} from "./Stone";
 
 interface getStashTargetPositionInterface {
@@ -17,6 +19,29 @@ export const getStashTargetPosition = ({type, amIOpponent}: getStashTargetPositi
     return `CREATOR-${type}`;
 };
 
+interface shouldChickenTurnIntoHenInterface {
+    amIOpponent: boolean;
+    stashed: boolean;
+    movingToLetter: string;
+    movingToNumber: number;
+}
+
+export const shouldChickenTurnIntoHen = ({
+                                             amIOpponent,
+                                             stashed,
+                                             movingToLetter,
+                                             movingToNumber
+                                         }: shouldChickenTurnIntoHenInterface) => {
+    if (stashed) {
+        return false;
+    }
+
+    if (amIOpponent && chickenTurningToHenCoordinates.opponent.includes(`${movingToLetter}${movingToNumber}`)) {
+        return true;
+    }
+
+    return !amIOpponent && chickenTurningToHenCoordinates.creator.includes(`${movingToLetter}${movingToNumber}`);
+};
 
 interface canStoneMoveThisWayInterface {
     stoneType: stoneType;
@@ -148,5 +173,6 @@ export const getImgReference = (type: stoneType) => {
     if (type === "CHICKEN") return CHICKEN;
     if (type === "ELEPHANT") return ELEPHANT;
     if (type === "GIRAFFE") return GIRAFFE;
+    if (type === "HEN") return HEN;
     return LION;
 };
