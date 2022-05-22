@@ -181,13 +181,15 @@ export const Stone: FC<StoneInterface> = ({
             return;
         }
         if (canTakeStone) {
+            if (lyingStone.type === "HEN") {
+                console.log('dis-empowering!');
+                handicapStone({gameId: gameId!, stoneId: lyingStone.id, empowered: false, type: "CHICKEN"});
+            }
+            //Update taken stone
             updateStoneOnTakeOver({
                 gameId: gameId!,
                 stone: {
                     id: lyingStone.id,
-                    type: lyingStone.type,
-                    empowered: false,
-                    originalOwner: lyingStone.originalOwner,
                     currentOwner: draggedStone.currentOwner,
                     stashed: true,
                     positionLetter: getStashTargetPosition({
@@ -197,24 +199,22 @@ export const Stone: FC<StoneInterface> = ({
                     positionNumber: 1
                 }
             });
-            // Make sure the handicaping does not have to be placed only after the updateStoneOnTakeOver()
-            if (lyingStone.type === "HEN") {
-                console.log('dis-empowering!');
-                handicapStone({gameId: gameId!, stoneId: lyingStone.id, empowered: false, type: "CHICKEN"});
+            if (draggedStone.type === "CHICKEN") {
+                // this turnChickenToHen could be ensapsulated in shouldChickenTurnIntoHen() which would also trigger the empowerStone()
+                let turnChickenToHen = shouldChickenTurnIntoHen({
+                    amIOpponent: amIOpponent!,
+                    type: draggedStone!.type,
+                    stashed: draggedStone!.stashed,
+                    movingToLetter: lyingStone.positionLetter,
+                    movingToNumber: lyingStone.positionNumber
+                });
+                console.log('turnChickenToHen', turnChickenToHen);
+                if (turnChickenToHen) {
+                    console.log('empowering!');
+                    empowerStone({gameId: gameId!, stoneId: draggedStone.id, empowered: true, type: "HEN"});
+                }
             }
-            // this turnChickenToHen could be ensapsulated in shouldChickenTurnIntoHen() which would also trigger the empowerStone()
-            let turnChickenToHen = shouldChickenTurnIntoHen({
-                amIOpponent: amIOpponent!,
-                type: draggedStone!.type,
-                stashed: draggedStone!.stashed,
-                movingToLetter: lyingStone.positionLetter,
-                movingToNumber: lyingStone.positionNumber
-            });
-            console.log('turnChickenToHen', turnChickenToHen);
-            if (turnChickenToHen) {
-                console.log('empowering!');
-                empowerStone({gameId: gameId!, stoneId: draggedStone.id, empowered: true, type: "HEN"});
-            }
+            //Update dragged stone
             updateStonePosition({
                 gameId: gameId!,
                 stoneId: draggedStone.id,

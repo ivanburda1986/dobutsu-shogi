@@ -89,7 +89,10 @@ export const useHandicapStone = ({gameId, stoneId, empowered, type}: useUpdateSt
 };
 
 
-export const useUpdateStoneOnTakeOver = ({gameId, stone}: { gameId: string, stone: StoneInterface }) => {
+export const useUpdateStoneOnTakeOver = ({
+                                             gameId,
+                                             stone
+                                         }: { gameId: string, stone: Pick<StoneInterface, 'id' | 'currentOwner' | 'stashed' | 'positionLetter' | 'positionNumber'> }) => {
     updateDoc(doc(db, `games/${gameId}/stones`, stone.id), {...stone})
         .then(() => console.log("Taken stone updated on server"))
         .catch((err) => {
