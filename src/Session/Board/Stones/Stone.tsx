@@ -252,7 +252,7 @@ export const Stone: FC<StoneInterface> = ({
                 setPositionY
             })}
         >
-            {currentOwner.substr(0, 2)}
+            {/*{currentOwner.substr(0, 2)}*/}
         </div>
     );
 };
