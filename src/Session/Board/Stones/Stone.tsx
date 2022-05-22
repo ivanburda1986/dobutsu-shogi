@@ -89,8 +89,6 @@ export const Stone: FC<StoneInterface> = ({
         event.dataTransfer.setData("placedStoneId", id);
         event.dataTransfer.setData("movedFromLetter", positionLetter);
         event.dataTransfer.setData("movedFromNumber", String(positionNumber));
-        // console.log("Dragged stone ID: ", id);
-        // console.log("Dragged stone coordinates: ", positionLetter, "-", positionNumber);
         setDraggedStone && setDraggedStone({
             amIOpponent,
             id,
@@ -106,8 +104,6 @@ export const Stone: FC<StoneInterface> = ({
     };
 
     const onDragEnterHandler = () => {
-        // console.log("Dragged stone ID: ", id);
-        // console.log("Lying stone coordinates: ", positionLetter, "-", positionNumber);
         setLyingStone && setLyingStone({
             amIOpponent,
             id,
@@ -177,6 +173,18 @@ export const Stone: FC<StoneInterface> = ({
             return;
         }
         if (canTakeStone) {
+            //Victory handling for taking a LION
+            if (lyingStone.type === "LION") {
+                if (lyingStone.originalOwner === appContext.loggedInUserUserId) {
+                    //This will trigger an event to update the game on the server. The app is listening to a change to inform players about game end from their different perspectives.
+                    console.log('You are defeated!');
+                } else {
+                    console.log('You are victorious!');
+                }
+                return;
+            }
+
+            //Special handling to handicap a HEN getting stashed
             if (lyingStone.type === "HEN") {
                 console.log('dis-empowering!');
                 handicapStone({gameId: gameId!, stoneId: lyingStone.id, type: "CHICKEN"});
@@ -195,6 +203,7 @@ export const Stone: FC<StoneInterface> = ({
                     positionNumber: 1
                 }
             });
+            //Special handling to empower a CHICKEN when it should become a HEN
             if (draggedStone.type === "CHICKEN") {
                 // this turnChickenToHen could be ensapsulated in shouldChickenTurnIntoHen() which would also trigger the empowerStone()
                 let turnChickenToHen = shouldChickenTurnIntoHen({
