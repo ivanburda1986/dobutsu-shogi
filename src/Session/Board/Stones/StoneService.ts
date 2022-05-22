@@ -2,7 +2,7 @@ import CHICKEN from "./images/chicken.png";
 import ELEPHANT from "./images/elephant.png";
 import GIRAFFE from "./images/giraffe.png";
 import LION from "./images/lion.png";
-import HEN from "./images/hen.png"
+import HEN from "./images/hen.png";
 
 import {chickenTurningToHenCoordinates, stoneMovements} from "./StoneMovements";
 import {stoneType} from "./Stone";
@@ -32,6 +32,10 @@ export const shouldChickenTurnIntoHen = ({
                                              movingToLetter,
                                              movingToNumber
                                          }: shouldChickenTurnIntoHenInterface) => {
+    console.log('amIOpponent', amIOpponent);
+    console.log('stashed', stashed);
+    console.log('movingToLetter', movingToLetter);
+    console.log('movingToNumber', movingToNumber);
     if (stashed) {
         return false;
     }
@@ -100,6 +104,16 @@ export const canStoneMoveThisWay = ({
         const allowedLetters = stoneMovements.LION[originatingCoordinate];
         // console.log(allowedLetters.includes(targetCoordinate));
         console.log(allowedLetters.includes(targetCoordinate));
+        return allowedLetters.includes(targetCoordinate);
+    }
+    if (stoneType === "HEN") {
+        if (stashed) {
+            return true;
+        }
+        const originatingCoordinate = `${movedFromLetter}${movedFromNumber}`;
+        const targetCoordinate = `${movingToLetter}${movingToNumber}`;
+        const allowedLetters = stoneMovements.HEN[amIOpponent ? 'opponent' : 'creator'][originatingCoordinate];
+        // console.log(allowedLetters.includes(targetCoordinate));
         return allowedLetters.includes(targetCoordinate);
     }
     return false;

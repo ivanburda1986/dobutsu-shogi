@@ -6,7 +6,7 @@ import {
     amIStoneOwner,
     canStoneMoveThisWay,
     getImgReference, getStashTargetPosition,
-    rotateOponentStones,
+    rotateOponentStones, shouldChickenTurnIntoHen,
     useSetStonePosition
 } from "./StoneService";
 import {ProvidedContextInterface} from "../../../App";
@@ -170,6 +170,7 @@ export const Stone: FC<StoneInterface> = ({
     };
 
     const onStoneDropHandler = (event: React.DragEvent<HTMLDivElement>) => {
+        const empowerStone = useEmpowerStone;
         if (!lyingStone || !draggedStone || !canTakeStone) {
             return;
         }
@@ -190,6 +191,17 @@ export const Stone: FC<StoneInterface> = ({
                     positionNumber: 1
                 }
             });
+            let turnChickenToHen = shouldChickenTurnIntoHen({
+                amIOpponent: amIOpponent!,
+                stashed: draggedStone!.stashed,
+                movingToLetter: lyingStone.positionLetter,
+                movingToNumber: lyingStone.positionNumber
+            });
+            console.log('turnChickenToHen', turnChickenToHen);
+            if (turnChickenToHen) {
+                console.log('empowering!');
+                empowerStone({gameId: gameId!, stoneId: draggedStone.id, empowered: true, type: "HEN"});
+            }
             updateStonePosition({
                 gameId: gameId!,
                 stoneId: draggedStone.id,
