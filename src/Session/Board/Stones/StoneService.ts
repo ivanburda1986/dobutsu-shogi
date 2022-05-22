@@ -6,6 +6,7 @@ import HEN from "./images/hen.png";
 
 import {chickenTurningToHenCoordinates, stoneMovements} from "./StoneMovements";
 import {stoneType} from "./Stone";
+import {columnLetterType} from "../../PlayerInterface/PlayerInterfaceService";
 
 interface getStashTargetPositionInterface {
     type: stoneType;
@@ -22,6 +23,7 @@ export const getStashTargetPosition = ({type, amIOpponent}: getStashTargetPositi
 interface shouldChickenTurnIntoHenInterface {
     amIOpponent: boolean;
     stashed: boolean;
+    type: stoneType;
     movingToLetter: string;
     movingToNumber: number;
 }
@@ -29,6 +31,7 @@ interface shouldChickenTurnIntoHenInterface {
 export const shouldChickenTurnIntoHen = ({
                                              amIOpponent,
                                              stashed,
+                                             type,
                                              movingToLetter,
                                              movingToNumber
                                          }: shouldChickenTurnIntoHenInterface) => {
@@ -36,6 +39,10 @@ export const shouldChickenTurnIntoHen = ({
     console.log('stashed', stashed);
     console.log('movingToLetter', movingToLetter);
     console.log('movingToNumber', movingToNumber);
+    if (type !== "CHICKEN") {
+        return false;
+    }
+
     if (stashed) {
         return false;
     }
@@ -131,7 +138,7 @@ export const amIStoneOwner = ({currentOwner, loggedInUserUserId}: amIStoneOwnerI
 
 interface useSetStonePositionInterface {
     stoneId: string;
-    targetPositionLetter: string;
+    targetPositionLetter: string | columnLetterType;
     targetPositionNumber: number;
     positionX: number;
     setPositionX: (position: number) => void;
@@ -139,6 +146,15 @@ interface useSetStonePositionInterface {
     setPositionY: (position: number) => void;
 }
 
+const translateHenToChickenStashPositioning = (targetPositionLetter: columnLetterType | string) => {
+    if (targetPositionLetter === "OPPONENT-HEN") {
+        return "OPPONENT-CHICKEN";
+    }
+    if (targetPositionLetter === "CREATOR-HEN") {
+        return "CREATOR-CHICKEN";
+    }
+    return targetPositionLetter;
+};
 
 export const useSetStonePosition = ({
                                         stoneId,
@@ -149,8 +165,12 @@ export const useSetStonePosition = ({
                                         positionY,
                                         setPositionY
                                     }: useSetStonePositionInterface) => {
-    let targetPosition = document.querySelector(`[data-letter="${targetPositionLetter}"][data-number="${targetPositionNumber}"]`);
+    console.log('targetPositionLetter', targetPositionLetter);
+    console.log('targetPositionNumber', targetPositionNumber);
+    let targetPosition = document.querySelector(`[data-letter=${translateHenToChickenStashPositioning(targetPositionLetter)}][data-number="${targetPositionNumber}"]`);
+    //console.log('targetPosition', targetPosition);
     let rect = targetPosition?.getBoundingClientRect();
+    //console.log('rect', rect);
 
     setPositionX(Math.floor(rect!.left));
     setPositionY(Math.floor(rect!.top));

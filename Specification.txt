@@ -2,19 +2,20 @@ Next steps:
 --a stash owner can take a stone and place it to an empty slot on the board
 --a chicken turns into a hen when moved while being on board to the opponents edge
 --a chicken does not turn into a hen when moved from stash to opponents edge
-a chicken turns into a hen when taking an opponents stone in the row where it would turn into a hen by stepping in
+--a chicken turns into a hen when taking an opponents stone in the row where it would turn into a hen by stepping in
+--a hen can move around
+--a hen turns into a chicken when it gets taken
 remove the "empowered" from the code
-a hen can move around
-a hen turns into a chicken when it gets taken
 taking the opponent's lion -> victory/defeat
 getting with lion to opponents edge, while not getting endangered by opponents stone -> victory/defeat
 repeating the same row of moves 3x -> a tie
 
-a finished game stats are saved to each players data to serve as stats input
-stashed stones of the same type get a number to indicate decking
 indicate whose turn it is
+stashed stones of the same type get a number to indicate decking
 the player who starts is decided randomly
 resign option
+
+a finished game stats are saved to each players data to serve as stats input
 launch screen indicates games in progress
 launch screen indicates games waiting for an opponent
 players profile shows stats: played, won, lost

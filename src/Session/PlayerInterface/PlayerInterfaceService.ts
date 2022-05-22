@@ -10,9 +10,11 @@ export type columnLetterType =
     | "CREATOR-ELEPHANT"
     | "CREATOR-GIRAFFE"
     | "CREATOR-CHICKEN"
+    | "CREATOR-HEN"
     | "OPPONENT-ELEPHANT"
     | "OPPONENT-GIRAFFE"
     | "OPPONENT-CHICKEN"
+    | "OPPONENT-HEN"
 
 interface BoardInterface {
     rowNumbers: number[];

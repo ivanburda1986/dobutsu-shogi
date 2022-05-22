@@ -59,6 +59,7 @@ export const evaluateStoneMove = ({
             let turnChickenToHen = shouldChickenTurnIntoHen({
                 amIOpponent: amIOpponent,
                 stashed: stoneData!.stashed,
+                type: stoneData!.type,
                 movingToLetter: movingToLetter,
                 movingToNumber: movingToNumber
             });

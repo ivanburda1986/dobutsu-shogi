@@ -1,7 +1,12 @@
 import React, {FC, useContext, useEffect, useState} from "react";
 import styles from "./Stone.module.css";
 
-import {useUpdateStoneOnTakeOver, useUpdateStonePosition, useEmpowerStone} from "../../../api/firestore";
+import {
+    useUpdateStoneOnTakeOver,
+    useUpdateStonePosition,
+    useEmpowerStone,
+    useHandicapStone
+} from "../../../api/firestore";
 import {
     amIStoneOwner,
     canStoneMoveThisWay,
@@ -171,6 +176,7 @@ export const Stone: FC<StoneInterface> = ({
 
     const onStoneDropHandler = (event: React.DragEvent<HTMLDivElement>) => {
         const empowerStone = useEmpowerStone;
+        const handicapStone = useHandicapStone;
         if (!lyingStone || !draggedStone || !canTakeStone) {
             return;
         }
@@ -191,8 +197,15 @@ export const Stone: FC<StoneInterface> = ({
                     positionNumber: 1
                 }
             });
+            // Make sure the handicaping does not have to be placed only after the updateStoneOnTakeOver()
+            if (lyingStone.type === "HEN") {
+                console.log('dis-empowering!');
+                handicapStone({gameId: gameId!, stoneId: lyingStone.id, empowered: false, type: "CHICKEN"});
+            }
+            // this turnChickenToHen could be ensapsulated in shouldChickenTurnIntoHen() which would also trigger the empowerStone()
             let turnChickenToHen = shouldChickenTurnIntoHen({
                 amIOpponent: amIOpponent!,
+                type: draggedStone!.type,
                 stashed: draggedStone!.stashed,
                 movingToLetter: lyingStone.positionLetter,
                 movingToNumber: lyingStone.positionNumber
