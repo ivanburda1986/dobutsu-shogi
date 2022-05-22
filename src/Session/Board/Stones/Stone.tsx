@@ -24,7 +24,6 @@ export type stoneType = "CHICKEN" | "ELEPHANT" | "GIRAFFE" | "LION" | "HEN";
 export interface StoneInterface {
     id: string;
     type: stoneType;
-    empowered: boolean;
     originalOwner: string;
     currentOwner: string;
     stashed: boolean;
@@ -45,7 +44,6 @@ export const Stone: FC<StoneInterface> = ({
                                               amIOpponent,
                                               id,
                                               type,
-                                              empowered,
                                               originalOwner,
                                               currentOwner,
                                               stashed,
@@ -97,7 +95,6 @@ export const Stone: FC<StoneInterface> = ({
             amIOpponent,
             id,
             type,
-            empowered,
             originalOwner,
             currentOwner,
             stashed,
@@ -115,7 +112,6 @@ export const Stone: FC<StoneInterface> = ({
             amIOpponent,
             id,
             type,
-            empowered,
             originalOwner,
             currentOwner,
             stashed,
@@ -183,7 +179,7 @@ export const Stone: FC<StoneInterface> = ({
         if (canTakeStone) {
             if (lyingStone.type === "HEN") {
                 console.log('dis-empowering!');
-                handicapStone({gameId: gameId!, stoneId: lyingStone.id, empowered: false, type: "CHICKEN"});
+                handicapStone({gameId: gameId!, stoneId: lyingStone.id, type: "CHICKEN"});
             }
             //Update taken stone
             updateStoneOnTakeOver({
@@ -211,7 +207,7 @@ export const Stone: FC<StoneInterface> = ({
                 console.log('turnChickenToHen', turnChickenToHen);
                 if (turnChickenToHen) {
                     console.log('empowering!');
-                    empowerStone({gameId: gameId!, stoneId: draggedStone.id, empowered: true, type: "HEN"});
+                    empowerStone({gameId: gameId!, stoneId: draggedStone.id, type: "HEN"});
                 }
             }
             //Update dragged stone

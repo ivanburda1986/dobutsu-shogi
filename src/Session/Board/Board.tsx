@@ -73,7 +73,6 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
                         key={stone.id}
                         id={stone.id}
                         type={stone.type}
-                        empowered={stone.empowered}
                         originalOwner={stone.originalOwner}
                         currentOwner={stone.currentOwner}
                         stashed={stone.stashed}

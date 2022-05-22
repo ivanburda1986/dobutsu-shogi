@@ -68,20 +68,19 @@ export const useUpdateStonePosition = ({
 interface useUpdateStoneTypeInterface {
     gameId: string;
     stoneId: string;
-    empowered: boolean;
     type: stoneType;
 }
 
-export const useEmpowerStone = ({gameId, stoneId, empowered, type}: useUpdateStoneTypeInterface) => {
-    updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {empowered: empowered, type: type})
+export const useEmpowerStone = ({gameId, stoneId, type}: useUpdateStoneTypeInterface) => {
+    updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {type: type})
         .then(() => console.log("Stone empower has been updated on the server"))
         .catch((err) => {
             console.log(err.message);
         });
 };
 
-export const useHandicapStone = ({gameId, stoneId, empowered, type}: useUpdateStoneTypeInterface) => {
-    updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {empowered: empowered, type: type})
+export const useHandicapStone = ({gameId, stoneId, type}: useUpdateStoneTypeInterface) => {
+    updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {type: type})
         .then(() => console.log("Stone handicap has been updated on the server"))
         .catch((err) => {
             console.log(err.message);

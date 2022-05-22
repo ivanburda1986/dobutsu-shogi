@@ -29,7 +29,7 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent}
             console.log('shouldChickenTransformToHen', shouldChickenTransformToHen);
             if (shouldChickenTransformToHen) {
                 console.log('empowering!');
-                empowerStone({gameId: gameId!, stoneId: placedStoneId, empowered: true, type: "HEN"});
+                empowerStone({gameId: gameId!, stoneId: placedStoneId, type: "HEN"});
             }
             if (stoneMoveAllowed!) {
                 updateStonePosition({

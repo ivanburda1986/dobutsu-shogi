@@ -8,7 +8,6 @@ export const getCreatorStones = ({creatorId, type}: { creatorId: string; type: g
             {
                 id: uuidv4(),
                 type: "ELEPHANT",
-                empowered: false,
                 originalOwner: creatorId,
                 currentOwner: creatorId,
                 stashed: false,
@@ -18,7 +17,6 @@ export const getCreatorStones = ({creatorId, type}: { creatorId: string; type: g
             {
                 id: uuidv4(),
                 type: "LION",
-                empowered: false,
                 originalOwner: creatorId,
                 currentOwner: creatorId,
                 stashed: false,
@@ -28,7 +26,6 @@ export const getCreatorStones = ({creatorId, type}: { creatorId: string; type: g
             {
                 id: uuidv4(),
                 type: "GIRAFFE",
-                empowered: false,
                 originalOwner: creatorId,
                 currentOwner: creatorId,
                 stashed: false,
@@ -38,7 +35,6 @@ export const getCreatorStones = ({creatorId, type}: { creatorId: string; type: g
             {
                 id: uuidv4(),
                 type: "CHICKEN",
-                empowered: false,
                 originalOwner: creatorId,
                 currentOwner: creatorId,
                 stashed: false,
@@ -51,7 +47,6 @@ export const getCreatorStones = ({creatorId, type}: { creatorId: string; type: g
             {
                 id: uuidv4(),
                 type: "ELEPHANT",
-                empowered: false,
                 originalOwner: creatorId,
                 currentOwner: creatorId,
                 stashed: false,
@@ -61,7 +56,6 @@ export const getCreatorStones = ({creatorId, type}: { creatorId: string; type: g
             {
                 id: uuidv4(),
                 type: "LION",
-                empowered: false,
                 originalOwner: creatorId,
                 currentOwner: creatorId,
                 stashed: false,
@@ -71,7 +65,6 @@ export const getCreatorStones = ({creatorId, type}: { creatorId: string; type: g
             {
                 id: uuidv4(),
                 type: "GIRAFFE",
-                empowered: false,
                 originalOwner: creatorId,
                 currentOwner: creatorId,
                 stashed: false,
@@ -81,7 +74,6 @@ export const getCreatorStones = ({creatorId, type}: { creatorId: string; type: g
             {
                 id: uuidv4(),
                 type: "CHICKEN",
-                empowered: false,
                 originalOwner: creatorId,
                 currentOwner: creatorId,
                 stashed: false,
@@ -97,7 +89,6 @@ export const getOpponentStones = ({opponentId, type}: { opponentId: string; type
             {
                 id: uuidv4(),
                 type: "ELEPHANT",
-                empowered: false,
                 originalOwner: opponentId,
                 currentOwner: opponentId,
                 stashed: false,
@@ -107,7 +98,6 @@ export const getOpponentStones = ({opponentId, type}: { opponentId: string; type
             {
                 id: uuidv4(),
                 type: "LION",
-                empowered: false,
                 originalOwner: opponentId,
                 currentOwner: opponentId,
                 stashed: false,
@@ -117,7 +107,6 @@ export const getOpponentStones = ({opponentId, type}: { opponentId: string; type
             {
                 id: uuidv4(),
                 type: "GIRAFFE",
-                empowered: false,
                 originalOwner: opponentId,
                 currentOwner: opponentId,
                 stashed: false,
@@ -127,7 +116,6 @@ export const getOpponentStones = ({opponentId, type}: { opponentId: string; type
             {
                 id: uuidv4(),
                 type: "CHICKEN",
-                empowered: false,
                 originalOwner: opponentId,
                 currentOwner: opponentId,
                 stashed: false,
@@ -140,7 +128,6 @@ export const getOpponentStones = ({opponentId, type}: { opponentId: string; type
             {
                 id: uuidv4(),
                 type: "ELEPHANT",
-                empowered: false,
                 originalOwner: opponentId,
                 currentOwner: opponentId,
                 stashed: false,
@@ -150,7 +137,6 @@ export const getOpponentStones = ({opponentId, type}: { opponentId: string; type
             {
                 id: uuidv4(),
                 type: "LION",
-                empowered: false,
                 originalOwner: opponentId,
                 currentOwner: opponentId,
                 stashed: false,
@@ -160,7 +146,6 @@ export const getOpponentStones = ({opponentId, type}: { opponentId: string; type
             {
                 id: uuidv4(),
                 type: "GIRAFFE",
-                empowered: false,
                 originalOwner: opponentId,
                 currentOwner: opponentId,
                 stashed: false,
@@ -170,7 +155,6 @@ export const getOpponentStones = ({opponentId, type}: { opponentId: string; type
             {
                 id: uuidv4(),
                 type: "CHICKEN",
-                empowered: false,
                 originalOwner: opponentId,
                 currentOwner: opponentId,
                 stashed: false,
