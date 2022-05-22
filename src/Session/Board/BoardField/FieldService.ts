@@ -42,7 +42,6 @@ export const evaluateStoneMove = ({
                                       cb
                                   }: EvaluateStoneMoveInterface): void => {
     const stone = getSingleStoneDetails({gameId, stoneId: placedStoneId});
-
     stone.then((received) => {
             let stoneData = received?.data();
             console.log('Lifted stone details:');
@@ -56,13 +55,18 @@ export const evaluateStoneMove = ({
                 amIOpponent: amIOpponent,
                 stashed: stoneData!.stashed
             }));
-            let turnChickenToHen = shouldChickenTurnIntoHen({
-                amIOpponent: amIOpponent,
-                stashed: stoneData!.stashed,
-                type: stoneData!.type,
-                movingToLetter: movingToLetter,
-                movingToNumber: movingToNumber
-            });
+
+            let turnChickenToHen = false;
+            if (stoneData!.type === "CHICKEN") {
+                turnChickenToHen = shouldChickenTurnIntoHen({
+                    amIOpponent: amIOpponent,
+                    stashed: stoneData!.stashed,
+                    type: stoneData!.type,
+                    movingToLetter: movingToLetter,
+                    movingToNumber: movingToNumber
+                });
+            }
+
             return cb(directionAllowed, turnChickenToHen);
         }
     );

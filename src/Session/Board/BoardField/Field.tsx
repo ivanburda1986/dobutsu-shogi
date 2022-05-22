@@ -24,9 +24,6 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent}
         let placedStoneId = event.dataTransfer!.getData("placedStoneId");
         let movedFromLetter = event.dataTransfer!.getData("movedFromLetter");
         let movedFromNumber = event.dataTransfer!.getData("movedFromNumber");
-        // console.log("placed stone id", placedStoneId);
-        // console.log("movedFromLetter", movedFromLetter);
-        // console.log("movedFromNumber", movedFromNumber);
 
         const callbackFc = (stoneMoveAllowed: boolean, shouldChickenTransformToHen: boolean) => {
             console.log('shouldChickenTransformToHen', shouldChickenTransformToHen);
