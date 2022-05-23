@@ -141,6 +141,7 @@ export const useCreateGame = ({creatorId, creatorName, name, type, createGameCb}
         opponentName: null,
         opponentJoined: false,
         startingPlayer: null,
+        currentPlayerTurn: null,
         winner: null,
         finishedTimeStamp: null,
     }).then((docRef) => {
