@@ -36,7 +36,7 @@ export const auth = getAuth();
 
 //TYPES
 export type gameType = "DOBUTSU" | "GOROGORO" | "GREENWOOD";
-export type statusType = "WAITING" | "INPROGRESS" | "VICTORY" | "CANCELLED" | "RESIGNED";
+export type statusType = "WAITING" | "INPROGRESS" | "COMPLETED" | "CANCELLED" | "RESIGNED";
 export type playerType = "CREATOR" | "OPPONENT";
 
 
@@ -127,6 +127,23 @@ export interface CreateGameInputInterface {
     };
 }
 
+export interface Game {
+    createdOn: number;
+    creatorId: string;
+    creatorName: string;
+    creatorJoined: boolean;
+    name: string;
+    type: gameType;
+    status: statusType;
+    opponentId: string;
+    opponentName: string;
+    opponentJoined: boolean;
+    startingPlayer: string;
+    currentPlayerTurn: string;
+    winner: string;
+    finishedTimeStamp: number;
+}
+
 export const gamesCollectionRef = collection(db, "games");
 export const useCreateGame = ({creatorId, creatorName, name, type, createGameCb}: CreateGameInputInterface) => {
     addDoc(gamesCollectionRef, {
@@ -212,7 +229,7 @@ export const useDeleteGame = (id: string) => {
 
 interface useUpdateGameInterface {
     id: string;
-    updatedDetails: any;
+    updatedDetails: Partial<Game>;
 }
 
 export const useUpdateGame = ({id, updatedDetails}: useUpdateGameInterface) => {

@@ -10,10 +10,11 @@ import {v4 as uuidv4} from "uuid";
 import styles from "./Board.module.css";
 import {Stone, StoneInterface} from "./Stones/Stone";
 import {useParams} from "react-router";
-import {collection, DocumentData, onSnapshot} from "firebase/firestore";
+import {collection, doc, DocumentData, onSnapshot} from "firebase/firestore";
 import {AppContext} from "../../context/AppContext";
 import {ProvidedContextInterface} from "../../App";
 import {PlayerInterface} from "../PlayerInterface/PlayerInterface";
+
 
 interface BoardInterface {
     type: gameType;
@@ -31,6 +32,8 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
     const [draggedStone, setDraggedStone] = useState<StoneInterface | undefined>();
     const [lyingStone, setLyingStone] = useState<StoneInterface | undefined>();
     const [canTakeStone, setCanTakeStone] = useState<boolean>(false);
+    const [winner, setWinner] = useState<string>();
+
 
     const isComponentMountedRef = useRef(true);
     useEffect(() => {
@@ -40,6 +43,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
     }, []);
 
     useEffect(() => {
+        //Listening to change of stone positions
         const stonesCollectionRef = collection(db, `games/${gameId}/stones`);
         onSnapshot(stonesCollectionRef, (snapshot) => {
             if (isComponentMountedRef.current) {
@@ -50,6 +54,13 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
                 setStones(returnedStones);
             }
         });
+        //Listening to change of the game state (victory/defeat)
+        const docRef = doc(db, "games", gameId!);
+        onSnapshot(docRef, (doc) => {
+            console.log("Updated data");
+            setWinner(doc.data()!.winner);
+        });
+
     }, [gameId]);
 
     useEffect(() => {
@@ -61,6 +72,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
 
     return (
         <Container fluid className={`d-flex justify-content-center ${styles.Board}`}>
+
             <div style={{backgroundImage: `url(${amIOpponent === true ? bgRotated : bg})`}}
                  className={`${styles.BoardBg}`}>
                 {rowNumbers.map((item) => (

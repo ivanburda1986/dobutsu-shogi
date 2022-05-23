@@ -5,7 +5,7 @@ import {
     useUpdateStoneOnTakeOver,
     useUpdateStonePosition,
     useEmpowerStone,
-    useHandicapStone
+    useHandicapStone, useUpdateGame
 } from "../../../api/firestore";
 import {
     amIStoneOwner,
@@ -169,18 +169,20 @@ export const Stone: FC<StoneInterface> = ({
     const onStoneDropHandler = (event: React.DragEvent<HTMLDivElement>) => {
         const empowerStone = useEmpowerStone;
         const handicapStone = useHandicapStone;
+        const updateGame = useUpdateGame;
         if (!lyingStone || !draggedStone || !canTakeStone) {
             return;
         }
         if (canTakeStone) {
             //Victory handling for taking a LION
             if (lyingStone.type === "LION") {
-                if (lyingStone.originalOwner === appContext.loggedInUserUserId) {
-                    //This will trigger an event to update the game on the server. The app is listening to a change to inform players about game end from their different perspectives.
-                    console.log('You are defeated!');
-                } else {
-                    console.log('You are victorious!');
-                }
+                updateGame({id: gameId!,
+                    updatedDetails: {
+                        status: "COMPLETED",
+                        winner: draggedStone.currentOwner,
+                        finishedTimeStamp: Date.now()
+                    }
+                });
                 return;
             }
 
@@ -252,7 +254,7 @@ export const Stone: FC<StoneInterface> = ({
                 setPositionY
             })}
         >
-            {/*{currentOwner.substr(0, 2)}*/}
+            {currentOwner.substr(0, 2)}
         </div>
     );
 };
