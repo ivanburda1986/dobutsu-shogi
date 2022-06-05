@@ -1,6 +1,7 @@
 Next steps:
 taking the opponent's lion -> victory/defeat
 --keep at the game level the game state and info about victorious/defeated
+
 indicate whose turn it is
 --keep this info at the game level
 prevent players from moving when it is not their turn
