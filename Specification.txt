@@ -10,19 +10,24 @@ getting with lion to opponents edge, while not getting endangered by opponents s
 
 resign option
 --update game state
-
-a game in progress cannot be deleted
-
+--increase loss for resignee
+--increase win for the other
 
 repeating the same row of moves 3x -> a tie
 --store in the DB the last few moves (from-to coordinates) and if the same moves appear 3x in a row -> set game state to a tie
 
-
-Future enhancements:
+a game in progress cannot be deleted
 launch screen indicates games in progress
 launch screen indicates games waiting for an opponent
+launch screen does not show finished games -> maybe a finished game can be automatically deleted?
+
+
+
+=================================================================
+Possible future enhancements:
 when creating a game, a limit can be added for individual moves
-a player not moving within the limit loses
+-a player not moving within the limit loses
+
 a created game can be password protected
 
 Question:
