@@ -1,17 +1,9 @@
 Next steps:
-prevent players from moving when it is not their turn
---rely on the game-level indicator to allow/prevent moving
-
 stashed stones of the same type get a number to indicate decking
 --get all stones and check whether there are multiple on individual stash positions - if yes, dipslay a number for the impacted stash pocition
 
 getting with lion to opponents edge, while not getting endangered by opponents stone -> victory/defeat
 --getting all stones; compare whether an opponents stone is nearby a player's lion and step onto the position of the lion
-
-resign option
---update game state
---increase loss for resignee
---increase win for the other
 
 repeating the same row of moves 3x -> a tie
 --store in the DB the last few moves (from-to coordinates) and if the same moves appear 3x in a row -> set game state to a tie
@@ -21,7 +13,10 @@ launch screen indicates games in progress
 launch screen indicates games waiting for an opponent
 launch screen does not show finished games -> maybe a finished game can be automatically deleted?
 
-
+resign option
+--update game state
+--increase loss for resignee
+--increase win for the other
 
 =================================================================
 Possible future enhancements:

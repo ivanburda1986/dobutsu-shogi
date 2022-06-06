@@ -7,6 +7,7 @@ import HEN from "./images/hen.png";
 import {chickenTurningToHenCoordinates, stoneMovements} from "./StoneMovements";
 import {stoneType} from "./Stone";
 import {columnLetterType} from "../../PlayerInterface/PlayerInterfaceService";
+import {DocumentData} from "firebase/firestore";
 
 interface getStashTargetPositionInterface {
     type: stoneType;
@@ -52,6 +53,30 @@ export const shouldChickenTurnIntoHen = ({
     }
 
     return !amIOpponent && chickenTurningToHenCoordinates.creator.includes(`${movingToLetter}${movingToNumber}`);
+};
+
+interface isItMyTurnInterface {
+    myId: string;
+    currentTurnPlayerId: string;
+}
+
+export const isItMyTurn = ({myId, currentTurnPlayerId}: isItMyTurnInterface): boolean => {
+    return myId === currentTurnPlayerId;
+};
+
+interface nextTurnPlayerIdInterface {
+    myId: string;
+    gameData: DocumentData | undefined;
+}
+
+export const nextTurnPlayerId = ({myId, gameData}: nextTurnPlayerIdInterface): string => {
+    if (myId === gameData?.currentPlayerTurn) {
+        let nextTurnPlayerId = myId === gameData?.creatorId ? gameData?.opponentId : gameData?.creatorId;
+        console.log('nextTurnPlayerId', nextTurnPlayerId);
+        return nextTurnPlayerId;
+    }
+    console.log('nextTurnPlayerId', myId);
+    return myId;
 };
 
 interface canStoneMoveThisWayInterface {

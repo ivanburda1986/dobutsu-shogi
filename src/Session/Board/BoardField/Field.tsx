@@ -1,20 +1,27 @@
-import React, {FC} from "react";
+import React, {FC, useContext} from "react";
 import {useParams} from "react-router";
-import {useUpdateStonePosition, useEmpowerStone} from "../../../api/firestore";
+import {useUpdateStonePosition, useEmpowerStone, useUpdateGame} from "../../../api/firestore";
 import {evaluateStoneMove, isLetterLabelVisible, isNumberLabelVisible} from "./FieldService";
 import styles from "./Field.module.css";
+import {nextTurnPlayerId} from "../Stones/StoneService";
+import {ProvidedContextInterface} from "../../../App";
+import {AppContext} from "../../../context/AppContext";
+import {DocumentData} from "firebase/firestore";
 
 
 interface FieldInterface {
     rowNumber: number;
     columnLetter: string;
     amIOpponent: boolean;
+    gameData: DocumentData | undefined;
 }
 
-export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent}) => {
+export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent, gameData}) => {
     const {gameId} = useParams();
+    const appContext: ProvidedContextInterface = useContext(AppContext);
     const updateStonePosition = useUpdateStonePosition;
     const empowerStone = useEmpowerStone;
+    const updateGame = useUpdateGame;
 
     const enableDropping = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
@@ -32,11 +39,23 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent}
                 empowerStone({gameId: gameId!, stoneId: placedStoneId, type: "HEN"});
             }
             if (stoneMoveAllowed!) {
+                // Update stone position
                 updateStonePosition({
                     gameId: gameId!,
                     stoneId: placedStoneId,
                     positionLetter: columnLetter,
                     positionNumber: rowNumber,
+                });
+
+                // Set turn to the other player
+                updateGame({
+                    id: gameId!,
+                    updatedDetails: {
+                        currentPlayerTurn: nextTurnPlayerId({
+                            myId: appContext.loggedInUserUserId,
+                            gameData: gameData
+                        })
+                    }
                 });
                 console.log('The stone can move here');
             } else {

@@ -5,18 +5,19 @@ import {
     useUpdateStoneOnTakeOver,
     useUpdateStonePosition,
     useEmpowerStone,
-    useHandicapStone, useUpdateGame, useUpdateUserStats, getSingleUserStats
+    useHandicapStone, useUpdateGame, useUpdateUserStats, getSingleUserStats, getSingleGameDetails
 } from "../../../api/firestore";
 import {
     amIStoneOwner,
     canStoneMoveThisWay,
-    getImgReference, getStashTargetPosition,
+    getImgReference, getStashTargetPosition, isItMyTurn, nextTurnPlayerId,
     rotateOponentStones, shouldChickenTurnIntoHen,
     useSetStonePosition
 } from "./StoneService";
 import {ProvidedContextInterface} from "../../../App";
 import {AppContext} from "../../../context/AppContext";
 import {useParams} from "react-router";
+import {DocumentData} from "firebase/firestore";
 
 export type stoneType = "CHICKEN" | "ELEPHANT" | "GIRAFFE" | "LION" | "HEN";
 
@@ -38,6 +39,7 @@ export interface StoneInterface {
     setLyingStone?: Function;
     canTakeStone?: boolean;
     setCanTakeStone?: Function;
+    gameData?: DocumentData | undefined;
 }
 
 export const Stone: FC<StoneInterface> = ({
@@ -56,7 +58,8 @@ export const Stone: FC<StoneInterface> = ({
                                               setDraggedStone,
                                               setLyingStone,
                                               canTakeStone,
-                                              setCanTakeStone
+                                              setCanTakeStone,
+                                              gameData,
                                           }) => {
     const appContext: ProvidedContextInterface = useContext(AppContext);
     const {gameId} = useParams();
@@ -101,6 +104,11 @@ export const Stone: FC<StoneInterface> = ({
             rowNumbers,
             columnLetters,
         });
+    };
+
+    const onDragStartHandlerDisallowed = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        console.log('it is not your turn');
     };
 
     const onDragEnterHandler = () => {
@@ -172,9 +180,22 @@ export const Stone: FC<StoneInterface> = ({
         const updateGame = useUpdateGame;
         const updateStats = useUpdateUserStats;
 
+
         if (!lyingStone || !draggedStone || !canTakeStone) {
             return;
         }
+
+        // Set turn to the other player
+        updateGame({
+            id: gameId!,
+            updatedDetails: {
+                currentPlayerTurn: nextTurnPlayerId({
+                    myId: appContext.loggedInUserUserId,
+                    gameData: gameData
+                })
+            }
+        });
+
         if (canTakeStone) {
             //Victory handling for taking a LION
             if (lyingStone.type === "LION") {
@@ -183,7 +204,8 @@ export const Stone: FC<StoneInterface> = ({
                     updatedDetails: {
                         status: "COMPLETED",
                         winner: draggedStone.currentOwner,
-                        finishedTimeStamp: Date.now()
+                        finishedTimeStamp: Date.now(),
+                        currentPlayerTurn: lyingStone.currentOwner
                     }
                 });
                 getSingleUserStats({userId: lyingStone.originalOwner}).then((serverStats) => updateStats({
@@ -249,7 +271,10 @@ export const Stone: FC<StoneInterface> = ({
         <div
             id={id}
             draggable={amIStoneOwner({currentOwner: currentOwner, loggedInUserUserId: appContext.loggedInUserUserId})}
-            onDragStart={onDragStartHandler}
+            onDragStart={isItMyTurn({
+                myId: appContext.loggedInUserUserId,
+                currentTurnPlayerId: gameData?.currentPlayerTurn
+            }) ? onDragStartHandler : onDragStartHandlerDisallowed}
             onDragEnter={onDragEnterHandler}
             onDragOver={onStoneTakeOverAttemptHandler}
             onDragEnd={onStoneDropHandler}

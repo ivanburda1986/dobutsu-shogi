@@ -46,6 +46,8 @@ export const evaluateStoneMove = ({
             let stoneData = received?.data();
             console.log('Lifted stone details:');
             console.log(received?.data());
+
+            // Is direction move allowed?
             let directionAllowed = (canStoneMoveThisWay({
                 stoneType: stoneData!.type,
                 movedFromLetter,
@@ -56,6 +58,7 @@ export const evaluateStoneMove = ({
                 stashed: stoneData!.stashed
             }));
 
+            // Should chicken turn to hen?
             let turnChickenToHen = false;
             if (stoneData!.type === "CHICKEN") {
                 turnChickenToHen = shouldChickenTurnIntoHen({
