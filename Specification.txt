@@ -20,14 +20,8 @@ resign option
 
 =================================================================
 Possible future enhancements:
-when creating a game, a limit can be added for individual moves
--a player not moving within the limit loses
-
 a created game can be password protected
 
-Question:
-What happens if 2 alone lions remain on the board?
--the one that reaches opponents row faster wins the game
 
 Reference 
 https://getbootstrap.com/docs/5.0/layout/containers/
