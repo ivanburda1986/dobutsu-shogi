@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useContext, useRef} from "react";
 import {Container} from "react-bootstrap";
 import {useParams} from "react-router";
-import {gamesCollectionRef, getSingleGameDetails} from "../api/firestore";
+import {gamesCollectionRef, getSingleGameDetails, useUpdateGame} from "../api/firestore";
 import {AppContext} from "../context/AppContext";
 
 import {ProvidedContextInterface} from "../App";
@@ -20,6 +20,7 @@ export const Session = () => {
     const appContext: ProvidedContextInterface = useContext(AppContext);
     const [gameData, setGameData] = useState<DocumentData | undefined>();
     const isComponentMountedRef = useRef(true);
+    const updateGame = useUpdateGame;
 
     useEffect(() => {
         return () => {
@@ -48,6 +49,15 @@ export const Session = () => {
             setAmIOpponent(true);
         }
     }, [appContext.loggedInUserUserId, gameData]);
+
+    // Randomly decide who should start
+    useEffect(() => {
+        if (gameId && gameData?.creatorJoined && gameData?.opponentJoined && !gameData?.currentPlayerTurn) {
+            const randomNumber = Math.random();
+            const whoShouldStart = randomNumber < 0.5 ? gameData?.creatorId : gameData?.opponentId;
+            updateGame({id: gameId!, updatedDetails: {currentPlayerTurn: whoShouldStart}});
+        }
+    }, [gameId, gameData, updateGame]);
 
     return (
         <Container fluid className={styles.Session}>

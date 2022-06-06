@@ -1,6 +1,6 @@
 import {FC, useContext, useEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router";
-import {useCreateGame, gameType} from "../api/firestore";
+import {useCreateGame, gameType, useJoinGame} from "../api/firestore";
 import {Button, Container, Form, Row} from "react-bootstrap";
 
 import {AppContext} from "../context/AppContext";
@@ -15,9 +15,21 @@ export const CreateGame: FC = () => {
     const gameNameRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
     const createGame = useCreateGame;
+    const joinGame = useJoinGame;
 
-    const navigateToLaunchScreen = () => {
-        navigate("../", {replace: false});
+    const navigateToLaunchScreen = (createdGameId: string) => {
+        navigate(`../session/${createdGameId}`, {replace: false});
+    };
+
+    const joinGameUponCreation = ({createdGameId, type}: { createdGameId: string, type: gameType }) => {
+        joinGame({
+            gameId: createdGameId,
+            joiningPlayerType: "CREATOR",
+            joiningPlayerId: appContext.loggedInUserUserId,
+            joiningPlayerName: appContext.loggedInUserDisplayName,
+            joiningPlayerPhotoURL: appContext.loggedInUserPhotoURL,
+            type: type
+        });
     };
 
     useEffect(() => {
@@ -74,7 +86,7 @@ export const CreateGame: FC = () => {
                                 creatorName: appContext.loggedInUserDisplayName!,
                                 name: gameNameRef.current!.value,
                                 type: newGameType,
-                                createGameCb: {redirect: navigateToLaunchScreen}
+                                createGameCb: {join: joinGameUponCreation, redirect: navigateToLaunchScreen}
                             })}
                         >
                             Create Game

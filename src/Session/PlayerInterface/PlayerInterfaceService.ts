@@ -42,3 +42,17 @@ export const whatNameToDisplay = ({
     }
     return gameData?.opponentName;
 };
+
+export const isOnTurn = ({
+                             creatorInterface,
+                             gameData
+                         }: { creatorInterface: boolean; gameData: DocumentData | undefined }) => {
+    if (!gameData?.creatorId || !gameData?.opponentId) {
+        return false;
+    }
+    if (creatorInterface) {
+        return gameData?.currentPlayerTurn === gameData?.creatorId ? true : false;
+    }
+    return gameData?.currentPlayerTurn === gameData?.opponentId ? true : false;
+
+};

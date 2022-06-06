@@ -123,7 +123,8 @@ export interface CreateGameInputInterface {
     name: string;
     type: gameType;
     createGameCb: {
-        redirect: () => void;
+        join: ({createdGameId, type}: { createdGameId: string, type: gameType }) => void;
+        redirect: (createdGameId: string) => void;
     };
 }
 
@@ -162,7 +163,8 @@ export const useCreateGame = ({creatorId, creatorName, name, type, createGameCb}
         winner: null,
         finishedTimeStamp: null,
     }).then((docRef) => {
-        createGameCb.redirect();
+        createGameCb.join({createdGameId: docRef.id, type: type});
+        createGameCb.redirect(docRef.id);
     });
 };
 

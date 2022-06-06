@@ -1,10 +1,4 @@
 Next steps:
-the player who starts is decided randomly
---simple random when creating the game
-
-indicate whose turn it is
---keep this info at the game level
-
 prevent players from moving when it is not their turn
 --rely on the game-level indicator to allow/prevent moving
 
