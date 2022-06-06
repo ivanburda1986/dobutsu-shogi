@@ -1,6 +1,6 @@
 Next steps:
-taking the opponent's lion -> victory/defeat
---keep at the game level the game state and info about victorious/defeated
+the player who starts is decided randomly
+--simple random when creating the game
 
 indicate whose turn it is
 --keep this info at the game level
@@ -13,9 +13,6 @@ stashed stones of the same type get a number to indicate decking
 
 getting with lion to opponents edge, while not getting endangered by opponents stone -> victory/defeat
 --getting all stones; compare whether an opponents stone is nearby a player's lion and step onto the position of the lion
-
-the player who starts is decided randomly
---simple random when creating the game
 
 resign option
 --update game state

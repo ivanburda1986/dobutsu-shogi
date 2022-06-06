@@ -7,11 +7,12 @@ import {AppContext} from "../context/AppContext";
 import {ProvidedContextInterface} from "../App";
 import {Board} from "./Board/Board";
 
-import {evaluateBeingOpponent} from "./SessionService";
+import {evaluateBeingOpponent, evaluateBeingWinner} from "./SessionService";
 
 import styles from "./Session.module.css";
 import {DocumentData, onSnapshot} from "firebase/firestore";
 import {ReturnedGameInterface} from "../LaunchScreen/WaitingGamesList/WaitingGamesList";
+import {GameFinishedMessage, GameFinishedMessageInterface} from "./GameFinishedMessage/GameFinishedMessage";
 
 export const Session = () => {
     const [amIOpponent, setAmIOpponent] = useState(false);
@@ -29,15 +30,11 @@ export const Session = () => {
     // Make sure any game-related updates are reflected immediately
     useEffect(() => {
         onSnapshot(gamesCollectionRef, (snapshot) => {
-            if (isComponentMountedRef.current) {
-                let game: ReturnedGameInterface;
-                snapshot.docs.forEach((doc) => {
-                    game = doc.data() as ReturnedGameInterface;
-                    setGameData(game);
-                });
+            if (isComponentMountedRef.current && gameId) {
+                getSingleGameDetails({gameId: gameId}).then((data) => setGameData(data.data()));
             }
         });
-    }, []);
+    }, [gameId]);
 
     // Evaluate whether I am an opponent or creator and make sure my interface is turned
     useEffect(() => {
@@ -54,7 +51,19 @@ export const Session = () => {
 
     return (
         <Container fluid className={styles.Session}>
-            <Board type="DOBUTSU" amIOpponent={amIOpponent} gameData={gameData}/>
+            {
+                gameData?.winner && evaluateBeingWinner({
+                    winnerId: gameData.winner,
+                    loggedInUserUserId: appContext.loggedInUserUserId
+                }) && <GameFinishedMessage messageType={evaluateBeingWinner({
+                    winnerId: gameData.winner,
+                    loggedInUserUserId: appContext.loggedInUserUserId
+                })}/>
+            }
+            {
+                !gameData?.winner && <Board type="DOBUTSU" amIOpponent={amIOpponent} gameData={gameData}/>
+            }
+
         </Container>
     );
 };

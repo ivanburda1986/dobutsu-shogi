@@ -264,9 +264,11 @@ interface RegisterUserInterface {
 
 export const useRegisterUser = ({email, username, password, registerUserCb}: RegisterUserInterface) => {
     const updateUserProfile = useUpdateUserProfile;
+    const createUserStats = useCreateUserStats;
     createUserWithEmailAndPassword(auth, email, password)
         .then((cred) => {
             updateUserProfile({displayName: username, photoURL: "placeholder", cb: registerUserCb.updateUserData});
+            createUserStats({userId: cred.user.uid});
             console.log("user created:", cred.user);
         })
         .catch((err) => {
@@ -349,3 +351,52 @@ export const useUpdateUserProfile = ({displayName, photoURL, cb}: UpdateUserProf
             console.log(err.message);
         });
 };
+
+// USER GAME STATS
+// =======================================================
+
+// Initial creation of stats
+export interface CreateUserStatsInterface {
+    userId: string;
+}
+
+export const useCreateUserStats = ({userId}: CreateUserStatsInterface) => {
+    setDoc(doc(db, `stats`, userId), {
+        userId: userId,
+        win: 0,
+        loss: 0,
+    }).then(() => console.log("The user stats have been created"))
+        .catch((err) => {
+            console.log(err.message);
+        });
+};
+
+// Update user stats
+interface UserStats {
+    win: number,
+    loss: number
+}
+
+interface useUpdateUserStatsInterface {
+    userId: string;
+    updatedDetails: Partial<UserStats>;
+}
+
+export const useUpdateUserStats = ({userId, updatedDetails}: useUpdateUserStatsInterface) => {
+    const updateUserStatsRef = doc(db, "stats", userId);
+    updateDoc(updateUserStatsRef, {...updatedDetails})
+        .then(() => console.log("User stats updated"))
+        .catch((err) => {
+            console.log(err.message);
+        });
+};
+
+// Get user stats
+interface getSingleUserStatsInterface {
+    userId: string;
+}
+
+export const getSingleUserStats = ({userId}: getSingleUserStatsInterface) => {
+    return getDoc(doc(db, "stats", userId));
+};
+

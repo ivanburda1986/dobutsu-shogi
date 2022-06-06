@@ -5,7 +5,7 @@ import {
     useUpdateStoneOnTakeOver,
     useUpdateStonePosition,
     useEmpowerStone,
-    useHandicapStone, useUpdateGame
+    useHandicapStone, useUpdateGame, useUpdateUserStats, getSingleUserStats
 } from "../../../api/firestore";
 import {
     amIStoneOwner,
@@ -170,19 +170,30 @@ export const Stone: FC<StoneInterface> = ({
         const empowerStone = useEmpowerStone;
         const handicapStone = useHandicapStone;
         const updateGame = useUpdateGame;
+        const updateStats = useUpdateUserStats;
+
         if (!lyingStone || !draggedStone || !canTakeStone) {
             return;
         }
         if (canTakeStone) {
             //Victory handling for taking a LION
             if (lyingStone.type === "LION") {
-                updateGame({id: gameId!,
+                updateGame({
+                    id: gameId!,
                     updatedDetails: {
                         status: "COMPLETED",
                         winner: draggedStone.currentOwner,
                         finishedTimeStamp: Date.now()
                     }
                 });
+                getSingleUserStats({userId: lyingStone.originalOwner}).then((serverStats) => updateStats({
+                    userId: lyingStone.originalOwner,
+                    updatedDetails: {loss: serverStats.data()?.loss + 1}
+                }));
+                getSingleUserStats({userId: draggedStone.currentOwner}).then((serverStats) => updateStats({
+                    userId: draggedStone.currentOwner,
+                    updatedDetails: {win: serverStats.data()?.win + 1}
+                }));
                 return;
             }
 
