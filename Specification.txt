@@ -11,19 +11,19 @@ getting with lion to opponents edge, while not getting endangered by opponents s
 resign option
 --update game state
 
+a game in progress cannot be deleted
+
+
 repeating the same row of moves 3x -> a tie
 --store in the DB the last few moves (from-to coordinates) and if the same moves appear 3x in a row -> set game state to a tie
 
 
 Future enhancements:
-a finished game stats are saved to each players data to serve as stats input
 launch screen indicates games in progress
 launch screen indicates games waiting for an opponent
-players profile shows stats: played, won, lost
 when creating a game, a limit can be added for individual moves
 a player not moving within the limit loses
 a created game can be password protected
-emphasise politeness - advise players to show courtesy and thankfulness
 
 Question:
 What happens if 2 alone lions remain on the board?
