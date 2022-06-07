@@ -15,7 +15,6 @@ export const StashField: FC<FieldInterface> = ({rowNumber, columnLetter, amIOppo
 
     return (
         <div style={{
-            // transform: `rotate(${amIOpponent === true ? 180 : 0}deg)`,
             backgroundImage: `url(${getImgReference(columnLetter)})`,
             backgroundPosition: 'center',
             backgroundSize: 'cover',

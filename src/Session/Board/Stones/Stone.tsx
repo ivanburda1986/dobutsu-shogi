@@ -18,6 +18,7 @@ import {ProvidedContextInterface} from "../../../App";
 import {AppContext} from "../../../context/AppContext";
 import {useParams} from "react-router";
 import {DocumentData} from "firebase/firestore";
+import {StoneStashCount} from "./StoneStashCount/StoneStashCount";
 
 export type stoneType = "CHICKEN" | "ELEPHANT" | "GIRAFFE" | "LION" | "HEN";
 
@@ -291,6 +292,7 @@ export const Stone: FC<StoneInterface> = ({
             })}
         >
             {currentOwner.substr(0, 2)}
+            <StoneStashCount count={1}/>
         </div>
     );
 };
