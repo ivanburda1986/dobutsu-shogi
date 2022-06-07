@@ -1,6 +1,8 @@
 Next steps:
-stashed stones of the same type get a number to indicate decking
---get all stones and check whether there are multiple on individual stash positions - if yes, dipslay a number for the impacted stash pocition
+If a count is displayed for a stashed stones and 1 of the stones starts being dragged:
+-decrease the count for the stone remaining in the stash
+-hide the count for the stone that is being dragged
+-if the dragged stone does not get placed the the board but rather returns the the stash, then the stash count should reflect it being back
 
 getting with lion to opponents edge, while not getting endangered by opponents stone -> victory/defeat
 --getting all stones; compare whether an opponents stone is nearby a player's lion and step onto the position of the lion

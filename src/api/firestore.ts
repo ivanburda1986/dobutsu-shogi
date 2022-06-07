@@ -368,6 +368,7 @@ export const useCreateUserStats = ({userId}: CreateUserStatsInterface) => {
         userId: userId,
         win: 0,
         loss: 0,
+        tie: 0,
     }).then(() => console.log("The user stats have been created"))
         .catch((err) => {
             console.log(err.message);
@@ -377,7 +378,8 @@ export const useCreateUserStats = ({userId}: CreateUserStatsInterface) => {
 // Update user stats
 interface UserStats {
     win: number,
-    loss: number
+    loss: number,
+    tie: number,
 }
 
 interface useUpdateUserStatsInterface {

@@ -15,6 +15,7 @@ export const Profile: FC = () => {
     const [usernameInput, setUsernameInput] = useState<string>("");
     const [wins, setWins] = useState<number>(0);
     const [losses, setLosses] = useState<number>(0);
+    const [ties, setTies] = useState<number>(0);
     const updateUserProfile = useUpdateUserProfile;
 
     const shouldBeChecked = (optionName: string) => {
@@ -33,6 +34,7 @@ export const Profile: FC = () => {
         onSnapshot(docRef, (doc) => {
             setWins(doc.data()!.win);
             setLosses(doc.data()!.loss);
+            setTies(doc.data()!.tie);
         });
     }, [appContext.loggedInUserUserId]);
 
@@ -133,12 +135,14 @@ export const Profile: FC = () => {
                 <tr>
                     <th scope="col">Wins</th>
                     <th scope="col">Losses</th>
+                    <th scope="col">Ties</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
                     <td>{wins}</td>
                     <td>{losses}</td>
+                    <td>{ties}</td>
                 </tr>
                 </tbody>
             </table>
