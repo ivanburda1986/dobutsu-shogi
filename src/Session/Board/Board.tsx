@@ -100,6 +100,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
                         canTakeStone={canTakeStone}
                         setCanTakeStone={setCanTakeStone}
                         gameData={gameData}
+                        allStones={stones}
                     />
                 ))}
             </div>

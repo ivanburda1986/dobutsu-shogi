@@ -5,7 +5,7 @@ import LION from "./images/lion.png";
 import HEN from "./images/hen.png";
 
 import {chickenTurningToHenCoordinates, stoneMovements} from "./StoneMovements";
-import {stoneType} from "./Stone";
+import {StoneInterface, stoneType} from "./Stone";
 import {columnLetterType} from "../../PlayerInterface/PlayerInterfaceService";
 import {DocumentData} from "firebase/firestore";
 
@@ -234,4 +234,25 @@ export const getImgReference = (type: stoneType) => {
     if (type === "GIRAFFE") return GIRAFFE;
     if (type === "HEN") return HEN;
     return LION;
+};
+
+interface getStashedStonePillCountInterface {
+    allStones: StoneInterface[];
+    currentOwnerId?: string;
+    type: stoneType;
+    stashed: boolean;
+}
+
+export const getStashedStonePillCount = ({
+                                             allStones,
+                                             currentOwnerId,
+                                             type,
+                                             stashed,
+                                         }: getStashedStonePillCountInterface): number => {
+    if (!currentOwnerId || !stashed) {
+        return 0;
+    }
+    const stashedStones = allStones.filter((stone) => stone.stashed);
+    const playerStashedCountOfTheStone = stashedStones.filter((stone) => stone.currentOwner === currentOwnerId).filter((stashedStone) => stashedStone.type === type);
+    return playerStashedCountOfTheStone.length;
 };

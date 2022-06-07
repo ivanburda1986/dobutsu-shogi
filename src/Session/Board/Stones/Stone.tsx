@@ -10,7 +10,7 @@ import {
 import {
     amIStoneOwner,
     canStoneMoveThisWay,
-    getImgReference, getStashTargetPosition, isItMyTurn, nextTurnPlayerId,
+    getImgReference, getStashedStonePillCount, getStashTargetPosition, isItMyTurn, nextTurnPlayerId,
     rotateOponentStones, shouldChickenTurnIntoHen,
     useSetStonePosition
 } from "./StoneService";
@@ -41,6 +41,7 @@ export interface StoneInterface {
     canTakeStone?: boolean;
     setCanTakeStone?: Function;
     gameData?: DocumentData | undefined;
+    allStones?: StoneInterface[];
 }
 
 export const Stone: FC<StoneInterface> = ({
@@ -61,6 +62,7 @@ export const Stone: FC<StoneInterface> = ({
                                               canTakeStone,
                                               setCanTakeStone,
                                               gameData,
+                                              allStones,
                                           }) => {
     const appContext: ProvidedContextInterface = useContext(AppContext);
     const {gameId} = useParams();
@@ -71,6 +73,12 @@ export const Stone: FC<StoneInterface> = ({
     const updateStonePosition = useUpdateStonePosition;
     const updateStoneOnTakeOver = useUpdateStoneOnTakeOver;
     const updateStoneType = useEmpowerStone;
+    const stashedPillCount = getStashedStonePillCount({
+        allStones: allStones ?? [],
+        currentOwnerId: currentOwner,
+        stashed: stashed,
+        type: type,
+    });
 
     useEffect(() => {
         setStonePosition({
@@ -291,8 +299,11 @@ export const Stone: FC<StoneInterface> = ({
                 setPositionY
             })}
         >
-            {currentOwner.substr(0, 2)}
-            <StoneStashCount count={1}/>
+            {/*{currentOwner.substr(0, 2)}*/}
+            {stashedPillCount > 1 ? <StoneStashCount
+                count={stashedPillCount}/> : null
+            }
+
         </div>
     );
 };
