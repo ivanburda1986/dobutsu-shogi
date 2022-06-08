@@ -69,6 +69,7 @@ export const Stone: FC<StoneInterface> = ({
     const [rotateDegrees, setRotateDegrees] = useState<number>(0);
     const [positionX, setPositionX] = useState<number>(0);
     const [positionY, setPositionY] = useState<number>(0);
+    const [hideStoneStashCount, setHideStoneStashCount] = useState<boolean>(false);
     const setStonePosition = useSetStonePosition;
     const updateStonePosition = useUpdateStonePosition;
     const updateStoneOnTakeOver = useUpdateStoneOnTakeOver;
@@ -113,6 +114,7 @@ export const Stone: FC<StoneInterface> = ({
             rowNumbers,
             columnLetters,
         });
+        setHideStoneStashCount(true);
     };
 
     const onDragStartHandlerDisallowed = (event: React.DragEvent<HTMLDivElement>) => {
@@ -189,7 +191,7 @@ export const Stone: FC<StoneInterface> = ({
         const updateGame = useUpdateGame;
         const updateStats = useUpdateUserStats;
 
-
+        setHideStoneStashCount(false);
         if (!lyingStone || !draggedStone || !canTakeStone) {
             return;
         }
@@ -300,7 +302,7 @@ export const Stone: FC<StoneInterface> = ({
             })}
         >
             {/*{currentOwner.substr(0, 2)}*/}
-            {stashedPillCount > 1 ? <StoneStashCount
+            {stashedPillCount > 1 && !hideStoneStashCount ? <StoneStashCount
                 count={stashedPillCount}/> : null
             }
 

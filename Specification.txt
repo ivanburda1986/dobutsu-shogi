@@ -1,9 +1,4 @@
 Next steps:
-If a count is displayed for a stashed stones and 1 of the stones starts being dragged:
--decrease the count for the stone remaining in the stash
--hide the count for the stone that is being dragged
--if the dragged stone does not get placed the the board but rather returns the the stash, then the stash count should reflect it being back
-
 getting with lion to opponents edge, while not getting endangered by opponents stone -> victory/defeat
 --getting all stones; compare whether an opponents stone is nearby a player's lion and step onto the position of the lion
 
@@ -19,6 +14,8 @@ resign option
 --update game state
 --increase loss for resignee
 --increase win for the other
+
+improve styling where needed - mainly the screen with games
 
 =================================================================
 Possible future enhancements:
