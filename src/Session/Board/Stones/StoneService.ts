@@ -193,12 +193,14 @@ export const useSetStonePosition = ({
     // console.log('targetPositionLetter', targetPositionLetter);
     // console.log('targetPositionNumber', targetPositionNumber);
     let targetPosition = document.querySelector(`[data-letter=${translateHenToChickenStashPositioning(targetPositionLetter)}][data-number="${targetPositionNumber}"]`);
+    let stone = document.getElementById(stoneId)?.getBoundingClientRect();
+
     //console.log('targetPosition', targetPosition);
     let rect = targetPosition?.getBoundingClientRect();
     //console.log('rect', rect);
 
-    setPositionX(Math.floor(rect!.left));
-    setPositionY(Math.floor(rect!.top));
+    setPositionX(Math.floor(rect!.left + (rect!.width - stone!.width) / 2));
+    setPositionY(Math.floor(rect!.top + (rect!.height - stone!.height) / 2));
     let div = document.getElementById(stoneId);
     div!.style.left = positionX + "px";
     div!.style.top = positionY + "px";

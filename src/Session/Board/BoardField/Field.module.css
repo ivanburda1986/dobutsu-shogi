@@ -1,21 +1,21 @@
 .Field {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px dashed rgb(240, 170, 170);
-  margin: -0.5px;
-  width: 6vw;
-  height: 6vw;
-  color: rgb(243, 117, 117);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px dashed rgb(240, 170, 170);
+    margin: -0.5px;
+    width: 7vw;
+    height: 7vw;
+    color: rgb(243, 117, 117);
 }
 
 .columnLetter {
-  position: absolute;
-  top: -25px;
+    position: absolute;
+    top: -25px;
 }
 
 .rowNumber {
-  position: absolute;
-  left: -20px;
+    position: absolute;
+    left: -20px;
 }
