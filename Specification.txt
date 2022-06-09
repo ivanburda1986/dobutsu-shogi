@@ -40,7 +40,7 @@ but make sure that entering the opponents 1st row with a lion does not endanger 
 
 
 Algorithm:
-Lion starts on B4
+Lion starts on B4: CREATOR
 Lion moves to A1, B1, C1
 -when moving there (either an empty field, or taking an opponents stone), get all opponents stones and select those which might be on these fields
 --A1: A2, B1, B2
@@ -51,7 +51,7 @@ Lion moves to A1, B1, C1
 ---if yes: the lion owner losses
 ---if no: the lion owner wins
 
-Lion starts on B1
+Lion starts on B1: OPPONENT
 Lion moves to A4, B4, C4
 -when moving there (either an empty field, or taking an opponents stone), get all opponents stones and select those which might be on these fields
 --C4: C3, B4, B3

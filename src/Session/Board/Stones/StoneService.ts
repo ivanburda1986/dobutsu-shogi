@@ -36,10 +36,10 @@ export const shouldChickenTurnIntoHen = ({
                                              movingToLetter,
                                              movingToNumber
                                          }: shouldChickenTurnIntoHenInterface) => {
-    console.log('amIOpponent', amIOpponent);
-    console.log('stashed', stashed);
-    console.log('movingToLetter', movingToLetter);
-    console.log('movingToNumber', movingToNumber);
+    // console.log('amIOpponent', amIOpponent);
+    // console.log('stashed', stashed);
+    // console.log('movingToLetter', movingToLetter);
+    // console.log('movingToNumber', movingToNumber);
     if (type !== "CHICKEN") {
         return false;
     }
@@ -72,10 +72,10 @@ interface nextTurnPlayerIdInterface {
 export const nextTurnPlayerId = ({myId, gameData}: nextTurnPlayerIdInterface): string => {
     if (myId === gameData?.currentPlayerTurn) {
         let nextTurnPlayerId = myId === gameData?.creatorId ? gameData?.opponentId : gameData?.creatorId;
-        console.log('nextTurnPlayerId', nextTurnPlayerId);
+        // console.log('nextTurnPlayerId', nextTurnPlayerId);
         return nextTurnPlayerId;
     }
-    console.log('nextTurnPlayerId', myId);
+    // console.log('nextTurnPlayerId', myId);
     return myId;
 };
 
@@ -135,7 +135,7 @@ export const canStoneMoveThisWay = ({
         const targetCoordinate = `${movingToLetter}${movingToNumber}`;
         const allowedLetters = stoneMovements.LION[originatingCoordinate];
         // console.log(allowedLetters.includes(targetCoordinate));
-        console.log(allowedLetters.includes(targetCoordinate));
+        // console.log(allowedLetters.includes(targetCoordinate));
         return allowedLetters.includes(targetCoordinate);
     }
     if (stoneType === "HEN") {
@@ -190,8 +190,8 @@ export const useSetStonePosition = ({
                                         positionY,
                                         setPositionY
                                     }: useSetStonePositionInterface) => {
-    console.log('targetPositionLetter', targetPositionLetter);
-    console.log('targetPositionNumber', targetPositionNumber);
+    // console.log('targetPositionLetter', targetPositionLetter);
+    // console.log('targetPositionNumber', targetPositionNumber);
     let targetPosition = document.querySelector(`[data-letter=${translateHenToChickenStashPositioning(targetPositionLetter)}][data-number="${targetPositionNumber}"]`);
     //console.log('targetPosition', targetPosition);
     let rect = targetPosition?.getBoundingClientRect();

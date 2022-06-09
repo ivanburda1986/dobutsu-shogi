@@ -57,7 +57,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
         //Listening to change of the game state (victory/defeat)
         const docRef = doc(db, "games", gameId!);
         onSnapshot(docRef, (doc) => {
-            console.log("Updated data");
+            // console.log("Updated data");
             setWinner(doc.data()!.winner);
         });
 
@@ -77,7 +77,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
                  className={`${styles.BoardBg}`}>
                 {rowNumbers.map((item) => (
                     <BoardRow key={uuidv4()} rowNumber={item} columnLetters={columnLetters} amIOpponent={amIOpponent}
-                              gameData={gameData}
+                              gameData={gameData} stones={stones}
                     />
                 ))}
                 {stones.map((stone) => (

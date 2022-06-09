@@ -7,6 +7,7 @@ import {nextTurnPlayerId} from "../Stones/StoneService";
 import {ProvidedContextInterface} from "../../../App";
 import {AppContext} from "../../../context/AppContext";
 import {DocumentData} from "firebase/firestore";
+import {StoneInterface} from "../Stones/Stone";
 
 
 interface FieldInterface {
@@ -14,9 +15,10 @@ interface FieldInterface {
     columnLetter: string;
     amIOpponent: boolean;
     gameData: DocumentData | undefined;
+    stones: StoneInterface[];
 }
 
-export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent, gameData}) => {
+export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent, gameData, stones}) => {
     const {gameId} = useParams();
     const appContext: ProvidedContextInterface = useContext(AppContext);
     const updateStonePosition = useUpdateStonePosition;
@@ -32,10 +34,10 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
         let movedFromLetter = event.dataTransfer!.getData("movedFromLetter");
         let movedFromNumber = event.dataTransfer!.getData("movedFromNumber");
 
-        const callbackFc = (stoneMoveAllowed: boolean, shouldChickenTransformToHen: boolean) => {
-            console.log('shouldChickenTransformToHen', shouldChickenTransformToHen);
+        const callbackFc = (stoneMoveAllowed: boolean, shouldChickenTransformToHen: boolean, lionConquerAttemptSuccessful: boolean) => {
+            // console.log('shouldChickenTransformToHen', shouldChickenTransformToHen);
             if (shouldChickenTransformToHen) {
-                console.log('empowering!');
+                // console.log('empowering!');
                 empowerStone({gameId: gameId!, stoneId: placedStoneId, type: "HEN"});
             }
             if (stoneMoveAllowed!) {
@@ -57,9 +59,10 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
                         })
                     }
                 });
-                console.log('The stone can move here');
+                // console.log('The stone can move here');
+                console.log('lionConquerAttemptSuccessful', lionConquerAttemptSuccessful);
             } else {
-                console.log('The stone cannot move here');
+                // console.log('The stone cannot move here');
             }
         };
 
@@ -71,6 +74,7 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
             movingToLetter: columnLetter,
             movingToNumber: rowNumber,
             amIOpponent: amIOpponent,
+            stones: stones,
             cb: callbackFc
         });
 

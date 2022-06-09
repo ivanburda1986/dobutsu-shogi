@@ -119,7 +119,7 @@ export const Stone: FC<StoneInterface> = ({
 
     const onDragStartHandlerDisallowed = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
-        console.log('it is not your turn');
+        // console.log('it is not your turn');
     };
 
     const onDragEnterHandler = () => {
@@ -145,14 +145,14 @@ export const Stone: FC<StoneInterface> = ({
 
         //Do not do anything if the stone I am dragging is still above itself
         if (lyingStone.id === draggedStone.id) {
-            console.log('Ignoring dragging above the stone which is being moved');
+            // console.log('Ignoring dragging above the stone which is being moved');
             setCanTakeStone(false);
             return;
         }
 
         // Prevent takeover if the stone I am dragging is going from the stash
         if (draggedStone.stashed) {
-            console.log('A stone you are dragging from the stash cannot be place on top of another stone');
+            // console.log('A stone you are dragging from the stash cannot be place on top of another stone');
             return;
         }
 
@@ -160,7 +160,7 @@ export const Stone: FC<StoneInterface> = ({
         //no do not allow dropping
         //yes: continue
         if (lyingStone.currentOwner === draggedStone.currentOwner) {
-            console.log('You cannot take your own stone');
+            // console.log('You cannot take your own stone');
             setCanTakeStone(false);
             return;
         }
@@ -175,11 +175,11 @@ export const Stone: FC<StoneInterface> = ({
             amIOpponent: !!draggedStone.amIOpponent,
             stashed: draggedStone.stashed
         })) {
-            console.log('Your stone cannot move to this position');
+            // console.log('Your stone cannot move to this position');
             setCanTakeStone(false);
             return;
         }
-        console.log('Your stone can take this stone.');
+        // console.log('Your stone can take this stone.');
         setCanTakeStone(true);
         return;
         event.preventDefault();
@@ -232,7 +232,7 @@ export const Stone: FC<StoneInterface> = ({
 
             //Special handling to handicap a HEN getting stashed
             if (lyingStone.type === "HEN") {
-                console.log('dis-empowering!');
+                // console.log('dis-empowering!');
                 handicapStone({gameId: gameId!, stoneId: lyingStone.id, type: "CHICKEN"});
             }
             //Update taken stone
@@ -259,9 +259,9 @@ export const Stone: FC<StoneInterface> = ({
                     movingToLetter: lyingStone.positionLetter,
                     movingToNumber: lyingStone.positionNumber
                 });
-                console.log('turnChickenToHen', turnChickenToHen);
+                // console.log('turnChickenToHen', turnChickenToHen);
                 if (turnChickenToHen) {
-                    console.log('empowering!');
+                    // console.log('empowering!');
                     empowerStone({gameId: gameId!, stoneId: draggedStone.id, type: "HEN"});
                 }
             }
@@ -273,7 +273,7 @@ export const Stone: FC<StoneInterface> = ({
                 positionNumber: lyingStone.positionNumber,
             });
         }
-        console.log('Cannot drop');
+        // console.log('Cannot drop');
         return;
     };
 

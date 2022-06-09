@@ -3,6 +3,7 @@ import {v4 as uuidv4} from "uuid";
 import {Field} from "../BoardField/Field";
 import styles from "./BoardRow.module.css";
 import {DocumentData} from "firebase/firestore";
+import {StoneInterface} from "../Stones/Stone";
 
 
 interface BoardRowInterface {
@@ -10,9 +11,10 @@ interface BoardRowInterface {
     rowNumber: number;
     amIOpponent: boolean;
     gameData: DocumentData | undefined;
+    stones: StoneInterface[];
 }
 
-export const BoardRow: FC<BoardRowInterface> = ({rowNumber, columnLetters, amIOpponent, gameData}) => {
+export const BoardRow: FC<BoardRowInterface> = ({rowNumber, columnLetters, amIOpponent, gameData, stones}) => {
     return <div className={`${styles.BoardRow}`}>
         {columnLetters.map((letter) =>
             <Field key={uuidv4()}
@@ -20,6 +22,7 @@ export const BoardRow: FC<BoardRowInterface> = ({rowNumber, columnLetters, amIOp
                    columnLetter={letter}
                    amIOpponent={amIOpponent}
                    gameData={gameData}
+                   stones={stones}
             />)}
     </div>;
 };
