@@ -50,6 +50,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
         };
     }, []);
 
+
     useEffect(() => {
         //Listening to change of stone positions
         const stonesCollectionRef = collection(db, `games/${gameId}/stones`);
@@ -80,7 +81,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
     }, [amIOpponent]);
 
     return (
-        <Container fluid className={`d-flex mb-4 justify-content-center ${styles.Board}`}>
+        <Container id="board" fluid className={`d-flex mb-4 justify-content-center ${styles.Board}`}>
 
             <div style={{backgroundImage: `url(${amIOpponent === true ? bgRotated : bg})`}}
                  className={`${styles.BoardBg}`}>

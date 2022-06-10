@@ -66,7 +66,7 @@ export const Session = () => {
 
     return (
         <Container fluid
-                   className={`d-flex flex-column justify-content-center align-items-center ${styles.Session}`}>
+                   className={`d-flex flex-column justify-content-start align-items-center ${styles.Session}`}>
 
             {
                 <Board type="DOBUTSU" amIOpponent={amIOpponent} gameData={gameData}/>
