@@ -231,11 +231,13 @@ export const Stone: FC<StoneInterface> = ({
                 return;
             }
 
+
             //Special handling to handicap a HEN getting stashed
             if (lyingStone.type === "HEN") {
                 // console.log('dis-empowering!');
                 handicapStone({gameId: gameId!, stoneId: lyingStone.id, type: "CHICKEN"});
             }
+
             //Update taken stone
             updateStoneOnTakeOver({
                 gameId: gameId!,
@@ -250,6 +252,7 @@ export const Stone: FC<StoneInterface> = ({
                     positionNumber: 1
                 }
             });
+
             //Special handling to empower a CHICKEN when it should become a HEN
             if (draggedStone.type === "CHICKEN") {
                 // this turnChickenToHen could be ensapsulated in shouldChickenTurnIntoHen() which would also trigger the empowerStone()
@@ -266,6 +269,7 @@ export const Stone: FC<StoneInterface> = ({
                     empowerStone({gameId: gameId!, stoneId: draggedStone.id, type: "HEN"});
                 }
             }
+
             //Update dragged stone
             updateStonePosition({
                 gameId: gameId!,

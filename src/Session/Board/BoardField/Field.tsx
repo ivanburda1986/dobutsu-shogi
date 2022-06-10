@@ -54,7 +54,7 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
                     positionNumber: rowNumber,
                 });
 
-                //Evaluate whether a lion-move leads to a game end
+                //Evaluate whether a lion-move is a homebase-conquer attempt and leads to a game end
                 if (lionConquerAttempt.success !== undefined) {
                     const {success, conqueringPlayerId, conqueredPlayerId} = lionConquerAttempt;
                     console.log('success', success);

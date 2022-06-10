@@ -20,6 +20,7 @@ resign option
 --increase win for the other
 
 improve styling where needed - mainly the screen with games
+refresh the stones after resizing the screen to make sure they are positioned correctly
 
 =================================================================
 Possible future enhancements:
