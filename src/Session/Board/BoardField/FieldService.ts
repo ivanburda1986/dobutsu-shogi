@@ -86,8 +86,6 @@ export const evaluateStoneMove = ({
             }
 
             // Lion conquer attempt evaluation
-
-
             let lionConquerAttempt: lionConquerAttemptInterface = {
                 success: undefined,
                 conqueringPlayerId: undefined,

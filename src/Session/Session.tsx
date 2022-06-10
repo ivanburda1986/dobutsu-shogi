@@ -52,8 +52,8 @@ export const Session = () => {
 
     useEffect(() => {
         console.log('gameData');
-        console.log(gameData)
-    }, [gameData])
+        console.log(gameData);
+    }, [gameData]);
 
     // Randomly decide who should start
     useEffect(() => {
@@ -65,7 +65,12 @@ export const Session = () => {
     }, [gameId, gameData, updateGame]);
 
     return (
-        <Container fluid className={styles.Session}>
+        <Container fluid
+                   className={`d-flex flex-column justify-content-center align-items-center ${styles.Session}`}>
+
+            {
+                <Board type="DOBUTSU" amIOpponent={amIOpponent} gameData={gameData}/>
+            }
             {
                 gameData?.winner && evaluateBeingWinner({
                     winnerId: gameData.winner,
@@ -77,10 +82,6 @@ export const Session = () => {
                     loggedInUserUserId: appContext.loggedInUserUserId
                 })}/>
             }
-            {
-                !gameData?.winner && <Board type="DOBUTSU" amIOpponent={amIOpponent} gameData={gameData}/>
-            }
-
         </Container>
     );
 };

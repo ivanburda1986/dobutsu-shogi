@@ -80,7 +80,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
     }, [amIOpponent]);
 
     return (
-        <Container fluid className={`d-flex justify-content-center ${styles.Board}`}>
+        <Container fluid className={`d-flex mb-4 justify-content-center ${styles.Board}`}>
 
             <div style={{backgroundImage: `url(${amIOpponent === true ? bgRotated : bg})`}}
                  className={`${styles.BoardBg}`}>

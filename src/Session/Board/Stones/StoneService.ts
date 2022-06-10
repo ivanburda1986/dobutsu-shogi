@@ -4,10 +4,11 @@ import GIRAFFE from "./images/giraffe.png";
 import LION from "./images/lion.png";
 import HEN from "./images/hen.png";
 
-import {chickenTurningToHenCoordinates, stoneMovements} from "./StoneMovements";
+import {chickenTurningToHenCoordinates, lionConquerFields, stoneMovements} from "./StoneMovements";
 import {StoneInterface, stoneType} from "./Stone";
 import {columnLetterType} from "../../PlayerInterface/PlayerInterfaceService";
 import {DocumentData} from "firebase/firestore";
+import {lionConquerAttemptInterface} from "../BoardField/FieldService";
 
 interface getStashTargetPositionInterface {
     type: stoneType;
@@ -257,4 +258,78 @@ export const getStashedStonePillCount = ({
     const stashedStones = allStones.filter((stone) => stone.stashed);
     const playerStashedCountOfTheStone = stashedStones.filter((stone) => stone.currentOwner === currentOwnerId).filter((stashedStone) => stashedStone.type === type);
     return playerStashedCountOfTheStone.length;
+};
+
+
+// Lion conquer attempt evaluation
+interface lionConquerAttemptEvaluationInterface {
+    stoneData: StoneInterface;
+    amIOpponent: boolean;
+    movingToLetter: string;
+    movingToNumber: number;
+    stones: StoneInterface[],
+
+
+}
+
+export const lionConquerAttemptEvaluation = ({
+                                                 stoneData,
+                                                 amIOpponent,
+                                                 movingToLetter,
+                                                 movingToNumber,
+                                                 stones
+                                             }: lionConquerAttemptEvaluationInterface): lionConquerAttemptInterface => {
+    let lionConquerAttempt: lionConquerAttemptInterface = {
+        success: undefined,
+        conqueringPlayerId: undefined,
+        conqueredPlayerId: undefined
+    };
+    if (stoneData!.type === "LION" && !amIOpponent) {
+        const targetCoordinate = `${movingToLetter}${movingToNumber}`;
+        console.log('lion target coordinate', targetCoordinate);
+        if (targetCoordinate in lionConquerFields.creator) {
+            let opponentStones = stones.filter((stone) => stone.currentOwner !== stoneData!.currentOwner && !stone.stashed);
+            console.log('opponentStones', opponentStones);
+            console.log('nearby fields of lion target position', lionConquerFields.creator[targetCoordinate]);
+            let nearbyOpponentStones = opponentStones.filter((stone) => lionConquerFields.creator[targetCoordinate].includes(`${stone.positionLetter}${stone.positionNumber}`));
+            console.log('nearbyOpponentStones', nearbyOpponentStones);
+            let endangeringOpponentStones = nearbyOpponentStones.filter((stone) => {
+                if (stone.type === "CHICKEN" || stone.type === "HEN") {
+                    return stoneMovements[stone.type].opponent[`${stone.positionLetter}${stone.positionNumber}`].includes(targetCoordinate);
+                } else {
+                    return stoneMovements[stone.type][`${stone.positionLetter}${stone.positionNumber}`].includes(targetCoordinate);
+                }
+            });
+            console.log('endangeringOpponentStones', endangeringOpponentStones);
+            lionConquerAttempt = {
+                success: endangeringOpponentStones.length === 0,
+                conqueringPlayerId: stoneData!.currentOwner,
+                conqueredPlayerId: opponentStones[0].currentOwner,
+            };
+        }
+    } else if (stoneData!.type === "LION" && amIOpponent) {
+        const targetCoordinate = `${movingToLetter}${movingToNumber}`;
+        console.log('lion target coordinate', targetCoordinate);
+        if (targetCoordinate in lionConquerFields.opponent) {
+            let opponentStones = stones.filter((stone) => stone.currentOwner !== stoneData!.currentOwner && !stone.stashed);
+            console.log('opponentStones', opponentStones);
+            console.log('nearby fields of lion target position', lionConquerFields.opponent[targetCoordinate]);
+            let nearbyOpponentStones = opponentStones.filter((stone) => lionConquerFields.opponent[targetCoordinate].includes(`${stone.positionLetter}${stone.positionNumber}`));
+            console.log('nearbyOpponentStones', nearbyOpponentStones);
+            let endangeringOpponentStones = nearbyOpponentStones.filter((stone) => {
+                if (stone.type === "CHICKEN" || stone.type === "HEN") {
+                    return stoneMovements[stone.type].creator[`${stone.positionLetter}${stone.positionNumber}`].includes(targetCoordinate);
+                } else {
+                    return stoneMovements[stone.type][`${stone.positionLetter}${stone.positionNumber}`].includes(targetCoordinate);
+                }
+            });
+            console.log('endangeringOpponentStones', endangeringOpponentStones);
+            lionConquerAttempt = {
+                success: endangeringOpponentStones.length === 0,
+                conqueringPlayerId: stoneData!.currentOwner,
+                conqueredPlayerId: opponentStones[0].currentOwner,
+            };
+        }
+    }
+    return lionConquerAttempt;
 };

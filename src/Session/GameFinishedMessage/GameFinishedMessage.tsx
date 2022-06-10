@@ -3,9 +3,10 @@ import {VictoryType} from "../Board/Board";
 
 export type GameFinishedMessageType =
     "VICTORY_LION_CAPTURE"
+    | "LOSS_LION_CAPTURE"
     | "VICTORY_HOME_BASE_CONQUER"
     | "VICTORY_HOME_BASE_CONQUER_FAILED"
-    | "LOSS_LION_CAPTURE"
+    | "LOSS_HOME_BASE_CONQUER"
     | "LOSS_HOME_BASE_CONQUER_FAILED"
 
 export interface GameFinishedMessageInterface {
@@ -15,21 +16,24 @@ export interface GameFinishedMessageInterface {
 const getMessageContent = (messageType: GameFinishedMessageType) => {
     let headline;
     let textBody;
-    if (messageType === "VICTORY_HOME_BASE_CONQUER") {
+    if (messageType === "VICTORY_LION_CAPTURE") {
         headline = ("Congratulations!");
-        textBody = ("You have won by conquering opponent's homebase!");
-    } else if (messageType === "VICTORY_HOME_BASE_CONQUER_FAILED") {
-        headline = ("Congratulations!");
-        textBody = ("You have won because your opponent's lion got caught while trying to capture your homebase.");
-    } else if (messageType === "VICTORY_LION_CAPTURE") {
-        headline = ("Congratulations!");
-        textBody = ("You have won by capturing the lion!");
+        textBody = ("You have captured the opponent's lion.");
     } else if (messageType === "LOSS_LION_CAPTURE") {
         headline = ("You have lost!");
-        textBody = ("You have lost. Your lion got captured.");
+        textBody = ("Your lion got captured.");
+    } else if (messageType === "VICTORY_HOME_BASE_CONQUER") {
+        headline = ("Congratulations!");
+        textBody = ("You have conquered the opponent's homebase!");
+    } else if (messageType === "LOSS_HOME_BASE_CONQUER") {
+        headline = ("You have lost!");
+        textBody = ("Your homebase has got conquered.");
+    } else if (messageType === "VICTORY_HOME_BASE_CONQUER_FAILED") {
+        headline = ("Congratulations!");
+        textBody = ("The opponent's lion has tried to conquer your homebase, but failed because your animals protected it.");
     } else if (messageType === "LOSS_HOME_BASE_CONQUER_FAILED") {
         headline = ("You have lost!");
-        textBody = ("You have lost by unsuccessfully trying to capture your opponent's homebase");
+        textBody = ("Your lion has tried to conquer the opponent's homebase, but failed because it was protected.");
     }
     return {headline, textBody};
 
@@ -51,15 +55,15 @@ export const GameFinishedMessage: FunctionComponent<GameFinishedMessageInterface
                 </h3>
                 {getMessageContent(messageType).textBody}
                 <div>
-                    <p> Your opponent says 'thank you' for such a great game.</p>
+                    <p> Your opponent says 'thank you' for a good game.</p>
                 </div>
             </div>
         );
     }
 
-    if (messageType === "LOSS_LION_CAPTURE" || messageType === "LOSS_HOME_BASE_CONQUER_FAILED") {
+    if (messageType === "LOSS_LION_CAPTURE" || messageType === "LOSS_HOME_BASE_CONQUER" || messageType === "LOSS_HOME_BASE_CONQUER_FAILED") {
         return (
-            <div className="alert alert-danger" role="alert">
+            <div className="d-block alert alert-danger " role="alert">
                 <h3 className="alert-heading">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                          className="bi bi-emoji-smile-upside-down-fill flex-shrink-0 me-2" viewBox="0 0 16 16"
@@ -72,7 +76,7 @@ export const GameFinishedMessage: FunctionComponent<GameFinishedMessageInterface
                 </h3>
                 {getMessageContent(messageType).textBody}
                 <div>
-                    Your opponent says 'thank you' for such a great game.
+                    Your opponent says 'thank you' for a good game.
                 </div>
             </div>
         );

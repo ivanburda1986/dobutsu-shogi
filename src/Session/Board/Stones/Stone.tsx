@@ -10,8 +10,14 @@ import {
 import {
     amIStoneOwner,
     canStoneMoveThisWay,
-    getImgReference, getStashedStonePillCount, getStashTargetPosition, isItMyTurn, nextTurnPlayerId,
-    rotateOponentStones, shouldChickenTurnIntoHen,
+    getImgReference,
+    getStashedStonePillCount,
+    getStashTargetPosition,
+    isItMyTurn,
+    lionConquerAttemptEvaluation,
+    nextTurnPlayerId,
+    rotateOponentStones,
+    shouldChickenTurnIntoHen,
     useSetStonePosition
 } from "./StoneService";
 import {ProvidedContextInterface} from "../../../App";
@@ -70,6 +76,9 @@ export const Stone: FC<StoneInterface> = ({
     const [positionX, setPositionX] = useState<number>(0);
     const [positionY, setPositionY] = useState<number>(0);
     const [hideStoneStashCount, setHideStoneStashCount] = useState<boolean>(false);
+    const [screenWidth, setScreenWidth] = useState<number>();
+    const [screenHeight, setScreenHeight] = useState<number>();
+
     const setStonePosition = useSetStonePosition;
     const updateStonePosition = useUpdateStonePosition;
     const updateStoneOnTakeOver = useUpdateStoneOnTakeOver;
@@ -80,6 +89,14 @@ export const Stone: FC<StoneInterface> = ({
         stashed: stashed,
         type: type,
     });
+
+    useEffect(() => {
+        window.addEventListener('resize', setDimension);
+
+        return (() => {
+            window.removeEventListener('resize', setDimension);
+        });
+    }, [screenSize]);
 
     useEffect(() => {
         setStonePosition({
@@ -97,6 +114,19 @@ export const Stone: FC<StoneInterface> = ({
             setRotateDegrees
         });
     }, [id, positionLetter, positionNumber, positionX, positionY, amIOpponent, rowNumbers, columnLetters]);
+
+    // make sure stones are in place even after change of the UI size and appearance of new elements
+    useEffect(() => {
+        setStonePosition({
+            stoneId: id,
+            targetPositionLetter: positionLetter,
+            targetPositionNumber: positionNumber,
+            positionX,
+            positionY,
+            setPositionX,
+            setPositionY
+        });
+    }, []);
 
     const onDragStartHandler = (event: React.DragEvent<HTMLDivElement>) => {
         event.dataTransfer.setData("placedStoneId", id);
@@ -229,6 +259,44 @@ export const Stone: FC<StoneInterface> = ({
                     updatedDetails: {win: serverStats.data()?.win + 1}
                 }));
                 return;
+            }
+
+
+            //Evaluate whether a lion-move is a homebase-conquer attempt and leads to a game end
+            const lionConquerAttempt = lionConquerAttemptEvaluation({
+                stoneData: draggedStone,
+                amIOpponent: amIOpponent!,
+                movingToLetter: lyingStone.positionLetter,
+                movingToNumber: lyingStone.positionNumber,
+                stones: allStones!
+            });
+            if (lionConquerAttempt.success !== undefined) {
+                const {success, conqueringPlayerId, conqueredPlayerId} = lionConquerAttempt;
+                console.log('success', success);
+                console.log('conqueringPlayerId', conqueringPlayerId);
+                console.log('conqueredPlayerId', conqueredPlayerId);
+                if (success === true) {
+                    updateGame({
+                        id: gameId!,
+                        updatedDetails: {
+                            status: "COMPLETED",
+                            winner: conqueringPlayerId,
+                            victoryType: "HOMEBASE_CONQUERED_SUCCESS"
+                        }
+                    });
+                } else {
+                    updateGame({
+                        id: gameId!,
+                        updatedDetails: {
+                            status: "COMPLETED",
+                            winner: conqueredPlayerId,
+                            victoryType: "HOMEBASE_CONQUERED_FAILURE"
+                        }
+                    });
+                }
+
+                // console.log('The stone can move here');
+                console.log('lionConquerAttemptSuccessful', lionConquerAttempt.success);
             }
 
 
