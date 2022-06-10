@@ -90,14 +90,30 @@ export const Stone: FC<StoneInterface> = ({
         type: type,
     });
 
+    // Make sure stones are in place even after change of the UI size and appearance of new elements
+    const onResizeHandler = ({newHeight, newWidth}: { newHeight: number, newWidth: number }) => {
+        setScreenHeight(newHeight);
+        setScreenWidth(newWidth);
+    };
+    window.addEventListener('resize', () => onResizeHandler({
+        newHeight: window.innerHeight,
+        newWidth: window.innerWidth
+    }));
+
     useEffect(() => {
-        window.addEventListener('resize', setDimension);
-
-        return (() => {
-            window.removeEventListener('resize', setDimension);
+        setStonePosition({
+            stoneId: id,
+            targetPositionLetter: positionLetter,
+            targetPositionNumber: positionNumber,
+            positionX,
+            positionY,
+            setPositionX,
+            setPositionY
         });
-    }, [screenSize]);
 
+    }, [screenHeight, screenWidth]);
+
+    //Position and rotate stones after game starts
     useEffect(() => {
         setStonePosition({
             stoneId: id,
@@ -115,18 +131,6 @@ export const Stone: FC<StoneInterface> = ({
         });
     }, [id, positionLetter, positionNumber, positionX, positionY, amIOpponent, rowNumbers, columnLetters]);
 
-    // make sure stones are in place even after change of the UI size and appearance of new elements
-    useEffect(() => {
-        setStonePosition({
-            stoneId: id,
-            targetPositionLetter: positionLetter,
-            targetPositionNumber: positionNumber,
-            positionX,
-            positionY,
-            setPositionX,
-            setPositionY
-        });
-    }, []);
 
     const onDragStartHandler = (event: React.DragEvent<HTMLDivElement>) => {
         event.dataTransfer.setData("placedStoneId", id);
