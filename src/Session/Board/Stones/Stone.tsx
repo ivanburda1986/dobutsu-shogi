@@ -215,6 +215,7 @@ export const Stone: FC<StoneInterface> = ({
                     updatedDetails: {
                         status: "COMPLETED",
                         winner: draggedStone.currentOwner,
+                        victoryType: "LION_CAUGHT_SUCCESS",
                         finishedTimeStamp: Date.now(),
                         currentPlayerTurn: lyingStone.currentOwner
                     }
@@ -301,7 +302,7 @@ export const Stone: FC<StoneInterface> = ({
                 setPositionY
             })}
         >
-            {/*{currentOwner.substr(0, 2)}*/}
+            {currentOwner.substr(0, 2)}
             {stashedPillCount > 1 && !hideStoneStashCount ? <StoneStashCount
                 count={stashedPillCount}/> : null
             }

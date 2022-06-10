@@ -50,6 +50,11 @@ export const Session = () => {
         }
     }, [appContext.loggedInUserUserId, gameData]);
 
+    useEffect(() => {
+        console.log('gameData');
+        console.log(gameData)
+    }, [gameData])
+
     // Randomly decide who should start
     useEffect(() => {
         if (gameId && gameData?.creatorJoined && gameData?.opponentJoined && !gameData?.currentPlayerTurn) {

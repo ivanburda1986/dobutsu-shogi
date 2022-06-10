@@ -63,12 +63,20 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
                     if (success === true) {
                         updateGame({
                             id: gameId!,
-                            updatedDetails: {winner: conqueringPlayerId, victoryType: "HOMEBASE_CONQUERED_SUCCESS"}
+                            updatedDetails: {
+                                status: "COMPLETED",
+                                winner: conqueringPlayerId,
+                                victoryType: "HOMEBASE_CONQUERED_SUCCESS"
+                            }
                         });
                     } else {
                         updateGame({
                             id: gameId!,
-                            updatedDetails: {winner: conqueredPlayerId, victoryType: "HOMEBASE_CONQUERED_FAILURE"}
+                            updatedDetails: {
+                                status: "COMPLETED",
+                                winner: conqueredPlayerId,
+                                victoryType: "HOMEBASE_CONQUERED_FAILURE"
+                            }
                         });
                     }
 
