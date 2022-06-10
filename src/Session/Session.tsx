@@ -64,9 +64,11 @@ export const Session = () => {
             {
                 gameData?.winner && evaluateBeingWinner({
                     winnerId: gameData.winner,
+                    victoryType: gameData.victoryType,
                     loggedInUserUserId: appContext.loggedInUserUserId
                 }) && <GameFinishedMessage messageType={evaluateBeingWinner({
                     winnerId: gameData.winner,
+                    victoryType: gameData.victoryType,
                     loggedInUserUserId: appContext.loggedInUserUserId
                 })}/>
             }

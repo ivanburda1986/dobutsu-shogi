@@ -22,6 +22,13 @@ interface BoardInterface {
     gameData: DocumentData | undefined;
 }
 
+export type VictoryType =
+    "LION_CAUGHT_SUCCESS"
+    | "HOMEBASE_CONQUERED_SUCCESS"
+    | "HOMEBASE_CONQUERED_FAILURE"
+    | undefined
+    | null;
+
 export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
     const params = useParams();
     const gameId = params.gameId;
@@ -33,6 +40,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
     const [lyingStone, setLyingStone] = useState<StoneInterface | undefined>();
     const [canTakeStone, setCanTakeStone] = useState<boolean>(false);
     const [winner, setWinner] = useState<string>();
+    const [victoryType, setVictoryType] = useState<VictoryType>();
 
 
     const isComponentMountedRef = useRef(true);
@@ -59,6 +67,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
         onSnapshot(docRef, (doc) => {
             // console.log("Updated data");
             setWinner(doc.data()!.winner);
+            setVictoryType(doc.data()!.victoryType);
         });
 
     }, [gameId]);

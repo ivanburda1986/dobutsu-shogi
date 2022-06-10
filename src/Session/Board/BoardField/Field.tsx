@@ -1,7 +1,12 @@
 import React, {FC, useContext} from "react";
 import {useParams} from "react-router";
 import {useUpdateStonePosition, useEmpowerStone, useUpdateGame} from "../../../api/firestore";
-import {evaluateStoneMove, isLetterLabelVisible, isNumberLabelVisible} from "./FieldService";
+import {
+    evaluateStoneMove,
+    isLetterLabelVisible,
+    isNumberLabelVisible,
+    lionConquerAttemptInterface
+} from "./FieldService";
 import styles from "./Field.module.css";
 import {nextTurnPlayerId} from "../Stones/StoneService";
 import {ProvidedContextInterface} from "../../../App";
@@ -34,7 +39,7 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
         let movedFromLetter = event.dataTransfer!.getData("movedFromLetter");
         let movedFromNumber = event.dataTransfer!.getData("movedFromNumber");
 
-        const callbackFc = (stoneMoveAllowed: boolean, shouldChickenTransformToHen: boolean, lionConquerAttemptSuccessful: boolean) => {
+        const callbackFc = (stoneMoveAllowed: boolean, shouldChickenTransformToHen: boolean, lionConquerAttempt: lionConquerAttemptInterface) => {
             // console.log('shouldChickenTransformToHen', shouldChickenTransformToHen);
             if (shouldChickenTransformToHen) {
                 // console.log('empowering!');
@@ -49,6 +54,28 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
                     positionNumber: rowNumber,
                 });
 
+                //Evaluate whether a lion-move leads to a game end
+                if (lionConquerAttempt.success !== undefined) {
+                    const {success, conqueringPlayerId, conqueredPlayerId} = lionConquerAttempt;
+                    console.log('success', success);
+                    console.log('conqueringPlayerId', conqueringPlayerId);
+                    console.log('conqueredPlayerId', conqueredPlayerId);
+                    if (success === true) {
+                        updateGame({
+                            id: gameId!,
+                            updatedDetails: {winner: conqueringPlayerId, victoryType: "HOMEBASE_CONQUERED_SUCCESS"}
+                        });
+                    } else {
+                        updateGame({
+                            id: gameId!,
+                            updatedDetails: {winner: conqueredPlayerId, victoryType: "HOMEBASE_CONQUERED_FAILURE"}
+                        });
+                    }
+
+                    // console.log('The stone can move here');
+                    console.log('lionConquerAttemptSuccessful', lionConquerAttempt.success);
+                }
+
                 // Set turn to the other player
                 updateGame({
                     id: gameId!,
@@ -59,10 +86,10 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
                         })
                     }
                 });
-                // console.log('The stone can move here');
-                console.log('lionConquerAttemptSuccessful', lionConquerAttemptSuccessful);
+
+
             } else {
-                // console.log('The stone cannot move here');
+                console.log('The stone cannot move here');
             }
         };
 
@@ -75,6 +102,7 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
             movingToNumber: rowNumber,
             amIOpponent: amIOpponent,
             stones: stones,
+            gameData,
             cb: callbackFc
         });
 

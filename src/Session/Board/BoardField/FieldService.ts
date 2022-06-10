@@ -2,6 +2,8 @@ import {getSingleStoneDetails} from "../../../api/firestore";
 import {canStoneMoveThisWay, shouldChickenTurnIntoHen} from "../Stones/StoneService";
 import {lionConquerFields, stoneMovements} from "../Stones/StoneMovements";
 import {StoneInterface} from "../Stones/Stone";
+import {DocumentData} from "firebase/firestore";
+import {evaluateBeingWinner} from "../../SessionService";
 
 
 const rowNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -32,7 +34,14 @@ interface EvaluateStoneMoveInterface {
     movingToNumber: number;
     amIOpponent: boolean;
     stones: StoneInterface[];
+    gameData: DocumentData | undefined;
     cb: Function;
+}
+
+export interface lionConquerAttemptInterface {
+    success: boolean | undefined
+    conqueringPlayerId: string | undefined,
+    conqueredPlayerId: string | undefined
 }
 
 export const evaluateStoneMove = ({
@@ -44,6 +53,7 @@ export const evaluateStoneMove = ({
                                       movingToNumber,
                                       amIOpponent,
                                       stones,
+                                      gameData,
                                       cb
                                   }: EvaluateStoneMoveInterface): void => {
     const stone = getSingleStoneDetails({gameId, stoneId: placedStoneId});
@@ -76,7 +86,13 @@ export const evaluateStoneMove = ({
             }
 
             // Lion conquer attempt evaluation
-            let lionConquerAttemptSuccessful = undefined;
+
+
+            let lionConquerAttempt: lionConquerAttemptInterface = {
+                success: undefined,
+                conqueringPlayerId: undefined,
+                conqueredPlayerId: undefined
+            };
             if (stoneData!.type === "LION" && !amIOpponent) {
                 const targetCoordinate = `${movingToLetter}${movingToNumber}`;
                 console.log('lion target coordinate', targetCoordinate);
@@ -94,7 +110,11 @@ export const evaluateStoneMove = ({
                         }
                     });
                     console.log('endangeringOpponentStones', endangeringOpponentStones);
-                    lionConquerAttemptSuccessful = endangeringOpponentStones.length === 0;
+                    lionConquerAttempt = {
+                        success: endangeringOpponentStones.length === 0,
+                        conqueringPlayerId: stoneData!.currentOwner,
+                        conqueredPlayerId: opponentStones[0].currentOwner,
+                    };
                 }
             } else if (stoneData!.type === "LION" && amIOpponent) {
                 const targetCoordinate = `${movingToLetter}${movingToNumber}`;
@@ -113,11 +133,15 @@ export const evaluateStoneMove = ({
                         }
                     });
                     console.log('endangeringOpponentStones', endangeringOpponentStones);
-                    lionConquerAttemptSuccessful = endangeringOpponentStones.length === 0;
+                    lionConquerAttempt = {
+                        success: endangeringOpponentStones.length === 0,
+                        conqueringPlayerId: stoneData!.currentOwner,
+                        conqueredPlayerId: opponentStones[0].currentOwner,
+                    };
                 }
             }
 
-            return cb(directionAllowed, turnChickenToHen, lionConquerAttemptSuccessful);
+            return cb(directionAllowed, turnChickenToHen, lionConquerAttempt);
         }
     );
 };

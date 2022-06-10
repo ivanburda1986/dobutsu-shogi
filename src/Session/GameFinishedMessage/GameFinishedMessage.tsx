@@ -1,6 +1,11 @@
 import {FunctionComponent} from "react";
 
-export type GameFinishedMessageType = "VICTORY" | "LOSS"
+export type GameFinishedMessageType =
+    "VICTORY_LION_CAPTURE"
+    | "VICTORY_HOME_BASE_CONQUER"
+    | "VICTORY_HOME_BASE_CONQUER_FAILED"
+    | "LOSS_LION_CAPTURE"
+    | "LOSS_HOME_BASE_CONQUER_FAILED"
 
 export interface GameFinishedMessageInterface {
     messageType: GameFinishedMessageType;
@@ -8,7 +13,7 @@ export interface GameFinishedMessageInterface {
 
 export const GameFinishedMessage: FunctionComponent<GameFinishedMessageInterface> = ({messageType}) => {
 
-    if (messageType === "VICTORY") {
+    if (messageType === "VICTORY_LION_CAPTURE" || messageType === "VICTORY_HOME_BASE_CONQUER" || messageType === "VICTORY_HOME_BASE_CONQUER_FAILED") {
         return (
             <div className="alert alert-success" role="alert">
                 <h3 className="alert-heading">
@@ -18,16 +23,19 @@ export const GameFinishedMessage: FunctionComponent<GameFinishedMessageInterface
                         <path
                             d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5c0 .538-.012 1.05-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33.076 33.076 0 0 1 2.5.5zm.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935zm10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935z"/>
                     </svg>
-                    You have won!
+                    {messageType === "VICTORY_LION_CAPTURE" && "You have won by capturing the lion!"}
+                    {messageType === "VICTORY_HOME_BASE_CONQUER" && "You have won by conquering opponent's homebase!"}
+                    {messageType === "VICTORY_HOME_BASE_CONQUER_FAILED" && "You have won because you opponent's lion got caught while trying to capture your homebase."}
                 </h3>
 
                 <div>
-                    Say 'thank you' to your partner for the game.
+                    Your opponent says 'thank you' for such a great game.
                 </div>
             </div>
         );
+    }
 
-    } else {
+    if (messageType === "LOSS_LION_CAPTURE" || messageType === "LOSS_HOME_BASE_CONQUER_FAILED") {
         return (
             <div className="alert alert-danger" role="alert">
                 <h3 className="alert-heading">
@@ -38,12 +46,16 @@ export const GameFinishedMessage: FunctionComponent<GameFinishedMessageInterface
                         <path
                             d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM7 9.5C7 8.672 6.552 8 6 8s-1 .672-1 1.5.448 1.5 1 1.5 1-.672 1-1.5zM4.285 6.433a.5.5 0 0 0 .683-.183A3.498 3.498 0 0 1 8 4.5c1.295 0 2.426.703 3.032 1.75a.5.5 0 0 0 .866-.5A4.498 4.498 0 0 0 8 3.5a4.5 4.5 0 0 0-3.898 2.25.5.5 0 0 0 .183.683zM10 8c-.552 0-1 .672-1 1.5s.448 1.5 1 1.5 1-.672 1-1.5S10.552 8 10 8z"/>
                     </svg>
-                    You have lost ...
+                    {messageType === "LOSS_LION_CAPTURE" && "You have lost. Your lion got captured."}
+                    {messageType === "LOSS_HOME_BASE_CONQUER_FAILED" && "You have lost by unsuccessfully trying to capture your opponent's homebase"}
+
+
                 </h3>
                 <div>
-                    Say 'thank you' to your partner for the game.
+                    Your opponent says 'thank you' for such a great game.
                 </div>
             </div>
         );
     }
+    return <></>;
 };

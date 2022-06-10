@@ -13,6 +13,7 @@ import {
 } from "firebase/auth";
 import {getCreatorStones, getOpponentStones} from "./firestoreService";
 import {StoneInterface, stoneType} from "../Session/Board/Stones/Stone";
+import {VictoryType} from "../Session/Board/Board";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCBnawTeOf0cVa7m7aKFQoIqrXbJOorW2c",
@@ -143,6 +144,7 @@ export interface Game {
     startingPlayer: string;
     currentPlayerTurn: string;
     winner: string;
+    victoryType: VictoryType;
     finishedTimeStamp: number;
 }
 
@@ -162,6 +164,7 @@ export const useCreateGame = ({creatorId, creatorName, name, type, createGameCb}
         startingPlayer: null,
         currentPlayerTurn: null,
         winner: null,
+        victoryType: null,
         finishedTimeStamp: null,
     }).then((docRef) => {
         createGameCb.join({createdGameId: docRef.id, type: type});
