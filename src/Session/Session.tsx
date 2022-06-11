@@ -49,11 +49,7 @@ export const Session = () => {
             setAmIOpponent(true);
         }
     }, [appContext.loggedInUserUserId, gameData]);
-
-    useEffect(() => {
-        console.log('gameData');
-        console.log(gameData);
-    }, [gameData]);
+    
 
     // Randomly decide who should start
     useEffect(() => {

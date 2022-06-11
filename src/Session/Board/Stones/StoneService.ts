@@ -106,7 +106,7 @@ export const canStoneMoveThisWay = ({
         }
         const originatingCoordinate = `${movedFromLetter}${movedFromNumber}`;
         const targetCoordinate = `${movingToLetter}${movingToNumber}`;
-        console.log('amIOpponent', amIOpponent);
+        // console.log('amIOpponent', amIOpponent);
         const allowedLetters = stoneMovements.CHICKEN[amIOpponent ? 'opponent' : 'creator'][originatingCoordinate];
         // console.log(allowedLetters.includes(targetCoordinate));
         return allowedLetters.includes(targetCoordinate);
