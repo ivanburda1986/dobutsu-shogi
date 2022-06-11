@@ -374,7 +374,10 @@ export const Stone: FC<StoneInterface> = ({
     return (
         <div
             id={id}
-            draggable={amIStoneOwner({currentOwner: currentOwner, loggedInUserUserId: appContext.loggedInUserUserId})}
+            draggable={gameData?.status === "INPROGRESS" && amIStoneOwner({
+                currentOwner: currentOwner,
+                loggedInUserUserId: appContext.loggedInUserUserId
+            })}
             onDragStart={isItMyTurn({
                 myId: appContext.loggedInUserUserId,
                 currentTurnPlayerId: gameData?.currentPlayerTurn
