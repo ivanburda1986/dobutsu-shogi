@@ -1,5 +1,5 @@
 Next steps:
-highgligh stones which endanger a lion attemption to conquer a base
+make sure players cannot move stones once the game is over
 
 repeating the same row of moves 3x -> a tie
 --store in the DB the last few moves (from-to coordinates) and if the same moves appear 3x in a row -> set game state to a tie

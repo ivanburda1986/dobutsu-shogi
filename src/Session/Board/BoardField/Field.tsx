@@ -1,6 +1,6 @@
 import React, {FC, useContext} from "react";
 import {useParams} from "react-router";
-import {useUpdateStonePosition, useEmpowerStone, useUpdateGame} from "../../../api/firestore";
+import {useUpdateStonePosition, useEmpowerStone, useUpdateGame, useEndangerStone} from "../../../api/firestore";
 import {
     evaluateStoneMove,
     isLetterLabelVisible,
@@ -28,6 +28,7 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
     const appContext: ProvidedContextInterface = useContext(AppContext);
     const updateStonePosition = useUpdateStonePosition;
     const empowerStone = useEmpowerStone;
+    const endangerStone = useEndangerStone;
     const updateGame = useUpdateGame;
 
     const enableDropping = (event: React.DragEvent<HTMLDivElement>) => {
@@ -70,6 +71,9 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
                             }
                         });
                     } else {
+                        lionConquerAttempt.endangeringOpponentStones.forEach((id) => {
+                            endangerStone({gameId: gameId!, stoneId: id, endangering: true});
+                        });
                         updateGame({
                             id: gameId!,
                             updatedDetails: {
