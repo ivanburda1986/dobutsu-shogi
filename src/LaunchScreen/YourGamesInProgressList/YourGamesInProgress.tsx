@@ -1,23 +1,16 @@
-import {FC, useEffect, useRef, useState} from "react";
+import {FC, useContext, useEffect, useRef, useState} from "react";
 import {Container, Row} from "react-bootstrap";
 import {onSnapshot} from "firebase/firestore";
 import {gamesCollectionRef, gameType, statusType} from "../../api/firestore";
 
 import {Game} from "../Game/Game";
+import {ReturnedGameInterface} from "../WaitingGamesList/WaitingGamesList";
+import {ProvidedContextInterface} from "../../App";
+import {AppContext} from "../../context/AppContext";
 
-export interface ReturnedGameInterface {
-    id: string;
-    createdOn: number;
-    creatorId: string;
-    creatorName: string;
-    opponentName: string;
-    name: string;
-    status: statusType;
-    type: gameType;
-    opponentId: string | null;
-}
 
-export const WaitingGamesList: FC = () => {
+export const YourGamesInProgressList: FC = () => {
+    const appContext: ProvidedContextInterface = useContext(AppContext);
     const [games, setGames] = useState<ReturnedGameInterface[]>([]);
     const isComponentMountedRef = useRef(true);
 
@@ -34,14 +27,14 @@ export const WaitingGamesList: FC = () => {
                 snapshot.docs.forEach((doc) => {
                     games.push({id: doc.id, ...doc.data()} as ReturnedGameInterface);
                 });
-                setGames(games.filter((game) => game.status === "WAITING"));
+                setGames(games.filter((game) => game.status === "INPROGRESS" && (game.creatorId === appContext.loggedInUserUserId || game.opponentId === appContext.loggedInUserUserId)));
             }
         });
-    }, []);
+    }, [appContext]);
 
     return (
         <Container>
-            {games.length > 0 && <h2>Games waiting for an opponent</h2>}
+            {games.length > 0 && <h2>Your Games In Progress</h2>}
             <Container fluid>
                 <Row>
                     {games.map((game) => (

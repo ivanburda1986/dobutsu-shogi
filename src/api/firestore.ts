@@ -107,7 +107,7 @@ export const useHandicapStone = ({gameId, stoneId, type}: useUpdateStoneTypeInte
 
 export const useEndangerStone = ({gameId, stoneId, endangering}: useUpdateStoneEndangeringInterface) => {
     updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {endangering: endangering})
-        .then(() => console.log("Stone handicap has been updated on the server"))
+        .then(() => console.log("Stone highlighting has been updated"))
         .catch((err) => {
             console.log(err.message);
         });

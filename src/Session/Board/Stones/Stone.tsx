@@ -81,6 +81,7 @@ export const Stone: FC<StoneInterface> = ({
     const [screenWidth, setScreenWidth] = useState<number>();
     const [screenHeight, setScreenHeight] = useState<number>();
     const [isEndangering, setIsEndangering] = useState<boolean>(false);
+    const [hasTakenLion, setHasTakenLion] = useState<boolean>(false);
 
     const setStonePosition = useSetStonePosition;
     const updateStonePosition = useUpdateStonePosition;
@@ -267,6 +268,15 @@ export const Stone: FC<StoneInterface> = ({
                         currentPlayerTurn: lyingStone.currentOwner
                     }
                 });
+                //Update dragged stone
+                updateStonePosition({
+                    gameId: gameId!,
+                    stoneId: draggedStone.id,
+                    positionLetter: lyingStone.positionLetter,
+                    positionNumber: lyingStone.positionNumber,
+                });
+                //Highlight the taking stone to make it clear it has taken the opponents lion
+                setHasTakenLion(true);
                 getSingleUserStats({userId: lyingStone.originalOwner}).then((serverStats) => updateStats({
                     userId: lyingStone.originalOwner,
                     updatedDetails: {loss: serverStats.data()?.loss + 1}
@@ -386,7 +396,7 @@ export const Stone: FC<StoneInterface> = ({
             onDragOver={onStoneTakeOverAttemptHandler}
             onDragEnd={onStoneDropHandler}
             style={{backgroundImage: `url(${getImgReference(type)})`, transform: `rotate(${rotateDegrees}deg)`}}
-            className={`${styles.Stone} ${isEndangering && styles.Endangering} noselect`}
+            className={`${styles.Stone} ${isEndangering && styles.Endangering} ${hasTakenLion && styles.HasTakenLion} noselect`}
             onClick={() => setStonePosition({
                 stoneId: id,
                 targetPositionLetter: positionLetter,
@@ -397,7 +407,7 @@ export const Stone: FC<StoneInterface> = ({
                 setPositionY
             })}
         >
-            {currentOwner.substr(0, 2)}
+            {/*{currentOwner.substr(0, 2)}*/}
             {stashedPillCount > 1 && !hideStoneStashCount ? <StoneStashCount
                 count={stashedPillCount}/> : null
             }

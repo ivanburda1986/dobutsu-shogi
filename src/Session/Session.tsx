@@ -22,6 +22,7 @@ export const Session = () => {
     const isComponentMountedRef = useRef(true);
     const updateGame = useUpdateGame;
 
+
     useEffect(() => {
         return () => {
             isComponentMountedRef.current = false;
@@ -49,7 +50,7 @@ export const Session = () => {
             setAmIOpponent(true);
         }
     }, [appContext.loggedInUserUserId, gameData]);
-    
+
 
     // Randomly decide who should start
     useEffect(() => {
@@ -63,9 +64,11 @@ export const Session = () => {
     return (
         <Container fluid
                    className={`d-flex flex-column justify-content-start align-items-center ${styles.Session}`}>
+            <h3 className="mb-3">Game name: {gameData?.name}</h3>
 
             {
-                <Board type="DOBUTSU" amIOpponent={amIOpponent} gameData={gameData}/>
+                <Board type="DOBUTSU" amIOpponent={amIOpponent} gameData={gameData}
+                />
             }
             {
                 gameData?.winner && evaluateBeingWinner({

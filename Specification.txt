@@ -1,26 +1,29 @@
 Next steps:
-
 repeating the same row of moves 3x -> a tie
 --store in the DB the last few moves (from-to coordinates) and if the same moves appear 3x in a row -> set game state to a tie
 
-a game in progress cannot be deleted
-launch screen indicates games in progress
-launch screen indicates games waiting for an opponent
-launch screen does not show finished games -> maybe a finished game can be automatically deleted?
-
-resign option
---update game state
---increase loss for resignee
---increase win for the other
+handling the "tie" game result
+-if the game result is tie, display a message to the users
+-update user stats with "tie" for both of them
 
 improve styling where needed - mainly the screen with games
-refresh the stones after resizing the screen to make sure they are positioned correctly
+
+deploy via netlify
+
+
 
 =================================================================
 Possible future enhancements:
 a created game can be password protected
 
 
+=================================================================
+Refactoring and testing:
+refactor the whole game
+write automated tests in jest and RTL
+
+
+=================================================================
 Reference 
 https://getbootstrap.com/docs/5.0/layout/containers/
 https://variantslove.netlify.app/#
@@ -31,10 +34,6 @@ https://www.kindacode.com/article/react-get-the-position-x-y-of-an-element/
 Rules
 https://shogivancouver.wordpress.com/animal-shogi/
 
-
-Lion victory evaluation:
-move the lion to the opponents 1st row (can be an empty field, or you take there a stone)
-but make sure that entering the opponents 1st row with a lion does not endanger the lion - if the lion is endangered, you lose instead
 
 
 

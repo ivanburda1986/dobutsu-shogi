@@ -1,11 +1,13 @@
 import React from "react";
-import { Container } from "react-bootstrap";
-import { WaitingGamesList } from "./WaitingGamesList/WaitingGamesList";
+import {Container} from "react-bootstrap";
+import {WaitingGamesList} from "./WaitingGamesList/WaitingGamesList";
+import {YourGamesInProgressList} from "./YourGamesInProgressList/YourGamesInProgress";
 
 export const LaunchScreen: React.FC = () => {
-  return (
-    <Container>
-      <WaitingGamesList />
-    </Container>
-  );
+    return (
+        <Container>
+            <WaitingGamesList/>
+            <YourGamesInProgressList/>
+        </Container>
+    );
 };

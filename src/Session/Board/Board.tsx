@@ -1,6 +1,6 @@
 import bg from "../../images/bg-clean.png";
 import bgRotated from "../../images/bg-clean-rotated.png";
-import {FC, useContext, useEffect, useRef, useState} from "react";
+import {FC, MutableRefObject, useContext, useEffect, useRef, useState} from "react";
 import {Container, Row} from "react-bootstrap";
 import {db, gameType, getSingleGameDetails} from "../../api/firestore";
 import {getBoardSize} from "./BoardService";
@@ -60,7 +60,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
                 snapshot.docs.forEach((doc) => {
                     returnedStones.push({...doc.data()} as StoneInterface);
                 });
-                setStones(returnedStones);
+                setTimeout(() => setStones(returnedStones), 100);
             }
         });
         //Listening to change of the game state (victory/defeat)
