@@ -17,19 +17,19 @@ const getMessageContent = (messageType: GameFinishedMessageType) => {
     let headline;
     let textBody;
     if (messageType === "VICTORY_LION_CAPTURE") {
-        headline = ("Congratulations!");
+        headline = ("You have won!");
         textBody = ("You have captured the opponent's lion.");
     } else if (messageType === "LOSS_LION_CAPTURE") {
         headline = ("You have lost!");
         textBody = ("Your lion got captured.");
     } else if (messageType === "VICTORY_HOME_BASE_CONQUER") {
-        headline = ("Congratulations!");
+        headline = ("You have won!");
         textBody = ("You have conquered the opponent's homebase!");
     } else if (messageType === "LOSS_HOME_BASE_CONQUER") {
         headline = ("You have lost!");
         textBody = ("Your homebase has got conquered.");
     } else if (messageType === "VICTORY_HOME_BASE_CONQUER_FAILED") {
-        headline = ("Congratulations!");
+        headline = ("You have won!");
         textBody = ("The opponent's lion has tried to conquer your homebase, but failed because your animals protected it.");
     } else if (messageType === "LOSS_HOME_BASE_CONQUER_FAILED") {
         headline = ("You have lost!");

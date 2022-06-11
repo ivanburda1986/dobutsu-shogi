@@ -5,7 +5,7 @@ import {
     useUpdateStoneOnTakeOver,
     useUpdateStonePosition,
     useEmpowerStone,
-    useHandicapStone, useUpdateGame, useUpdateUserStats, getSingleUserStats, getSingleGameDetails
+    useHandicapStone, useUpdateGame, useUpdateUserStats, getSingleUserStats, getSingleGameDetails, useEndangerStone
 } from "../../../api/firestore";
 import {
     amIStoneOwner,
@@ -34,6 +34,7 @@ export interface StoneInterface {
     type: stoneType;
     originalOwner: string;
     currentOwner: string;
+    endangering: boolean;
     stashed: boolean;
     positionLetter: string;
     positionNumber: number;
@@ -56,6 +57,7 @@ export const Stone: FC<StoneInterface> = ({
                                               type,
                                               originalOwner,
                                               currentOwner,
+                                              endangering,
                                               stashed,
                                               positionLetter,
                                               positionNumber,
@@ -78,10 +80,12 @@ export const Stone: FC<StoneInterface> = ({
     const [hideStoneStashCount, setHideStoneStashCount] = useState<boolean>(false);
     const [screenWidth, setScreenWidth] = useState<number>();
     const [screenHeight, setScreenHeight] = useState<number>();
+    const [isEndangering, setIsEndangering] = useState<boolean>(false);
 
     const setStonePosition = useSetStonePosition;
     const updateStonePosition = useUpdateStonePosition;
     const updateStoneOnTakeOver = useUpdateStoneOnTakeOver;
+    const endangerStone = useEndangerStone;
     const updateStoneType = useEmpowerStone;
     const stashedPillCount = getStashedStonePillCount({
         allStones: allStones ?? [],
@@ -89,6 +93,15 @@ export const Stone: FC<StoneInterface> = ({
         stashed: stashed,
         type: type,
     });
+
+    //Change stone endangering status
+    useEffect(() => {
+        let stone: StoneInterface[] | undefined = [];
+        stone = allStones?.filter((stone) => stone.id === id);
+        if (stone && stone[0] && stone[0].endangering) {
+            setIsEndangering(true);
+        }
+    }, [allStones]);
 
     // Make sure stones are in place even after change of the UI size and appearance of new elements
     const onResizeHandler = ({newHeight, newWidth}: { newHeight: number, newWidth: number }) => {
@@ -289,6 +302,9 @@ export const Stone: FC<StoneInterface> = ({
                         }
                     });
                 } else {
+                    lionConquerAttempt.endangeringOpponentStones.forEach((id) => {
+                        endangerStone({gameId: gameId!, stoneId: id, endangering: true});
+                    });
                     updateGame({
                         id: gameId!,
                         updatedDetails: {
@@ -367,7 +383,7 @@ export const Stone: FC<StoneInterface> = ({
             onDragOver={onStoneTakeOverAttemptHandler}
             onDragEnd={onStoneDropHandler}
             style={{backgroundImage: `url(${getImgReference(type)})`, transform: `rotate(${rotateDegrees}deg)`}}
-            className={`${styles.Stone} noselect`}
+            className={`${styles.Stone} ${isEndangering && styles.Endangering} noselect`}
             onClick={() => setStonePosition({
                 stoneId: id,
                 targetPositionLetter: positionLetter,

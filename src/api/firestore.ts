@@ -72,6 +72,12 @@ interface useUpdateStoneTypeInterface {
     type: stoneType;
 }
 
+interface useUpdateStoneEndangeringInterface {
+    gameId: string;
+    stoneId: string;
+    endangering: boolean;
+}
+
 export const useEmpowerStone = ({gameId, stoneId, type}: useUpdateStoneTypeInterface) => {
     updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {type: type})
         .then(() => console.log("Stone empower has been updated on the server"))
@@ -82,6 +88,14 @@ export const useEmpowerStone = ({gameId, stoneId, type}: useUpdateStoneTypeInter
 
 export const useHandicapStone = ({gameId, stoneId, type}: useUpdateStoneTypeInterface) => {
     updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {type: type})
+        .then(() => console.log("Stone handicap has been updated on the server"))
+        .catch((err) => {
+            console.log(err.message);
+        });
+};
+
+export const useEndangerStone = ({gameId, stoneId, endangering}: useUpdateStoneEndangeringInterface) => {
+    updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {endangering: endangering})
         .then(() => console.log("Stone handicap has been updated on the server"))
         .catch((err) => {
             console.log(err.message);
@@ -99,6 +113,7 @@ export const useUpdateStoneOnTakeOver = ({
             console.log(err.message);
         });
 };
+
 
 //Get stone details
 interface useGetSingleStoneDetailsInterface {

@@ -59,17 +59,18 @@ export const evaluateBeingWinner = ({
         console.log("LOSS_HOME_BASE_CONQUER");
         return "LOSS_HOME_BASE_CONQUER";
     }
-    
+
     if (winnerId === loggedInUserUserId && victoryType === "HOMEBASE_CONQUERED_FAILURE") {
         console.log('step5');
         console.log("winnerId === loggedInUserUserId", winnerId === loggedInUserUserId);
-        console.log("LOSS_HOME_BASE_CONQUER_FAILED");
-        return "LOSS_HOME_BASE_CONQUER_FAILED";
+        console.log("VICTORY_HOME_BASE_CONQUER_FAILED");
+        return "VICTORY_HOME_BASE_CONQUER_FAILED";
     } else {
         console.log('step6');
         console.log("winnerId === loggedInUserUserId", winnerId === loggedInUserUserId);
-        console.log("VICTORY_HOME_BASE_CONQUER_FAILED");
-        return "VICTORY_HOME_BASE_CONQUER_FAILED";
+
+        console.log("LOSS_HOME_BASE_CONQUER_FAILED");
+        return "LOSS_HOME_BASE_CONQUER_FAILED";
     }
     // if (winnerId !== loggedInUserUserId && victoryType === "HOMEBASE_CONQUERED_FAILURE")
 };

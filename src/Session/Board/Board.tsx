@@ -98,6 +98,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
                         type={stone.type}
                         originalOwner={stone.originalOwner}
                         currentOwner={stone.currentOwner}
+                        endangering={stone.endangering}
                         stashed={stone.stashed}
                         positionLetter={stone.positionLetter}
                         positionNumber={stone.positionNumber}

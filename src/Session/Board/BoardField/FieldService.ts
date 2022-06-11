@@ -39,9 +39,10 @@ interface EvaluateStoneMoveInterface {
 }
 
 export interface lionConquerAttemptInterface {
-    success: boolean | undefined
-    conqueringPlayerId: string | undefined,
-    conqueredPlayerId: string | undefined
+    success: boolean | undefined;
+    conqueringPlayerId: string | undefined;
+    conqueredPlayerId: string | undefined;
+    endangeringOpponentStones: string[];
 }
 
 export const evaluateStoneMove = ({
@@ -89,7 +90,8 @@ export const evaluateStoneMove = ({
             let lionConquerAttempt: lionConquerAttemptInterface = {
                 success: undefined,
                 conqueringPlayerId: undefined,
-                conqueredPlayerId: undefined
+                conqueredPlayerId: undefined,
+                endangeringOpponentStones: []
             };
             if (stoneData!.type === "LION" && !amIOpponent) {
                 const targetCoordinate = `${movingToLetter}${movingToNumber}`;
@@ -112,6 +114,7 @@ export const evaluateStoneMove = ({
                         success: endangeringOpponentStones.length === 0,
                         conqueringPlayerId: stoneData!.currentOwner,
                         conqueredPlayerId: opponentStones[0].currentOwner,
+                        endangeringOpponentStones: endangeringOpponentStones.map((stone) => stone.id)
                     };
                 }
             } else if (stoneData!.type === "LION" && amIOpponent) {
@@ -135,6 +138,7 @@ export const evaluateStoneMove = ({
                         success: endangeringOpponentStones.length === 0,
                         conqueringPlayerId: stoneData!.currentOwner,
                         conqueredPlayerId: opponentStones[0].currentOwner,
+                        endangeringOpponentStones: endangeringOpponentStones.map((stone) => stone.id)
                     };
                 }
             }
