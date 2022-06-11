@@ -2,6 +2,7 @@ import {FC, useContext, useEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router";
 import {useCreateGame, gameType, useJoinGame} from "../api/firestore";
 import {Button, Container, Form, Row} from "react-bootstrap";
+import {v4 as uuidv4} from "uuid";
 
 import {AppContext} from "../context/AppContext";
 import {ProvidedContextInterface} from "../App";
@@ -82,6 +83,7 @@ export const CreateGame: FC = () => {
                             disabled={!formValid}
                             type="button"
                             onClick={() => createGame({
+                                gameId: uuidv4(),
                                 creatorId: appContext.loggedInUserUserId,
                                 creatorName: appContext.loggedInUserDisplayName!,
                                 name: gameNameRef.current!.value,

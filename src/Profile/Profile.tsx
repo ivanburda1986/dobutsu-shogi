@@ -1,11 +1,12 @@
 import React, {FC, useState, useEffect, useContext, useRef} from "react";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 
-import {db, useUpdateUserProfile} from "../api/firestore";
+import {db, updatePlayerAvatarInGames, useUpdateUserProfile} from "../api/firestore";
 import {AppContext} from "../context/AppContext";
 import {ProvidedContextInterface} from "../App";
 import {Avatar} from "../Header/Avatar/Avatar";
 import {doc, onSnapshot} from "firebase/firestore";
+import {log} from "util";
 
 export const Profile: FC = () => {
     const appContext: ProvidedContextInterface = useContext(AppContext);
@@ -100,6 +101,10 @@ export const Profile: FC = () => {
                                         photoURL: avatarImgSelection,
                                         cb: appContext.setUserData
                                     });
+                                    updatePlayerAvatarInGames({
+                                        playerId: appContext.loggedInUserUserId,
+                                        updatedAvatar: avatarImgSelection
+                                    }).then(response => console.log('avatar updated in player games'));
                                     setAvatarUsernameEditModeOn(false);
                                 }}
                             >

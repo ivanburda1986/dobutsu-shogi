@@ -1,6 +1,17 @@
 import {UserDataInterface} from "../App";
 import {initializeApp} from "firebase/app";
-import {addDoc, collection, deleteDoc, doc, getDoc, getFirestore, setDoc, updateDoc} from "firebase/firestore";
+import {
+    addDoc,
+    collection,
+    deleteDoc,
+    doc,
+    getDoc,
+    getDocs,
+    getFirestore,
+    onSnapshot,
+    setDoc,
+    updateDoc
+} from "firebase/firestore";
 
 import {
     createUserWithEmailAndPassword,
@@ -135,6 +146,7 @@ export const getSingleStoneDetails = async ({gameId, stoneId}: useGetSingleStone
 // GAME CREATION AND MANAGEMENT
 // ======================================================
 export interface CreateGameInputInterface {
+    gameId: string;
     creatorId: string;
     creatorName: string;
     name: string;
@@ -146,15 +158,18 @@ export interface CreateGameInputInterface {
 }
 
 export interface Game {
+    gameId: string;
     createdOn: number;
     creatorId: string;
     creatorName: string;
+    creatorPhotoURL: string | null;
     creatorJoined: boolean;
     name: string;
     type: gameType;
     status: statusType;
     opponentId: string;
     opponentName: string;
+    opponentPhotoURL: string | null;
     opponentJoined: boolean;
     startingPlayer: string;
     currentPlayerTurn: string;
@@ -163,9 +178,11 @@ export interface Game {
     finishedTimeStamp: number;
 }
 
+
 export const gamesCollectionRef = collection(db, "games");
-export const useCreateGame = ({creatorId, creatorName, name, type, createGameCb}: CreateGameInputInterface) => {
-    addDoc(gamesCollectionRef, {
+export const useCreateGame = ({creatorId, creatorName, name, type, gameId, createGameCb}: CreateGameInputInterface) => {
+    setDoc(doc(db, "games", gameId), {
+        gameId: gameId,
         createdOn: Date.now(),
         creatorId: creatorId,
         creatorName: creatorName,
@@ -182,10 +199,12 @@ export const useCreateGame = ({creatorId, creatorName, name, type, createGameCb}
         victoryType: null,
         finishedTimeStamp: null,
     }).then((docRef) => {
-        createGameCb.join({createdGameId: docRef.id, type: type});
-        createGameCb.redirect(docRef.id);
+        createGameCb.join({createdGameId: gameId, type: type});
+        createGameCb.redirect(gameId);
     });
 };
+
+//the docRef is returned if the ID of a newly create item gets generated at the server; the docRef contains an id, such as docRef id
 
 interface JoinGame {
     gameId: string;
@@ -270,6 +289,30 @@ interface getSingleGameDetailsInterface {
 export const getSingleGameDetails = ({gameId}: getSingleGameDetailsInterface) => {
     return getDoc(doc(db, "games", gameId));
 };
+
+//Update user profile image in all games where the user has participated
+export interface UpdatePlayerAvatarInGamesInterface {
+    playerId: string;
+    updatedAvatar: string | null;
+}
+
+
+export const updatePlayerAvatarInGames = async ({playerId, updatedAvatar}: UpdatePlayerAvatarInGamesInterface) => {
+    const queryGamesSnapshot = await getDocs(collection(db, "games"));
+    let returnedGames: Game[] = [];
+    queryGamesSnapshot.forEach((doc) => {
+        returnedGames.push({...doc.data()} as Game);
+    });
+    let gamesWherePlayerIsOpponent = returnedGames.filter((game: Game) => game.opponentId === playerId).map((gameWithPlayerOpponent: Game) => gameWithPlayerOpponent.gameId);
+    let gamesWherePlayerIsCreator = returnedGames.filter((game: Game) => game.creatorId === playerId).map((gameWithPlayerCreator: Game) => gameWithPlayerCreator.gameId);
+    gamesWherePlayerIsCreator.forEach((gameId) => {
+        useUpdateGame({id: gameId, updatedDetails: {creatorPhotoURL: updatedAvatar}});
+    });
+    gamesWherePlayerIsOpponent.forEach((gameId) => {
+        useUpdateGame({id: gameId, updatedDetails: {opponentPhotoURL: updatedAvatar}});
+    });
+};
+
 
 // USER REGISTRATION
 // ======================================================
