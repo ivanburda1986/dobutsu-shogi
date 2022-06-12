@@ -18,7 +18,8 @@ export const YourGamesInProgressList: FC<YourGamesInProgressListInterface> = ({g
             <Container fluid>
                 <Row>
                     {games.map((game) => (
-                        <Game key={game.id} id={game.id} createdOn={game.createdOn} creatorId={game.creatorId}
+                        <Game key={game.gameId} gameId={game.gameId} createdOn={game.createdOn}
+                              creatorId={game.creatorId}
                               creatorName={game.creatorName} opponentName={game.opponentName}
                               opponentId={game.opponentId !== null ? game.opponentId : null} name={game.name}
                               status={game.status} type={game.type} creatorPhotoURL={game.creatorPhotoURL}

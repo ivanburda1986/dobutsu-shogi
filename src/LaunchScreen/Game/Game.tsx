@@ -17,7 +17,7 @@ import {inspect} from "util";
 import {Avatar} from "../../Header/Avatar/Avatar";
 
 export const Game: FC<ReturnedGameInterface> = ({
-                                                    id,
+                                                    gameId,
                                                     creatorId,
                                                     creatorName,
                                                     creatorPhotoURL,
@@ -42,7 +42,7 @@ export const Game: FC<ReturnedGameInterface> = ({
                      <Avatar name={opponentPhotoURL} small={true}/>
                 </span>
                 {displayDeleteOption({creatorId, appContext, gameStatus: status}) && (
-                    <button type="button" className="btn-close" aria-label="Close" onClick={() => deleteGame(id)}/>
+                    <button type="button" className="btn-close" aria-label="Close" onClick={() => deleteGame(gameId)}/>
                 )}
             </Card.Header>
             <Card.Body>
@@ -57,14 +57,14 @@ export const Game: FC<ReturnedGameInterface> = ({
                     opponentId: opponentId
                 }) && (
                     <Link
-                        to={`/session/${id}`}
+                        to={`/session/${gameId}`}
                         className={`btn btn-success btn-sm me-2 `}
                         onClick={() => {
-                            getSingleGameDetails({gameId: id}).then((doc) => {
+                            getSingleGameDetails({gameId: gameId}).then((doc) => {
                                 let data = doc.data();
                                 if (!data?.opponentJoined) {
                                     joinGame({
-                                        gameId: id,
+                                        gameId: gameId,
                                         joiningPlayerType: "OPPONENT",
                                         joiningPlayerId: appContext.loggedInUserUserId,
                                         joiningPlayerName: appContext.loggedInUserDisplayName,
@@ -85,14 +85,14 @@ export const Game: FC<ReturnedGameInterface> = ({
                     opponentId
                 }) && (
                     <Link
-                        to={`/session/${id}`}
+                        to={`/session/${gameId}`}
                         className={`btn btn-success btn-sm `}
                         onClick={() => {
-                            getSingleGameDetails({gameId: id}).then((doc) => {
+                            getSingleGameDetails({gameId: gameId}).then((doc) => {
                                 let data = doc.data();
                                 if (!data?.creatorJoined) {
                                     joinGame({
-                                        gameId: id,
+                                        gameId: gameId,
                                         joiningPlayerType: "CREATOR",
                                         joiningPlayerId: appContext.loggedInUserUserId,
                                         joiningPlayerName: appContext.loggedInUserDisplayName,

@@ -67,8 +67,8 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
         const docRef = doc(db, "games", gameId!);
         onSnapshot(docRef, (doc) => {
             // console.log("Updated data");
-            setWinner(doc.data()!.winner);
-            setVictoryType(doc.data()!.victoryType);
+            setWinner(doc.data()?.winner);
+            setVictoryType(doc.data()?.victoryType);
         });
 
     }, [gameId]);

@@ -6,19 +6,14 @@ repeating the same row of moves 3x -> a tie
 --if there is a repeating sequence of 3 identical moves, the game results into a tie
 --warn players 1 move before a tie
 
-
 p1-sABC-a1-b1
 p2-sDEF-b2-c2
 p1-sABC-b1-a1
 p2-sDEF-c2-b2
 
-
-
 handling the "tie" game result
 -if the game result is tie, display a message to the users
 -update user stats with "tie" for both of them
-
-if the launch screen is empty, advise the player to create a game
 
 deploy via netlify
 
@@ -29,7 +24,6 @@ a created game can be password protected
 allow the player to send a link for a created game
 --if a link is sent, the game is set to private only for the player with the link
 --the game will open after the player logs in or creates an account
-
 
 =================================================================
 Refactoring and testing:
