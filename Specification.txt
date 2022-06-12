@@ -2,6 +2,8 @@ Next steps:
 repeating the same row of moves 3x -> a tie
 --store in the DB the last few moves (from-to coordinates) and if the same moves appear 3x in a row -> set game state to a tie
 
+if the launch screen is empty, advise the player to create a game
+
 handling the "tie" game result
 -if the game result is tie, display a message to the users
 -update user stats with "tie" for both of them
@@ -15,6 +17,10 @@ deploy via netlify
 =================================================================
 Possible future enhancements:
 a created game can be password protected
+
+allow the player to send a link for a created game
+--if a link is sent, the game is set to private only for the player with the link
+--the game will open after the player logs in or creates an account
 
 
 =================================================================

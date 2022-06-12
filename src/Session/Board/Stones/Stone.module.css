@@ -18,11 +18,6 @@
     font-weight: 600;
 }
 
-.Endangering {
+.Highlighted {
     border: 4px solid tomato;
-}
-
-.HasTakenLion {
-    border: 4px solid tomato;
-    z-index: 5;
 }

@@ -13,7 +13,7 @@ export const getCreatorStones = ({creatorId, type}: { creatorId: string; type: g
                 stashed: false,
                 positionLetter: "A",
                 positionNumber: 4,
-                endangering: false,
+                highlighted: false,
             },
             {
                 id: uuidv4(),
@@ -23,7 +23,7 @@ export const getCreatorStones = ({creatorId, type}: { creatorId: string; type: g
                 stashed: false,
                 positionLetter: "B",
                 positionNumber: 4,
-                endangering: false,
+                highlighted: false,
             },
             {
                 id: uuidv4(),
@@ -33,7 +33,7 @@ export const getCreatorStones = ({creatorId, type}: { creatorId: string; type: g
                 stashed: false,
                 positionLetter: "C",
                 positionNumber: 4,
-                endangering: false,
+                highlighted: false,
             },
             {
                 id: uuidv4(),
@@ -43,7 +43,7 @@ export const getCreatorStones = ({creatorId, type}: { creatorId: string; type: g
                 stashed: false,
                 positionLetter: "B",
                 positionNumber: 3,
-                endangering: false,
+                highlighted: false,
             },
         ];
     } else
@@ -56,7 +56,7 @@ export const getCreatorStones = ({creatorId, type}: { creatorId: string; type: g
                 stashed: false,
                 positionLetter: "A",
                 positionNumber: 4,
-                endangering: false,
+                highlighted: false,
             },
             {
                 id: uuidv4(),
@@ -66,7 +66,7 @@ export const getCreatorStones = ({creatorId, type}: { creatorId: string; type: g
                 stashed: false,
                 positionLetter: "B",
                 positionNumber: 4,
-                endangering: false,
+                highlighted: false,
             },
             {
                 id: uuidv4(),
@@ -76,7 +76,7 @@ export const getCreatorStones = ({creatorId, type}: { creatorId: string; type: g
                 stashed: false,
                 positionLetter: "C",
                 positionNumber: 4,
-                endangering: false,
+                highlighted: false,
             },
             {
                 id: uuidv4(),
@@ -86,7 +86,7 @@ export const getCreatorStones = ({creatorId, type}: { creatorId: string; type: g
                 stashed: false,
                 positionLetter: "B",
                 positionNumber: 3,
-                endangering: false,
+                highlighted: false,
             },
         ];
 };
@@ -102,7 +102,7 @@ export const getOpponentStones = ({opponentId, type}: { opponentId: string; type
                 stashed: false,
                 positionLetter: "C",
                 positionNumber: 1,
-                endangering: false,
+                highlighted: false,
             },
             {
                 id: uuidv4(),
@@ -112,7 +112,7 @@ export const getOpponentStones = ({opponentId, type}: { opponentId: string; type
                 stashed: false,
                 positionLetter: "B",
                 positionNumber: 1,
-                endangering: false,
+                highlighted: false,
             },
             {
                 id: uuidv4(),
@@ -122,7 +122,7 @@ export const getOpponentStones = ({opponentId, type}: { opponentId: string; type
                 stashed: false,
                 positionLetter: "A",
                 positionNumber: 1,
-                endangering: false,
+                highlighted: false,
             },
             {
                 id: uuidv4(),
@@ -132,7 +132,7 @@ export const getOpponentStones = ({opponentId, type}: { opponentId: string; type
                 stashed: false,
                 positionLetter: "B",
                 positionNumber: 2,
-                endangering: false,
+                highlighted: false,
             },
         ];
     } else
@@ -145,7 +145,7 @@ export const getOpponentStones = ({opponentId, type}: { opponentId: string; type
                 stashed: false,
                 positionLetter: "C",
                 positionNumber: 1,
-                endangering: false,
+                highlighted: false,
             },
             {
                 id: uuidv4(),
@@ -155,7 +155,7 @@ export const getOpponentStones = ({opponentId, type}: { opponentId: string; type
                 stashed: false,
                 positionLetter: "B",
                 positionNumber: 1,
-                endangering: false,
+                highlighted: false,
             },
             {
                 id: uuidv4(),
@@ -165,7 +165,7 @@ export const getOpponentStones = ({opponentId, type}: { opponentId: string; type
                 stashed: false,
                 positionLetter: "A",
                 positionNumber: 1,
-                endangering: false,
+                highlighted: false,
             },
             {
                 id: uuidv4(),
@@ -175,7 +175,7 @@ export const getOpponentStones = ({opponentId, type}: { opponentId: string; type
                 stashed: false,
                 positionLetter: "B",
                 positionNumber: 2,
-                endangering: false,
+                highlighted: false,
             },
         ];
 };

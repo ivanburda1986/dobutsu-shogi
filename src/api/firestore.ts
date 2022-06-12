@@ -83,10 +83,10 @@ interface useUpdateStoneTypeInterface {
     type: stoneType;
 }
 
-interface useUpdateStoneEndangeringInterface {
+interface useUpdateStoneHighlightedInterface {
     gameId: string;
     stoneId: string;
-    endangering: boolean;
+    highlighted: boolean;
 }
 
 export const useEmpowerStone = ({gameId, stoneId, type}: useUpdateStoneTypeInterface) => {
@@ -105,8 +105,8 @@ export const useHandicapStone = ({gameId, stoneId, type}: useUpdateStoneTypeInte
         });
 };
 
-export const useEndangerStone = ({gameId, stoneId, endangering}: useUpdateStoneEndangeringInterface) => {
-    updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {endangering: endangering})
+export const useHighlightStone = ({gameId, stoneId, highlighted}: useUpdateStoneHighlightedInterface) => {
+    updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {highlighted: highlighted})
         .then(() => console.log("Stone highlighting has been updated"))
         .catch((err) => {
             console.log(err.message);

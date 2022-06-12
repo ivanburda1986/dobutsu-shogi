@@ -5,7 +5,7 @@ import {
     useUpdateStoneOnTakeOver,
     useUpdateStonePosition,
     useEmpowerStone,
-    useHandicapStone, useUpdateGame, useUpdateUserStats, getSingleUserStats, getSingleGameDetails, useEndangerStone
+    useHandicapStone, useUpdateGame, useUpdateUserStats, getSingleUserStats, getSingleGameDetails, useHighlightStone
 } from "../../../api/firestore";
 import {
     amIStoneOwner,
@@ -34,7 +34,7 @@ export interface StoneInterface {
     type: stoneType;
     originalOwner: string;
     currentOwner: string;
-    endangering: boolean;
+    highlighted: boolean;
     stashed: boolean;
     positionLetter: string;
     positionNumber: number;
@@ -57,7 +57,7 @@ export const Stone: FC<StoneInterface> = ({
                                               type,
                                               originalOwner,
                                               currentOwner,
-                                              endangering,
+                                              highlighted,
                                               stashed,
                                               positionLetter,
                                               positionNumber,
@@ -80,13 +80,12 @@ export const Stone: FC<StoneInterface> = ({
     const [hideStoneStashCount, setHideStoneStashCount] = useState<boolean>(false);
     const [screenWidth, setScreenWidth] = useState<number>();
     const [screenHeight, setScreenHeight] = useState<number>();
-    const [isEndangering, setIsEndangering] = useState<boolean>(false);
-    const [hasTakenLion, setHasTakenLion] = useState<boolean>(false);
+    const [isHighlighted, setIsHighlighted] = useState<boolean>(false);
 
     const setStonePosition = useSetStonePosition;
     const updateStonePosition = useUpdateStonePosition;
     const updateStoneOnTakeOver = useUpdateStoneOnTakeOver;
-    const endangerStone = useEndangerStone;
+    const highlightStone = useHighlightStone;
     const updateStoneType = useEmpowerStone;
     const stashedPillCount = getStashedStonePillCount({
         allStones: allStones ?? [],
@@ -99,10 +98,10 @@ export const Stone: FC<StoneInterface> = ({
     useEffect(() => {
         let stone: StoneInterface[] | undefined = [];
         stone = allStones?.filter((stone) => stone.id === id);
-        if (stone && stone[0] && stone[0].endangering) {
-            setIsEndangering(true);
+        if (stone && stone[0] && stone[0].highlighted) {
+            setIsHighlighted(true);
         }
-    }, [allStones]);
+    }, [allStones, id]);
 
     // Make sure stones are in place even after change of the UI size and appearance of new elements
     const onResizeHandler = ({newHeight, newWidth}: { newHeight: number, newWidth: number }) => {
@@ -276,7 +275,8 @@ export const Stone: FC<StoneInterface> = ({
                     positionNumber: lyingStone.positionNumber,
                 });
                 //Highlight the taking stone to make it clear it has taken the opponents lion
-                setHasTakenLion(true);
+                highlightStone({gameId: gameId!, stoneId: id, highlighted: true});
+
                 getSingleUserStats({userId: lyingStone.originalOwner}).then((serverStats) => updateStats({
                     userId: lyingStone.originalOwner,
                     updatedDetails: {loss: serverStats.data()?.loss + 1}
@@ -313,7 +313,7 @@ export const Stone: FC<StoneInterface> = ({
                     });
                 } else {
                     lionConquerAttempt.endangeringOpponentStones.forEach((id) => {
-                        endangerStone({gameId: gameId!, stoneId: id, endangering: true});
+                        highlightStone({gameId: gameId!, stoneId: id, highlighted: true});
                     });
                     updateGame({
                         id: gameId!,
@@ -396,7 +396,7 @@ export const Stone: FC<StoneInterface> = ({
             onDragOver={onStoneTakeOverAttemptHandler}
             onDragEnd={onStoneDropHandler}
             style={{backgroundImage: `url(${getImgReference(type)})`, transform: `rotate(${rotateDegrees}deg)`}}
-            className={`${styles.Stone} ${isEndangering && styles.Endangering} ${hasTakenLion && styles.HasTakenLion} noselect`}
+            className={`${styles.Stone} ${isHighlighted && styles.Highlighted} noselect`}
             onClick={() => setStonePosition({
                 stoneId: id,
                 targetPositionLetter: positionLetter,
