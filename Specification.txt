@@ -15,6 +15,12 @@ handling the "tie" game result
 -if the game result is tie, display a message to the users
 -update user stats with "tie" for both of them
 
+Responsiveness for mobile
+
+=================================================================
+Refactoring and testing:
+refactor the whole game
+write automated tests in jest and RTL
 
 =================================================================
 Possible future enhancements:
@@ -24,10 +30,7 @@ allow the player to send a link for a created game
 --if a link is sent, the game is set to private only for the player with the link
 --the game will open after the player logs in or creates an account
 
-=================================================================
-Refactoring and testing:
-refactor the whole game
-write automated tests in jest and RTL
+
 
 
 =================================================================
