@@ -5,7 +5,13 @@ import {
     useUpdateStoneOnTakeOver,
     useUpdateStonePosition,
     useEmpowerStone,
-    useHandicapStone, useUpdateGame, useUpdateUserStats, getSingleUserStats, getSingleGameDetails, useHighlightStone
+    useHandicapStone,
+    useUpdateGame,
+    useUpdateUserStats,
+    getSingleUserStats,
+    getSingleGameDetails,
+    useHighlightStone,
+    useInvisibleStone
 } from "../../../api/firestore";
 import {
     amIStoneOwner,
@@ -36,6 +42,7 @@ export interface StoneInterface {
     currentOwner: string;
     highlighted: boolean;
     stashed: boolean;
+    invisible: boolean;
     positionLetter: string;
     positionNumber: number;
     amIOpponent?: boolean;
@@ -81,11 +88,13 @@ export const Stone: FC<StoneInterface> = ({
     const [screenWidth, setScreenWidth] = useState<number>();
     const [screenHeight, setScreenHeight] = useState<number>();
     const [isHighlighted, setIsHighlighted] = useState<boolean>(false);
+    const [isInvisible, setIsInvisible] = useState<boolean>(false);
 
     const setStonePosition = useSetStonePosition;
     const updateStonePosition = useUpdateStonePosition;
     const updateStoneOnTakeOver = useUpdateStoneOnTakeOver;
     const highlightStone = useHighlightStone;
+    const makeStoneInvisible = useInvisibleStone;
     const updateStoneType = useEmpowerStone;
     const stashedPillCount = getStashedStonePillCount({
         allStones: allStones ?? [],
@@ -100,6 +109,9 @@ export const Stone: FC<StoneInterface> = ({
         stone = allStones?.filter((stone) => stone.id === id);
         if (stone && stone[0] && stone[0].highlighted) {
             setIsHighlighted(true);
+        }
+        if (stone && stone[0] && stone[0].invisible) {
+            setIsInvisible(true);
         }
     }, [allStones, id]);
 
@@ -274,14 +286,11 @@ export const Stone: FC<StoneInterface> = ({
                     positionLetter: lyingStone.positionLetter,
                     positionNumber: lyingStone.positionNumber,
                 });
-                updateStonePosition({
-                    gameId: gameId!,
-                    stoneId: lyingStone.id,
-                    positionLetter: lyingStone.positionLetter,
-                    positionNumber: lyingStone.positionNumber,
-                });
                 //Highlight the taking stone to make it clear it has taken the opponents lion
                 highlightStone({gameId: gameId!, stoneId: id, highlighted: true});
+
+                //Set the lion stone to invisible after it has been taken
+                makeStoneInvisible({gameId: gameId!, stoneId: lyingStone.id, invisible: true});
 
                 getSingleUserStats({userId: lyingStone.originalOwner}).then((serverStats) => updateStats({
                     userId: lyingStone.originalOwner,
@@ -402,7 +411,7 @@ export const Stone: FC<StoneInterface> = ({
             onDragOver={onStoneTakeOverAttemptHandler}
             onDragEnd={onStoneDropHandler}
             style={{backgroundImage: `url(${getImgReference(type)})`, transform: `rotate(${rotateDegrees}deg)`}}
-            className={`${styles.Stone} ${isHighlighted && styles.Highlighted} noselect`}
+            className={`${styles.Stone} ${isHighlighted && styles.Highlighted} ${isInvisible && styles.Invisible} noselect`}
             onClick={() => setStonePosition({
                 stoneId: id,
                 targetPositionLetter: positionLetter,

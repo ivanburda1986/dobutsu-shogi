@@ -89,6 +89,12 @@ interface useUpdateStoneHighlightedInterface {
     highlighted: boolean;
 }
 
+interface useUpdateStoneInvisibilityInterface {
+    gameId: string;
+    stoneId: string;
+    invisible: boolean;
+}
+
 export const useEmpowerStone = ({gameId, stoneId, type}: useUpdateStoneTypeInterface) => {
     updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {type: type})
         .then(() => console.log("Stone empower has been updated on the server"))
@@ -108,6 +114,14 @@ export const useHandicapStone = ({gameId, stoneId, type}: useUpdateStoneTypeInte
 export const useHighlightStone = ({gameId, stoneId, highlighted}: useUpdateStoneHighlightedInterface) => {
     updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {highlighted: highlighted})
         .then(() => console.log("Stone highlighting has been updated"))
+        .catch((err) => {
+            console.log(err.message);
+        });
+};
+
+export const useInvisibleStone = ({gameId, stoneId, invisible}: useUpdateStoneInvisibilityInterface) => {
+    updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {invisible: invisible})
+        .then(() => console.log("Stone invisibility has been updated"))
         .catch((err) => {
             console.log(err.message);
         });
