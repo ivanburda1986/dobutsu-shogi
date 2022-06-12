@@ -346,7 +346,7 @@ export const useRegisterUser = ({email, username, password, registerUserCb}: Reg
     createUserWithEmailAndPassword(auth, email, password)
         .then((cred) => {
             updateUserProfile({displayName: username, photoURL: "placeholder", cb: registerUserCb.updateUserData});
-            createUserStats({userId: cred.user.uid});
+            createUserStats({userId: cred.user.uid, userName: username});
             console.log("user created:", cred.user);
         })
         .catch((err) => {
@@ -436,11 +436,13 @@ export const useUpdateUserProfile = ({displayName, photoURL, cb}: UpdateUserProf
 // Initial creation of stats
 export interface CreateUserStatsInterface {
     userId: string;
+    userName: string;
 }
 
-export const useCreateUserStats = ({userId}: CreateUserStatsInterface) => {
+export const useCreateUserStats = ({userId, userName}: CreateUserStatsInterface) => {
     setDoc(doc(db, `stats`, userId), {
         userId: userId,
+        userName: userName,
         win: 0,
         loss: 0,
         tie: 0,

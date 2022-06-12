@@ -16,7 +16,7 @@ export const Header: FC = () => {
             className={`${styles.header} container-fluid d-flex flex-row justify-content-between align-items-center mb-3`}>
             <h2>
                 <NavLink to="/" className="btn fs-2">
-                    Dobutsu Shogi
+                    Shogi
                 </NavLink>
             </h2>
             <div className="d-flex flex-row justify-content-between ">

@@ -326,6 +326,14 @@ export const Stone: FC<StoneInterface> = ({
                             victoryType: "HOMEBASE_CONQUERED_SUCCESS"
                         }
                     });
+                    getSingleUserStats({userId: conqueredPlayerId!}).then((serverStats) => updateStats({
+                        userId: conqueredPlayerId!,
+                        updatedDetails: {loss: serverStats.data()?.loss + 1}
+                    }));
+                    getSingleUserStats({userId: conqueringPlayerId!}).then((serverStats) => updateStats({
+                        userId: conqueringPlayerId!,
+                        updatedDetails: {win: serverStats.data()?.win + 1}
+                    }));
                 } else {
                     lionConquerAttempt.endangeringOpponentStones.forEach((id) => {
                         highlightStone({gameId: gameId!, stoneId: id, highlighted: true});
@@ -338,6 +346,14 @@ export const Stone: FC<StoneInterface> = ({
                             victoryType: "HOMEBASE_CONQUERED_FAILURE"
                         }
                     });
+                    getSingleUserStats({userId: conqueringPlayerId!}).then((serverStats) => updateStats({
+                        userId: conqueringPlayerId!,
+                        updatedDetails: {loss: serverStats.data()?.loss + 1}
+                    }));
+                    getSingleUserStats({userId: conqueredPlayerId!}).then((serverStats) => updateStats({
+                        userId: conqueredPlayerId!,
+                        updatedDetails: {win: serverStats.data()?.win + 1}
+                    }));
                 }
 
                 // console.log('The stone can move here');

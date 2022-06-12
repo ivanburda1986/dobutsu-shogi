@@ -11,6 +11,7 @@ import {SadPanda} from "./SadPanda/SadPanda";
 export const LaunchScreen: React.FC = () => {
     const appContext: ProvidedContextInterface = useContext(AppContext);
     const [games, setGames] = useState<ReturnedGameInterface[]>([]);
+    const [gamesLoaded, setGamesLoaded] = useState(false);
 
     useEffect(() => {
         const colRef = collection(db, "games");
@@ -20,12 +21,13 @@ export const LaunchScreen: React.FC = () => {
                 return {...game.data()};
             }).filter((mappedGame) => mappedGame.status !== "COMPLETED");
             setGames(returnedGames as ReturnedGameInterface[]);
+            setGamesLoaded(true);
         });
     }, []);
 
     return (
         <Container>
-            {games.length < 1 && <SadPanda/>}
+            {gamesLoaded && games.length < 1 && <SadPanda/>}
             <WaitingGamesList games={games.filter((game) => game.status === "WAITING")}/>
             <YourGamesInProgressList
                 games={games.filter((game) => game.status === "INPROGRESS" && (game.creatorId === appContext.loggedInUserUserId || game.opponentId === appContext.loggedInUserUserId))}/>

@@ -1,6 +1,12 @@
 import React, {FC, useContext} from "react";
 import {useParams} from "react-router";
-import {useUpdateStonePosition, useEmpowerStone, useUpdateGame, useHighlightStone} from "../../../api/firestore";
+import {
+    useUpdateStonePosition,
+    useEmpowerStone,
+    useUpdateGame,
+    useHighlightStone,
+    getSingleUserStats, useUpdateUserStats
+} from "../../../api/firestore";
 import {
     evaluateStoneMove,
     isLetterLabelVisible,
@@ -39,6 +45,7 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
         let placedStoneId = event.dataTransfer!.getData("placedStoneId");
         let movedFromLetter = event.dataTransfer!.getData("movedFromLetter");
         let movedFromNumber = event.dataTransfer!.getData("movedFromNumber");
+        const updateStats = useUpdateUserStats;
 
         const callbackFc = (stoneMoveAllowed: boolean, shouldChickenTransformToHen: boolean, lionConquerAttempt: lionConquerAttemptInterface) => {
             // console.log('shouldChickenTransformToHen', shouldChickenTransformToHen);
@@ -70,6 +77,14 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
                                 victoryType: "HOMEBASE_CONQUERED_SUCCESS"
                             }
                         });
+                        getSingleUserStats({userId: conqueredPlayerId!}).then((serverStats) => updateStats({
+                            userId: conqueredPlayerId!,
+                            updatedDetails: {loss: serverStats.data()?.loss + 1}
+                        }));
+                        getSingleUserStats({userId: conqueringPlayerId!}).then((serverStats) => updateStats({
+                            userId: conqueringPlayerId!,
+                            updatedDetails: {win: serverStats.data()?.win + 1}
+                        }));
                     } else {
                         lionConquerAttempt.endangeringOpponentStones.forEach((id) => {
                             highlightStone({gameId: gameId!, stoneId: id, highlighted: true});
@@ -82,6 +97,14 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
                                 victoryType: "HOMEBASE_CONQUERED_FAILURE"
                             }
                         });
+                        getSingleUserStats({userId: conqueringPlayerId!}).then((serverStats) => updateStats({
+                            userId: conqueringPlayerId!,
+                            updatedDetails: {loss: serverStats.data()?.loss + 1}
+                        }));
+                        getSingleUserStats({userId: conqueredPlayerId!}).then((serverStats) => updateStats({
+                            userId: conqueredPlayerId!,
+                            updatedDetails: {win: serverStats.data()?.win + 1}
+                        }));
                     }
 
                     // console.log('The stone can move here');

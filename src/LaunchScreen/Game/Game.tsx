@@ -1,6 +1,6 @@
 import {FC, useContext} from "react";
 import {Link} from "react-router-dom";
-import {Button, Card} from "react-bootstrap";
+import {Card} from "react-bootstrap";
 import styles from './Game.module.css';
 
 import {AppContext} from "../../context/AppContext";
@@ -13,7 +13,6 @@ import {
     shouldShowGoToGameButton,
     whichBackroundToUse
 } from "./GameService";
-import {inspect} from "util";
 import {Avatar} from "../../Header/Avatar/Avatar";
 
 export const Game: FC<ReturnedGameInterface> = ({
@@ -31,7 +30,7 @@ export const Game: FC<ReturnedGameInterface> = ({
     const appContext: ProvidedContextInterface = useContext(AppContext);
     const deleteGame = useDeleteGame;
     const joinGame = useJoinGame;
-    // ${whichBackroundToUse(type)}
+
     return (
         <Card style={{width: "18rem"}}
               className={`${styles[whichBackroundToUse(type)]} p-0 m-2 border-radius border-4`}>

@@ -17,6 +17,4 @@ export const SadPanda: FunctionComponent = () => {
             </span>
         </div>
     );
-
-
 };
