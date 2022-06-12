@@ -15,7 +15,6 @@ handling the "tie" game result
 -if the game result is tie, display a message to the users
 -update user stats with "tie" for both of them
 
-deploy via netlify
 
 =================================================================
 Possible future enhancements:
