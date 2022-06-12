@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import {Container} from "react-bootstrap";
 import {ReturnedGameInterface, WaitingGamesList} from "./WaitingGamesList/WaitingGamesList";
 import {YourGamesInProgressList} from "./YourGamesInProgressList/YourGamesInProgress";
@@ -8,55 +8,80 @@ import {ProvidedContextInterface} from "../App";
 import {AppContext} from "../context/AppContext";
 import {SadPanda} from "./SadPanda/SadPanda";
 
+
+interface shouldGameBeExcludedInterface {
+    creatorId: string;
+    opponentId: string;
+    status: statusType;
+    loggedInPlayerId: string;
+}
+
+const shouldGameBeExcluded = ({
+                                  creatorId,
+                                  opponentId,
+                                  status,
+                                  loggedInPlayerId
+                              }: shouldGameBeExcludedInterface): boolean => {
+    if (status === "WAITING") {
+        return true;
+    }
+    if (status === "INPROGRESS") {
+        console.log("status === INPROGRESS", status === "INPROGRESS");
+        console.log('creatorId', creatorId);
+        console.log('opponentId', opponentId);
+        console.log('loggedInPlayerId', loggedInPlayerId);
+        if (creatorId === loggedInPlayerId || opponentId === loggedInPlayerId) {
+            console.log("creatorId === loggedInPlayerId", creatorId === loggedInPlayerId);
+            console.log("opponentId === loggedInPlayerId", opponentId === loggedInPlayerId);
+            console.log("creatorId === loggedInPlayerId || opponentId === loggedInPlayerId", creatorId === loggedInPlayerId || opponentId === loggedInPlayerId);
+            return true;
+        }
+        return false;
+    }
+    return false;
+};
+
 export const LaunchScreen: React.FC = () => {
     const appContext: ProvidedContextInterface = useContext(AppContext);
     const [games, setGames] = useState<ReturnedGameInterface[]>([]);
     const [gamesLoaded, setGamesLoaded] = useState(false);
-
-
-    interface shouldGameBeExcluded {
-        creatorId: string;
-        opponentId: string;
-        status: statusType;
-        loggedInPlayerId: string;
-    }
-
-    const shouldGameBeExcluded = ({creatorId, opponentId, status, loggedInPlayerId}: shouldGameBeExcluded): boolean => {
-        if (status === "INPROGRESS") {
-            console.log("status === INPROGRESS", status === "INPROGRESS");
-            if (creatorId === loggedInPlayerId || opponentId === loggedInPlayerId) {
-                console.log("creatorId === loggedInPlayerId", creatorId === loggedInPlayerId);
-                console.log("opponentId === loggedInPlayerId", opponentId === loggedInPlayerId);
-                console.log("creatorId === loggedInPlayerId || opponentId === loggedInPlayerId", creatorId === loggedInPlayerId || opponentId === loggedInPlayerId);
-                return true;
-            }
-            return false;
-        }
-        return false;
-    };
-
-    // shouldGameBeExcluded({
-    //     creatorId,
-    //     opponentId,
-    //     status,
-    //     loggedInPlayerId: appContext.loggedInUserUserId
-    // })
+    const isComponentMountedRef = useRef(true);
 
     useEffect(() => {
-        const colRef = collection(db, "games");
-        onSnapshot(colRef, (snapshot) => {
-
-            const returnedGames = snapshot.docs.map((game) => {
-                return {...game.data()};
-            }).filter(({
-                           creatorId,
-                           opponentId,
-                           status
-                       }) => status === "WAITING" || status === "INPROGRESS");
-            setGames(returnedGames as ReturnedGameInterface[]);
-            setGamesLoaded(true);
-        });
+        return () => {
+            isComponentMountedRef.current = false;
+        };
     }, []);
+
+
+    useEffect(() => {
+        if (isComponentMountedRef.current) {
+            const colRef = collection(db, "games");
+            onSnapshot(colRef, (snapshot) => {
+
+                const returnedGames = snapshot.docs.map((game) => {
+                    return {...game.data()};
+                }).filter(({
+                               creatorId,
+                               opponentId,
+                               status
+                           }) => status === "WAITING" || status === "INPROGRESS").filter(({
+                                                                                              creatorId,
+                                                                                              opponentId,
+                                                                                              status
+                                                                                          }) => shouldGameBeExcluded({
+                    creatorId,
+                    opponentId,
+                    status,
+                    loggedInPlayerId: appContext.loggedInUserUserId
+                }));
+                setGames(returnedGames as ReturnedGameInterface[]);
+                setGamesLoaded(true);
+            });
+
+        }
+
+    }, [appContext.loggedInUserUserId]);
 
     return (
         <Container>

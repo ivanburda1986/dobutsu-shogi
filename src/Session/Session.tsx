@@ -19,8 +19,8 @@ export const Session = () => {
     const {gameId} = useParams();
     const appContext: ProvidedContextInterface = useContext(AppContext);
     const [gameData, setGameData] = useState<DocumentData | undefined>();
-    const isComponentMountedRef = useRef(true);
     const updateGame = useUpdateGame;
+    const isComponentMountedRef = useRef(true);
 
 
     useEffect(() => {
