@@ -20,8 +20,6 @@ handling the "tie" game result
 
 if the launch screen is empty, advise the player to create a game
 
-improve styling where needed - mainly the screen with games
-
 deploy via netlify
 
 =================================================================
