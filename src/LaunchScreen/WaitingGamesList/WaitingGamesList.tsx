@@ -12,6 +12,7 @@ export interface ReturnedGameInterface {
     opponentName: string;
     creatorPhotoURL: string;
     opponentPhotoURL: string;
+    currentPlayerTurn: string;
     name: string;
     status: statusType;
     type: gameType;
@@ -36,7 +37,7 @@ export const WaitingGamesList: FC<WaitingGamesListInterface> = ({games}) => {
                               creatorName={game.creatorName} opponentName={game.opponentName}
                               opponentId={game.opponentId !== null ? game.opponentId : null} name={game.name}
                               status={game.status} type={game.type} creatorPhotoURL={game.creatorPhotoURL}
-                              opponentPhotoURL={game.opponentPhotoURL}/>
+                              opponentPhotoURL={game.opponentPhotoURL} currentPlayerTurn={game.currentPlayerTurn}/>
                     ))}
                 </Row>
             </Container>

@@ -16,3 +16,9 @@
     color: white;
     background-color: green;
 }
+
+.YourTurn {
+    box-shadow: 0px 1px 16px 1px rgba(39, 161, 42, 0.88);
+    -webkit-box-shadow: 0px 1px 16px 1px rgba(39, 161, 42, 0.88);
+    -moz-box-shadow: 0px 1px 16px 1px rgba(39, 161, 42, 0.88);
+}

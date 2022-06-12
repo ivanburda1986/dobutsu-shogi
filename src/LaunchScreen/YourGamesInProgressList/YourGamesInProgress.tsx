@@ -23,7 +23,7 @@ export const YourGamesInProgressList: FC<YourGamesInProgressListInterface> = ({g
                               creatorName={game.creatorName} opponentName={game.opponentName}
                               opponentId={game.opponentId !== null ? game.opponentId : null} name={game.name}
                               status={game.status} type={game.type} creatorPhotoURL={game.creatorPhotoURL}
-                              opponentPhotoURL={game.opponentPhotoURL}/>
+                              opponentPhotoURL={game.opponentPhotoURL} currentPlayerTurn={game.currentPlayerTurn}/>
                     ))}
                 </Row>
             </Container>
