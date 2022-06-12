@@ -1,18 +1,20 @@
 Next steps:
 repeating the same row of moves 3x -> a tie
---store in the DB the last few moves (from-to coordinates) and if the same moves appear 3x in a row -> set game state to a tie
-
-if the launch screen is empty, advise the player to create a game
+--represent each move by a string combination of: stone id, field from, field to
+--store the last n moves in the DB
+--continuously keep monitoring the last moves
+--if there is a repeating sequence of 3 identical moves, the game results into a tie
+--warn players 1 move before a tie
 
 handling the "tie" game result
 -if the game result is tie, display a message to the users
 -update user stats with "tie" for both of them
 
+if the launch screen is empty, advise the player to create a game
+
 improve styling where needed - mainly the screen with games
 
 deploy via netlify
-
-
 
 =================================================================
 Possible future enhancements:
