@@ -23,13 +23,24 @@ export const LaunchScreen: React.FC = () => {
 
     const shouldGameBeExcluded = ({creatorId, opponentId, status, loggedInPlayerId}: shouldGameBeExcluded): boolean => {
         if (status === "INPROGRESS") {
+            console.log("status === INPROGRESS", status === "INPROGRESS");
             if (creatorId === loggedInPlayerId || opponentId === loggedInPlayerId) {
+                console.log("creatorId === loggedInPlayerId", creatorId === loggedInPlayerId);
+                console.log("opponentId === loggedInPlayerId", opponentId === loggedInPlayerId);
+                console.log("creatorId === loggedInPlayerId || opponentId === loggedInPlayerId", creatorId === loggedInPlayerId || opponentId === loggedInPlayerId);
                 return true;
             }
             return false;
         }
         return false;
     };
+
+    // shouldGameBeExcluded({
+    //     creatorId,
+    //     opponentId,
+    //     status,
+    //     loggedInPlayerId: appContext.loggedInUserUserId
+    // })
 
     useEffect(() => {
         const colRef = collection(db, "games");
@@ -41,12 +52,7 @@ export const LaunchScreen: React.FC = () => {
                            creatorId,
                            opponentId,
                            status
-                       }) => status === "WAITING" || shouldGameBeExcluded({
-                creatorId,
-                opponentId,
-                status,
-                loggedInPlayerId: appContext.loggedInUserUserId
-            }));
+                       }) => status === "WAITING" || status === "INPROGRESS");
             setGames(returnedGames as ReturnedGameInterface[]);
             setGamesLoaded(true);
         });
