@@ -1,15 +1,21 @@
 .avatar {
-  width: 10rem;
+    width: 10rem;
 }
 
 .avatarIco {
-  height: 3rem;
-  width: 3rem;
-  border: 0.25em solid rgb(105, 158, 177);
-  border-radius: 50%;
-  background-size: cover;
-  background-position: center;
-  background-size: 100%;
-  background-repeat: no-repeat;
-  background-color: #fff;
+    height: 3rem;
+    width: 3rem;
+    border: 0.25em solid rgb(105, 158, 177);
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-color: #fff;
+}
+
+.avatarIcoSmall {
+    height: 2.25rem;
+    width: 2.25rem;
+    margin-right: 0.25rem;
 }

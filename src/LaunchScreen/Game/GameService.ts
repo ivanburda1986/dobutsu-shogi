@@ -3,7 +3,7 @@ import {ProvidedContextInterface} from "../../App";
 
 export const whichBackroundToUse = (type: gameType) => {
     if (type === "DOBUTSU") {
-        return "success";
+        return "DobutsuGreen";
     }
     if (type === "GOROGORO") {
         return "warning";

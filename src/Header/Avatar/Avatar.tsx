@@ -12,11 +12,13 @@ import styles from "./Avatar.module.css";
 
 interface AvatarProps {
     name: string | null;
+    small?: boolean
 }
 
-export const Avatar: FC<AvatarProps> = ({name}) => {
-    return <div className={`${styles.avatarIco} d-flex flex-row justify-content-between align-items-center`}
-                style={{backgroundImage: `url(${getImgReference(name)})`}}/>;
+export const Avatar: FC<AvatarProps> = ({name, small}) => {
+    return <div
+        className={`${styles.avatarIco} ${small && styles.avatarIcoSmall} d-flex flex-row justify-content-between align-items-center`}
+        style={{backgroundImage: `url(${getImgReference(name)})`}}/>;
 };
 
 export const getImgReference = (name: string | null) => {

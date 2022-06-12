@@ -11,6 +11,8 @@ export interface ReturnedGameInterface {
     creatorId: string;
     creatorName: string;
     opponentName: string;
+    creatorPhotoURL: string;
+    opponentPhotoURL: string;
     name: string;
     status: statusType;
     type: gameType;
@@ -40,7 +42,7 @@ export const WaitingGamesList: FC = () => {
     }, []);
 
     return (
-        <Container>
+        <Container className="mb-4">
             {games.length > 0 && <h2>Games waiting for an opponent</h2>}
             <Container fluid>
                 <Row>
@@ -48,7 +50,8 @@ export const WaitingGamesList: FC = () => {
                         <Game key={game.id} id={game.id} createdOn={game.createdOn} creatorId={game.creatorId}
                               creatorName={game.creatorName} opponentName={game.opponentName}
                               opponentId={game.opponentId !== null ? game.opponentId : null} name={game.name}
-                              status={game.status} type={game.type}/>
+                              status={game.status} type={game.type} creatorPhotoURL={game.creatorPhotoURL}
+                              opponentPhotoURL={game.opponentPhotoURL}/>
                     ))}
                 </Row>
             </Container>

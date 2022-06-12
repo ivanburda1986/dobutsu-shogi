@@ -1,6 +1,7 @@
 import {FC, useContext} from "react";
 import {Link} from "react-router-dom";
 import {Button, Card} from "react-bootstrap";
+import styles from './Game.module.css';
 
 import {AppContext} from "../../context/AppContext";
 import {ProvidedContextInterface} from "../../App";
@@ -12,13 +13,17 @@ import {
     shouldShowGoToGameButton,
     whichBackroundToUse
 } from "./GameService";
+import {inspect} from "util";
+import {Avatar} from "../../Header/Avatar/Avatar";
 
 export const Game: FC<ReturnedGameInterface> = ({
                                                     id,
                                                     creatorId,
                                                     creatorName,
+                                                    creatorPhotoURL,
                                                     opponentId,
                                                     opponentName,
+                                                    opponentPhotoURL,
                                                     name,
                                                     status,
                                                     type
@@ -26,22 +31,24 @@ export const Game: FC<ReturnedGameInterface> = ({
     const appContext: ProvidedContextInterface = useContext(AppContext);
     const deleteGame = useDeleteGame;
     const joinGame = useJoinGame;
-
+    // ${whichBackroundToUse(type)}
     return (
         <Card style={{width: "18rem"}}
-              className={`p-0 m-2 border-radius border-4 text-white bg-${whichBackroundToUse(type)}`}>
+              className={`${styles[whichBackroundToUse(type)]} p-0 m-2 border-radius border-4`}>
             <Card.Header className="d-flex justify-content-between">
-                <Card.Title>{name}</Card.Title>
+                <span className="d-flex align-items-center">
+                    <Card.Title className="me-2">{name}</Card.Title>
+                <Avatar name={creatorPhotoURL} small={true}/>
+                     <Avatar name={opponentPhotoURL} small={true}/>
+                </span>
                 {displayDeleteOption({creatorId, appContext, gameStatus: status}) && (
-                    <Button style={{maxHeight: "30px"}} variant="light" size="sm" onClick={() => deleteGame(id)}>
-                        x
-                    </Button>
+                    <button type="button" className="btn-close" aria-label="Close" onClick={() => deleteGame(id)}/>
                 )}
             </Card.Header>
             <Card.Body>
                 <p>Created by: {creatorName}</p>
                 <p>Joined by: {opponentName}</p>
-                <p>State: {status}</p>
+                {/*<p>State: {status}</p>*/}
             </Card.Body>
             <Card.Footer>
                 {shouldShowAcceptButton({
@@ -51,7 +58,7 @@ export const Game: FC<ReturnedGameInterface> = ({
                 }) && (
                     <Link
                         to={`/session/${id}`}
-                        className={`btn btn-primary btn-sm me-2 `}
+                        className={`btn btn-success btn-sm me-2 `}
                         onClick={() => {
                             getSingleGameDetails({gameId: id}).then((doc) => {
                                 let data = doc.data();
@@ -79,7 +86,7 @@ export const Game: FC<ReturnedGameInterface> = ({
                 }) && (
                     <Link
                         to={`/session/${id}`}
-                        className={`btn btn-primary btn-sm `}
+                        className={`btn btn-success btn-sm `}
                         onClick={() => {
                             getSingleGameDetails({gameId: id}).then((doc) => {
                                 let data = doc.data();

@@ -1,0 +1,18 @@
+.DobutsuGreen {
+    background-color: rgba(60, 179, 113, 0.7) !important;
+    color: white;
+    font-weight: bold;
+}
+
+.DobutsuGreenButton {
+    max-height: 28px;
+    font-weight: 800;
+    color: white;
+    background-color: mediumseagreen;
+    border: none;
+}
+
+.DobutsuGreenButton:hover {
+    color: white;
+    background-color: green;
+}

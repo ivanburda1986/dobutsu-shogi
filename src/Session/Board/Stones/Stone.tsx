@@ -274,6 +274,12 @@ export const Stone: FC<StoneInterface> = ({
                     positionLetter: lyingStone.positionLetter,
                     positionNumber: lyingStone.positionNumber,
                 });
+                updateStonePosition({
+                    gameId: gameId!,
+                    stoneId: lyingStone.id,
+                    positionLetter: lyingStone.positionLetter,
+                    positionNumber: lyingStone.positionNumber,
+                });
                 //Highlight the taking stone to make it clear it has taken the opponents lion
                 highlightStone({gameId: gameId!, stoneId: id, highlighted: true});
 

@@ -41,7 +41,8 @@ export const YourGamesInProgressList: FC = () => {
                         <Game key={game.id} id={game.id} createdOn={game.createdOn} creatorId={game.creatorId}
                               creatorName={game.creatorName} opponentName={game.opponentName}
                               opponentId={game.opponentId !== null ? game.opponentId : null} name={game.name}
-                              status={game.status} type={game.type}/>
+                              status={game.status} type={game.type} creatorPhotoURL={game.creatorPhotoURL}
+                              opponentPhotoURL={game.opponentPhotoURL}/>
                     ))}
                 </Row>
             </Container>
