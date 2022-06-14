@@ -1,4 +1,12 @@
 Next steps:
+Footer:
+Rules: a link to the rules
+Animal shogi: info, links to place to buy the official game
+About this site: copyright disclaimer, non-profit, purpose of the site
+
+Visually disable all reference to advanced version of the game
+
+Repeating move-detection: -> tie
 repeating the same row of moves 3x -> a tie
 --represent each move by a string combination of: playerid, stone id, field from, field to
 --store the last n moves in the DB
@@ -14,6 +22,8 @@ p2-sDEF-c2-b2
 handling the "tie" game result
 -if the game result is tie, display a message to the users
 -update user stats with "tie" for both of them
+
+Showing the last move, so that players in async game know what has just happened
 
 Responsiveness for mobile
 

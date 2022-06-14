@@ -15,6 +15,7 @@ import {CreateGame} from "./CreateGame/CreateGame";
 import {Session} from "./Session/Session";
 
 import "bootstrap/dist/css/bootstrap.min.css";
+import {Footer} from "./Footer/Footer";
 
 export interface UserDataInterface {
     email: string | null;
@@ -95,6 +96,7 @@ export const App = () => {
                     <Route path="/creategame" element={<CreateGame/>}/>
                     <Route path="/session/:gameId" element={<Session/>}/>
                 </Routes>
+                {/*<Footer/>*/}
             </AppContext.Provider>
         </div>
     );
