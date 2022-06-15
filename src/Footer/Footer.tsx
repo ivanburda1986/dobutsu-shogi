@@ -8,7 +8,7 @@ export const Footer: FunctionComponent = () => {
             <Container>
                 <ul className="nav justify-content-center text-si">
                     <li>
-                        <NavLink to="/" className="btn fs-6">
+                        <NavLink to="https://www.youtube.com/watch?v=bH05gUTrq3o" className="btn fs-6">
                             <span>Rules</span>
                         </NavLink>
                     </li>
