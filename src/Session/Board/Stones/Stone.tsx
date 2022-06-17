@@ -159,6 +159,7 @@ export const Stone: FC<StoneInterface> = ({
 
     const onDragStartHandler = (event: React.DragEvent<HTMLDivElement>) => {
         event.dataTransfer.setData("placedStoneId", id);
+        event.dataTransfer.setData("placedStoneType", type);
         event.dataTransfer.setData("movedFromLetter", positionLetter);
         event.dataTransfer.setData("movedFromNumber", String(positionNumber));
         setDraggedStone && setDraggedStone({

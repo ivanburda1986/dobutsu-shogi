@@ -159,6 +159,17 @@ export const getSingleStoneDetails = async ({gameId, stoneId}: useGetSingleStone
 
 // GAME CREATION AND MANAGEMENT
 // ======================================================
+export interface MoveInterface {
+    moveNumber: number;
+    id: string;
+    type: stoneType;
+    movingPlayerId: string;
+    fromCoordinates: string;
+    targetCoordinates: string;
+    isTakeOver: boolean;
+    isVictory: boolean;
+}
+
 export interface CreateGameInputInterface {
     gameId: string;
     creatorId: string;
@@ -187,6 +198,7 @@ export interface Game {
     opponentJoined: boolean;
     startingPlayer: string;
     currentPlayerTurn: string;
+    moves: MoveInterface[];
     winner: string;
     victoryType: VictoryType;
     finishedTimeStamp: number;
@@ -209,6 +221,7 @@ export const useCreateGame = ({creatorId, creatorName, name, type, gameId, creat
         opponentJoined: false,
         startingPlayer: null,
         currentPlayerTurn: null,
+        moves: [],
         winner: null,
         victoryType: null,
         finishedTimeStamp: null,

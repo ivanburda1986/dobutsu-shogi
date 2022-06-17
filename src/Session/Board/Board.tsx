@@ -127,9 +127,9 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
                     />
                 </div>
             </Container>
-            {/*<Container fluid className={`d-flex mb-4 justify-content-center ${styles.Board}`}>*/}
-            {/*    <RecentMoves/>*/}
-            {/*</Container>*/}
+            <Container fluid className={`d-flex mb-4 justify-content-center ${styles.Board}`}>
+                <RecentMoves/>
+            </Container>
         </>
     );
 };
