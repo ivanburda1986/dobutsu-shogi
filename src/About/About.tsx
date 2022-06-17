@@ -11,7 +11,8 @@ export const About: FC = () => {
                 <li>a programming exercise</li>
                 <li>a chance to play Dobutsu Shogi online with my brother</li>
             </ul>
-            <p>This is a hobbyist activity neither with an aim of attracting any broader audience nor with a pursuit of
+            <p>This is a hobbyist activity neither with an aim of attracting any considerable audience nor with a
+                pursuit of
                 any financial
                 profits.</p>
             <p>Should there be any concerns of copyright infringements, <a href="mailto:burda.ivan@protonmail.com">get
