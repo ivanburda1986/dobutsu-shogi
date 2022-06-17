@@ -14,11 +14,9 @@ export const Header: FC = () => {
     return (
         <header
             className={`${styles.header} container-fluid d-flex flex-row justify-content-between align-items-center mb-3`}>
-            <h2>
-                <NavLink to="/" className="btn fs-2">
-                    Shogi
-                </NavLink>
-            </h2>
+            <NavLink to="/" className="btn fs-2">
+                <button type="button" className="btn btn-success fs-4">Dobutsu Shogi</button>
+            </NavLink>
             <div className="d-flex flex-row justify-content-between ">
                 {appContext.userLoggedIn && (
                     <NavLink to="/profile"

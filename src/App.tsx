@@ -16,6 +16,7 @@ import {Session} from "./Session/Session";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Footer} from "./Footer/Footer";
+import {About} from "./About/About";
 
 export interface UserDataInterface {
     email: string | null;
@@ -93,6 +94,7 @@ export const App = () => {
                     <Route path="/register" element={<RegisterScreen/>}/>
                     <Route path="/login" element={<LoginScreen/>}/>
                     <Route path="/profile" element={<Profile/>}/>
+                    <Route path="/about" element={<About/>}/>
                     <Route path="/creategame" element={<CreateGame/>}/>
                     <Route path="/session/:gameId" element={<Session/>}/>
                 </Routes>

@@ -2,7 +2,8 @@ import React, {FC} from "react";
 import boar from "./images/boar.png";
 import cat from "./images/cat.png";
 import chicken from "./images/chicken.png";
-import dog from "./images/rabbit.png";
+import hen from "./images/hen.png";
+import dog from "./images/dog.png";
 import elephant from "./images/elephant.png";
 import giraffe from "./images/giraffe.png";
 import lion from "./images/lion.png";
@@ -12,7 +13,7 @@ import styles from "./Avatar.module.css";
 
 interface AvatarProps {
     name: string | null;
-    small?: boolean
+    small?: boolean;
 }
 
 export const Avatar: FC<AvatarProps> = ({name, small}) => {
@@ -31,6 +32,7 @@ export const getImgReference = (name: string | null) => {
     if (name === "elephant") return elephant;
     if (name === "giraffe") return giraffe;
     if (name === "chicken") return chicken;
+    if (name === "hen") return hen;
     if (name === "lion") return lion;
     if (name === "rabbit") return rabbit;
     return placeholder;

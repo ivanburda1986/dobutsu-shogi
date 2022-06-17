@@ -1,4 +1,4 @@
-import React, {FC, useState, useEffect, useContext, useRef} from "react";
+import React, {FC, useContext, useEffect, useRef, useState} from "react";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 
 import {db, updatePlayerAvatarInGames, useUpdateUserProfile} from "../api/firestore";
@@ -6,7 +6,6 @@ import {AppContext} from "../context/AppContext";
 import {ProvidedContextInterface} from "../App";
 import {Avatar} from "../Header/Avatar/Avatar";
 import {doc, onSnapshot} from "firebase/firestore";
-import {log} from "util";
 
 export const Profile: FC = () => {
     const appContext: ProvidedContextInterface = useContext(AppContext);
@@ -57,14 +56,18 @@ export const Profile: FC = () => {
                                         <Form.Check inline defaultChecked={shouldBeChecked("boar")}
                                                     label={<Avatar name="boar"/>} name="group1" type="radio" id={`boar`}
                                                     onChange={(e) => setAvatarImgSelection(e.target.id)}/>
-                                        <Form.Check inline defaultChecked={shouldBeChecked("rabbit")}
-                                                    label={<Avatar name="rabbit"/>} name="group1" type="radio"
-                                                    id={`rabbit`} onChange={(e) => setAvatarImgSelection(e.target.id)}/>
+                                        <Form.Check inline defaultChecked={shouldBeChecked("dog")}
+                                                    label={<Avatar name="dog"/>} name="group1" type="radio"
+                                                    id={`dog`} onChange={(e) => setAvatarImgSelection(e.target.id)}/>
+                                        <Form.Check inline defaultChecked={shouldBeChecked("hen")}
+                                                    label={<Avatar name="hen"/>} name="group1" type="radio"
+                                                    id={`hen`} onChange={(e) => setAvatarImgSelection(e.target.id)}/>
                                         <Form.Check inline defaultChecked={shouldBeChecked("cat")}
                                                     label={<Avatar name="cat"/>} name="group1" type="radio" id={`cat`}
                                                     onChange={(e) => setAvatarImgSelection(e.target.id)}/>
-                                        <Form.Check inline defaultChecked={shouldBeChecked("dog")}
-                                                    label={<Avatar name="dog"/>} name="group1" type="radio" id={`dog`}
+                                        <Form.Check inline defaultChecked={shouldBeChecked("rabbit")}
+                                                    label={<Avatar name="rabbit"/>} name="group1" type="radio"
+                                                    id={`rabbit`}
                                                     onChange={(e) => setAvatarImgSelection(e.target.id)}/>
                                         <Form.Check inline defaultChecked={shouldBeChecked("elephant")}
                                                     label={<Avatar name="elephant"/>} name="group1" type="radio"

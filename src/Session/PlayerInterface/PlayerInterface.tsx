@@ -1,14 +1,11 @@
 import React, {FC, useContext, useState} from "react";
-import {gameType, getSingleGameDetails} from "../../api/firestore";
+import {gameType} from "../../api/firestore";
 import {ProvidedContextInterface} from "../../App";
 import {AppContext} from "../../context/AppContext";
 import {Avatar} from "../../Header/Avatar/Avatar";
-import {BoardRow} from "../Board/BoardRow/BoardRow";
 import styles from "./PlayerInterface.module.css";
 import {getStashSize, isOnTurn, whatNameToDisplay} from "./PlayerInterfaceService";
 import {v4 as uuidv4} from "uuid";
-import {Button} from "react-bootstrap";
-import {FaRegFlag} from "react-icons/fa";
 import {DocumentData} from "firebase/firestore";
 import {StashRow} from "../Board/StashRow/StashRow";
 
