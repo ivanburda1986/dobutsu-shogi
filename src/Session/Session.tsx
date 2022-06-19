@@ -65,7 +65,7 @@ export const Session = () => {
         <Container>
             <Container fluid className={`d-flex mb-4 justify-content-between align-items-center ${styles.MainHeader}`}>
                 <h6 className="mt-1"><strong>Game name:</strong> {gameData?.name}</h6>
-                <RecentMoves moves={gameData?.moves}/>
+                <RecentMoves moves={gameData?.moves} creatorId={gameData?.creatorId}/>
             </Container>
             <Container fluid
                        className={`d-flex flex-column justify-content-start align-items-center ${styles.Session}`}>
