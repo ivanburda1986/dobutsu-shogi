@@ -1,11 +1,12 @@
 import React, {FC, useContext} from "react";
 import {useParams} from "react-router";
 import {
-    useUpdateStonePosition,
+    getSingleUserStats,
     useEmpowerStone,
-    useUpdateGame,
     useHighlightStone,
-    getSingleUserStats, useUpdateUserStats
+    useUpdateGame,
+    useUpdateStonePosition,
+    useUpdateUserStats
 } from "../../../api/firestore";
 import {
     evaluateStoneMove,
@@ -19,7 +20,6 @@ import {ProvidedContextInterface} from "../../../App";
 import {AppContext} from "../../../context/AppContext";
 import {DocumentData} from "firebase/firestore";
 import {StoneInterface} from "../Stones/Stone";
-import {update} from "lodash";
 
 
 interface FieldInterface {
@@ -75,7 +75,7 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
                     isTakeOver: false,
                     isVictory: false
                 });
-
+                // Send data for stone move tracking
                 updateGame({
                     id: gameId!,
                     updatedDetails: {

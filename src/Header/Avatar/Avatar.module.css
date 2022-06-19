@@ -19,3 +19,11 @@
     width: 2.25rem;
     margin-right: 0.25rem;
 }
+
+.avatarIcoSquare {
+    border-radius: 5px;
+    height: 1.5rem;
+    width: 1.5rem;
+    margin-right: 0.25rem;
+    border: none;
+}
