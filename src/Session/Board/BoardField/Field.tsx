@@ -1,11 +1,12 @@
 import React, {FC, useContext} from "react";
 import {useParams} from "react-router";
 import {
-    useUpdateStonePosition,
+    getSingleUserStats,
     useEmpowerStone,
-    useUpdateGame,
     useHighlightStone,
-    getSingleUserStats, useUpdateUserStats
+    useUpdateGame,
+    useUpdateStonePosition,
+    useUpdateUserStats
 } from "../../../api/firestore";
 import {
     evaluateStoneMove,
@@ -40,8 +41,10 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
     const enableDropping = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
     };
+    const updatedMoves = gameData?.moves;
 
     const onDropHandler = (event: React.DragEvent<HTMLDivElement>) => {
+        let placedStoneType = event.dataTransfer!.getData("placedStoneType");
         let placedStoneId = event.dataTransfer!.getData("placedStoneId");
         let movedFromLetter = event.dataTransfer!.getData("movedFromLetter");
         let movedFromNumber = event.dataTransfer!.getData("movedFromNumber");
@@ -60,6 +63,24 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
                     stoneId: placedStoneId,
                     positionLetter: columnLetter,
                     positionNumber: rowNumber,
+                });
+                // Prepare data for stone move tracking
+                updatedMoves.push({
+                    moveNumber: updatedMoves.length > 0 ? updatedMoves[updatedMoves.length - 1].moveNumber + 1 : 0,
+                    id: placedStoneId,
+                    type: placedStoneType,
+                    movingPlayerId: appContext.loggedInUserUserId,
+                    fromCoordinates: `${movedFromLetter}${movedFromNumber}`,
+                    targetCoordinates: `${columnLetter}${rowNumber}`,
+                    isTakeOver: false,
+                    isVictory: false
+                });
+                // Send data for stone move tracking
+                updateGame({
+                    id: gameId!,
+                    updatedDetails: {
+                        moves: updatedMoves
+                    }
                 });
 
                 //Evaluate whether a lion-move is a homebase-conquer attempt and leads to a game end
@@ -112,6 +133,7 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
                 }
 
                 // Set turn to the other player
+                console.log(updatedMoves);
                 updateGame({
                     id: gameId!,
                     updatedDetails: {

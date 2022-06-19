@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext, useRef} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import {Container} from "react-bootstrap";
 import {useParams} from "react-router";
 import {gamesCollectionRef, getSingleGameDetails, useUpdateGame} from "../api/firestore";
@@ -11,8 +11,8 @@ import {evaluateBeingOpponent, evaluateBeingWinner} from "./SessionService";
 
 import styles from "./Session.module.css";
 import {DocumentData, onSnapshot} from "firebase/firestore";
-import {ReturnedGameInterface} from "../LaunchScreen/WaitingGamesList/WaitingGamesList";
-import {GameFinishedMessage, GameFinishedMessageInterface} from "./GameFinishedMessage/GameFinishedMessage";
+import {GameFinishedMessage} from "./GameFinishedMessage/GameFinishedMessage";
+import {RecentMoves} from "./RecentMoves/RecentMoves";
 
 export const Session = () => {
     const [amIOpponent, setAmIOpponent] = useState(false);
@@ -62,25 +62,29 @@ export const Session = () => {
     }, [gameId, gameData, updateGame]);
 
     return (
-        <Container fluid
-                   className={`d-flex flex-column justify-content-start align-items-center ${styles.Session}`}>
-            <h3 className="mb-3">Game name: {gameData?.name}</h3>
-
-            {
-                <Board type="DOBUTSU" amIOpponent={amIOpponent} gameData={gameData}
-                />
-            }
-            {
-                gameData?.winner && evaluateBeingWinner({
-                    winnerId: gameData.winner,
-                    victoryType: gameData.victoryType,
-                    loggedInUserUserId: appContext.loggedInUserUserId
-                }) && <GameFinishedMessage messageType={evaluateBeingWinner({
-                    winnerId: gameData.winner,
-                    victoryType: gameData.victoryType,
-                    loggedInUserUserId: appContext.loggedInUserUserId
-                })}/>
-            }
+        <Container>
+            <Container fluid className={`d-flex mb-4 justify-content-between align-items-center ${styles.MainHeader}`}>
+                <h6 className="mt-1"><strong>Game name:</strong> {gameData?.name}</h6>
+                <RecentMoves moves={gameData?.moves} creatorId={gameData?.creatorId}/>
+            </Container>
+            <Container fluid
+                       className={`d-flex flex-column justify-content-start align-items-center ${styles.Session}`}>
+                {
+                    <Board type="DOBUTSU" amIOpponent={amIOpponent} gameData={gameData}
+                    />
+                }
+                {
+                    gameData?.winner && evaluateBeingWinner({
+                        winnerId: gameData.winner,
+                        victoryType: gameData.victoryType,
+                        loggedInUserUserId: appContext.loggedInUserUserId
+                    }) && <GameFinishedMessage messageType={evaluateBeingWinner({
+                        winnerId: gameData.winner,
+                        victoryType: gameData.victoryType,
+                        loggedInUserUserId: appContext.loggedInUserUserId
+                    })}/>
+                }
+            </Container>
         </Container>
     );
 };

@@ -159,6 +159,7 @@ export const Stone: FC<StoneInterface> = ({
 
     const onDragStartHandler = (event: React.DragEvent<HTMLDivElement>) => {
         event.dataTransfer.setData("placedStoneId", id);
+        event.dataTransfer.setData("placedStoneType", type);
         event.dataTransfer.setData("movedFromLetter", positionLetter);
         event.dataTransfer.setData("movedFromNumber", String(positionNumber));
         setDraggedStone && setDraggedStone({
@@ -267,6 +268,28 @@ export const Stone: FC<StoneInterface> = ({
         });
 
         if (canTakeStone) {
+            // Prepare data for stone move tracking
+            let updatedMoves = gameData?.moves;
+            let draggedStoneCoordinates = `${draggedStone.positionLetter}${draggedStone.positionNumber}`;
+            let targetStoneCoordinates = `${lyingStone.positionLetter}${lyingStone.positionNumber}`;
+            updatedMoves.push({
+                moveNumber: updatedMoves.length > 0 ? updatedMoves[updatedMoves.length - 1].moveNumber + 1 : 0,
+                id: draggedStone.id,
+                type: draggedStone.type,
+                movingPlayerId: appContext.loggedInUserUserId,
+                fromCoordinates: draggedStoneCoordinates,
+                targetCoordinates: targetStoneCoordinates,
+                isTakeOver: false,
+                isVictory: false
+            });
+            // Send data for stone move tracking
+            updateGame({
+                id: gameId!,
+                updatedDetails: {
+                    moves: updatedMoves
+                }
+            });
+
             //Victory handling for taking a LION
             if (lyingStone.type === "LION") {
                 updateGame({
@@ -314,9 +337,9 @@ export const Stone: FC<StoneInterface> = ({
             });
             if (lionConquerAttempt.success !== undefined) {
                 const {success, conqueringPlayerId, conqueredPlayerId} = lionConquerAttempt;
-                console.log('success', success);
-                console.log('conqueringPlayerId', conqueringPlayerId);
-                console.log('conqueredPlayerId', conqueredPlayerId);
+                // console.log('success', success);
+                // console.log('conqueringPlayerId', conqueringPlayerId);
+                // console.log('conqueredPlayerId', conqueredPlayerId);
                 if (success === true) {
                     updateGame({
                         id: gameId!,
@@ -379,6 +402,31 @@ export const Stone: FC<StoneInterface> = ({
                         amIOpponent: amIOpponent!
                     }),
                     positionNumber: 1
+                }
+            });
+
+            // Prepare data for stone move tracking
+            updatedMoves = gameData?.moves;
+            draggedStoneCoordinates = `${lyingStone.positionLetter}${lyingStone.positionNumber}`;
+            targetStoneCoordinates = `${getStashTargetPosition({
+                type: lyingStone.type,
+                amIOpponent: amIOpponent!
+            })}${lyingStone.positionNumber}`;
+            updatedMoves.push({
+                moveNumber: updatedMoves.length > 0 ? updatedMoves[updatedMoves.length - 1].moveNumber + 1 : 0,
+                id: lyingStone.id,
+                type: lyingStone.type,
+                movingPlayerId: appContext.loggedInUserUserId,
+                fromCoordinates: draggedStoneCoordinates,
+                targetCoordinates: targetStoneCoordinates,
+                isTakeOver: true,
+                isVictory: false
+            });
+            // Send data for stone move tracking
+            updateGame({
+                id: gameId!,
+                updatedDetails: {
+                    moves: updatedMoves
                 }
             });
 
