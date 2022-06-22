@@ -1,5 +1,6 @@
 Next steps:
 Visually disable all reference to advanced version of the game
+...
 
 Repeating move-detection: -> tie
 repeating the same row of moves 3x -> a tie
