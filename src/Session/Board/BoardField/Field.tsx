@@ -83,12 +83,15 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
                     }
                 });
 
+                // Evaluate whether there is a tie caused by repeated moves
+
+
                 //Evaluate whether a lion-move is a homebase-conquer attempt and leads to a game end
                 if (lionConquerAttempt.success !== undefined) {
                     const {success, conqueringPlayerId, conqueredPlayerId} = lionConquerAttempt;
-                    console.log('success', success);
-                    console.log('conqueringPlayerId', conqueringPlayerId);
-                    console.log('conqueredPlayerId', conqueredPlayerId);
+                    // console.log('success', success);
+                    // console.log('conqueringPlayerId', conqueringPlayerId);
+                    // console.log('conqueredPlayerId', conqueredPlayerId);
                     if (success === true) {
                         updateGame({
                             id: gameId!,
@@ -129,7 +132,7 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
                     }
 
                     // console.log('The stone can move here');
-                    console.log('lionConquerAttemptSuccessful', lionConquerAttempt.success);
+                    // console.log('lionConquerAttemptSuccessful', lionConquerAttempt.success);
                 }
 
                 // Set turn to the other player

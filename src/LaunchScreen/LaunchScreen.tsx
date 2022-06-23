@@ -26,14 +26,14 @@ const shouldGameBeExcluded = ({
         return true;
     }
     if (status === "INPROGRESS") {
-        console.log("status === INPROGRESS", status === "INPROGRESS");
-        console.log('creatorId', creatorId);
-        console.log('opponentId', opponentId);
-        console.log('loggedInPlayerId', loggedInPlayerId);
+        // console.log("status === INPROGRESS", status === "INPROGRESS");
+        // console.log('creatorId', creatorId);
+        // console.log('opponentId', opponentId);
+        // console.log('loggedInPlayerId', loggedInPlayerId);
         if (creatorId === loggedInPlayerId || opponentId === loggedInPlayerId) {
-            console.log("creatorId === loggedInPlayerId", creatorId === loggedInPlayerId);
-            console.log("opponentId === loggedInPlayerId", opponentId === loggedInPlayerId);
-            console.log("creatorId === loggedInPlayerId || opponentId === loggedInPlayerId", creatorId === loggedInPlayerId || opponentId === loggedInPlayerId);
+            // console.log("creatorId === loggedInPlayerId", creatorId === loggedInPlayerId);
+            // console.log("opponentId === loggedInPlayerId", opponentId === loggedInPlayerId);
+            // console.log("creatorId === loggedInPlayerId || opponentId === loggedInPlayerId", creatorId === loggedInPlayerId || opponentId === loggedInPlayerId);
             return true;
         }
         return false;

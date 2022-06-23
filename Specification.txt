@@ -2,6 +2,15 @@ Next steps:
 Visually disable all reference to advanced version of the game
 ...
 
+The move representations have to be stored in the DB to make sure they are persisted for the whole game
+Or they have to be at least re-created in the state upon reload
+A move which takes over another stones is valid and should be included
+A move from a stash to the field is valid
+An automatic move triggered by the game (i.e. not be the player) such as a move of a taken stone towards the stash should be excluded from the representation. In the representation we are interested only in moves directly made by the players.
+
+
+
+
 Repeating move-detection: -> tie
 repeating the same row of moves 3x -> a tie
 --represent each move by a string combination of: playerid, stone id, field from, field to

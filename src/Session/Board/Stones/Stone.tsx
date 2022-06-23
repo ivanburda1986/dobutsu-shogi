@@ -380,7 +380,7 @@ export const Stone: FC<StoneInterface> = ({
                 }
 
                 // console.log('The stone can move here');
-                console.log('lionConquerAttemptSuccessful', lionConquerAttempt.success);
+                // console.log('lionConquerAttemptSuccessful', lionConquerAttempt.success);
             }
 
 
