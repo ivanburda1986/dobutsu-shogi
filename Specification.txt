@@ -15,6 +15,16 @@ pga1b1aeb2c2-pgb1a1aec2b2-pga1b1aeb2c2
              pgb1a1aec2b2-pga1b1aeb2c2-pgb1a1aec2b2
 
 Algorithm:
+if(moves.length >== 3){
+    if(movies[movies.length-1] === movies[movies.length-3]){
+        return true;
+    }
+    else return false;
+}
+return false;
+
+
+
 moves.forEach((item,index)=>{
     let repetitionDetected = false;
     if(moves[index+2]){
