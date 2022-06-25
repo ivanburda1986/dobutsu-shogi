@@ -19,39 +19,66 @@ export const Session = () => {
     const {gameId} = useParams();
     const appContext: ProvidedContextInterface = useContext(AppContext);
     const [gameData, setGameData] = useState<DocumentData | undefined>();
+    const [isTie, setIsTie] = useState(false);
     const updateGame = useUpdateGame;
     const isComponentMountedRef = useRef(true);
 
     //Make sure move representations for the whole game are available even after reload/return
+    useEffect(() => {
+        if (gameData && gameData.moves.length >= 2 && gameData.moves.length % 2 === 0) {
+            const player1 = gameData.moves[gameData.moves.length - 1];
+            const player2 = gameData.moves[gameData.moves.length - 2];
 
-    // useEffect(() => {
-    //     if (gameData && gameData.moves.length >= 2 && gameData.moves.length % 2 === 0) {
-    //         const player1 = gameData.moves[gameData.moves.length - 1];
-    //         const player2 = gameData.moves[gameData.moves.length - 2];
-    //         const moveRepresentations = gameData.moveRepresentations;
-    //
-    //         let latestMovePairRepresentation: string = (player1.movingPlayerId.charAt(0) + player1.type.charAt(0) + player1.fromCoordinates + player1.targetCoordinates + player2.movingPlayerId.charAt(0) + player2.type.charAt(0) + player2.fromCoordinates + player2.targetCoordinates).toLowerCase();
-    //         if (moveRepresentations[moveRepresentations.length - 1] !== latestMovePairRepresentation) {
-    //             updateGame({
-    //                 id: gameId!,
-    //                 updatedDetails: {moveRepresentations: moveRepresentations.push(latestMovePairRepresentation)}
-    //             });
-    //         }
-    //     }
-    // }, [gameData, gameData?.moves]);
-    //
-    // useEffect(() => {
-    //
-    //     if (gameData && gameData.moveRepresentations.length >= 3) {
-    //         const moveRepresentations = gameData.moveRepresentations;
-    //         if (moveRepresentations[moveRepresentations.length - 1] === moveRepresentations[moveRepresentations.length - 3]) {
-    //             console.log('tie');
-    //             return;
-    //         }
-    //         console.log('ok, not a tie');
-    //         return;
-    //     }
-    // }, [gameData?.moveRepresentations]);
+
+            const moveRepresentations = gameData.moveRepresentations;
+            // console.log('moveRepresentations', moveRepresentations);
+            let latestMovePairRepresentation: string = (player1.movingPlayerId.charAt(0) + player1.type.charAt(0) + player1.fromCoordinates + player1.targetCoordinates + player2.movingPlayerId.charAt(0) + player2.type.charAt(0) + player2.fromCoordinates + player2.targetCoordinates).toLowerCase();
+
+            if (latestMovePairRepresentation.length > 12) {
+                console.log('not gonna evaluate stash movement');
+                return;
+            }
+
+            if (moveRepresentations[moveRepresentations.length - 1] !== latestMovePairRepresentation) {
+                // console.log('latestMovePairRepresentation', latestMovePairRepresentation);
+                let updatedMoveRepresentations = [...moveRepresentations, latestMovePairRepresentation];
+                console.log('updatedMoveRepresentations', updatedMoveRepresentations);
+                updateGame({
+                    id: gameId!,
+                    updatedDetails: {moveRepresentations: updatedMoveRepresentations}
+                });
+            }
+        }
+    }, [gameData, gameData?.moves, gameId, updateGame]);
+
+    // Evalute the movement repetition that might lead to a tie
+    useEffect(() => {
+        if (gameData && gameData.moveRepresentations.length >= 6) {
+            const moveRepresentations = gameData.moveRepresentations;
+            console.log(moveRepresentations[moveRepresentations.length - 1]);
+            console.log(moveRepresentations[moveRepresentations.length - 3]);
+            console.log(moveRepresentations[moveRepresentations.length - 5]);
+            if (moveRepresentations[moveRepresentations.length - 1] === moveRepresentations[moveRepresentations.length - 3] && moveRepresentations[moveRepresentations.length - 3] === moveRepresentations[moveRepresentations.length - 5]) {
+                console.log('TIE');
+                setIsTie(true);
+                return;
+            }
+            console.log('not tie');
+            return;
+        }
+    }, [gameData, gameData?.moveRepresentations, gameId, updateGame]);
+
+    useEffect(() => {
+        if (isTie) {
+            updateGame({
+                id: gameId!,
+                updatedDetails: {
+                    status: "TIE",
+                    finishedTimeStamp: Date.now(),
+                }
+            });
+        }
+    }, [gameId, updateGame, isTie]);
 
 
     useEffect(() => {
@@ -114,6 +141,9 @@ export const Session = () => {
                         victoryType: gameData.victoryType,
                         loggedInUserUserId: appContext.loggedInUserUserId
                     })}/>
+                }
+                {
+                    gameData?.status === "TIE" && <GameFinishedMessage messageType={"TIE"}/>
                 }
             </Container>
         </Container>
