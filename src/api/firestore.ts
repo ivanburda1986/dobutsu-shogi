@@ -48,7 +48,7 @@ export const auth = getAuth();
 
 //TYPES
 export type gameType = "DOBUTSU" | "GOROGORO" | "GREENWOOD";
-export type statusType = "WAITING" | "INPROGRESS" | "COMPLETED" | "CANCELLED" | "RESIGNED";
+export type statusType = "WAITING" | "INPROGRESS" | "COMPLETED" | "CANCELLED" | "RESIGNED" | "TIE";
 export type playerType = "CREATOR" | "OPPONENT";
 
 
@@ -199,6 +199,7 @@ export interface Game {
     startingPlayer: string;
     currentPlayerTurn: string;
     moves: MoveInterface[];
+    moveRepresentations: string[];
     winner: string;
     victoryType: VictoryType;
     finishedTimeStamp: number;
@@ -222,6 +223,7 @@ export const useCreateGame = ({creatorId, creatorName, name, type, gameId, creat
         startingPlayer: null,
         currentPlayerTurn: null,
         moves: [],
+        moveRepresentations: [],
         winner: null,
         victoryType: null,
         finishedTimeStamp: null,
