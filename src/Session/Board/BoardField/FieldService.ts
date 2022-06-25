@@ -74,8 +74,8 @@ export const evaluateStoneMove = ({
                 if (stonesOnField.length > 0) {
                     fieldEmpty = false;
                 }
-                console.log('stonesOnField', stonesOnField);
-                console.log('fieldEmpty', fieldEmpty);
+                // console.log('stonesOnField', stonesOnField);
+                // console.log('fieldEmpty', fieldEmpty);
                 return fieldEmpty;
             };
 
