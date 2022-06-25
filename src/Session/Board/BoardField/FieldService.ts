@@ -45,6 +45,7 @@ export interface lionConquerAttemptInterface {
     endangeringOpponentStones: string[];
 }
 
+
 export const evaluateStoneMove = ({
                                       gameId,
                                       placedStoneId,
@@ -63,6 +64,24 @@ export const evaluateStoneMove = ({
             // console.log('Lifted stone details:');
             // console.log(received?.data());
 
+            // Is field empty?
+            const isFieldEmpty = () => {
+                let fieldEmpty = true;
+                const targetCoordinate = `${movingToLetter}${movingToNumber}`;
+                const stonesOnField = stones.filter((stone) => {
+                    return `${stone.positionLetter}${stone.positionNumber}` === targetCoordinate;
+                });
+                if (stonesOnField.length > 0) {
+                    fieldEmpty = false;
+                }
+                console.log('stonesOnField', stonesOnField);
+                console.log('fieldEmpty', fieldEmpty);
+                return fieldEmpty;
+            };
+
+            // -- make sure none of the stones occupy the position of the field yet
+            // -- this must be checked because stones are smaller than fields and a player should not be allowed to drop a stone on a field if another stone is there
+
             // Is direction move allowed?
             let directionAllowed = (canStoneMoveThisWay({
                 stoneType: stoneData!.type,
@@ -72,7 +91,7 @@ export const evaluateStoneMove = ({
                 movingToNumber,
                 amIOpponent: amIOpponent,
                 stashed: stoneData!.stashed
-            }));
+            })) && isFieldEmpty();
 
             // Should chicken turn to hen?
             let turnChickenToHen = false;

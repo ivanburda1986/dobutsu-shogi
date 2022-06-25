@@ -136,7 +136,7 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
                 }
 
                 // Set turn to the other player
-                console.log(updatedMoves);
+                // console.log(updatedMoves);
                 updateGame({
                     id: gameId!,
                     updatedDetails: {
