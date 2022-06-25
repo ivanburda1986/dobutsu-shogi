@@ -1,60 +1,5 @@
 Next steps:
 Visually disable all reference to advanced version of the game
-...
-
-The move representations have to be stored in the DB to make sure they are persisted for the whole game
-Or they have to be at least re-created in the state upon reload
-A move which takes over another stones is valid and should be included
-A move from a stash to the field is valid
-An automatic move triggered by the game (i.e. not be the player) such as a move of a taken stone towards the stash should be excluded from the representation. In the representation we are interested only in moves directly made by the players.
-
-
-
-
-Repeating move-detection: -> tie
-repeating the same row of moves 3x -> a tie
---represent each move by a string combination of: playerid, stone id, field from, field to
---continuously keep monitoring the last 6 moves
---if there is a repeating sequence of 3 identical moves, the game results into a tie
---warn players 1 move before a tie
-
-pga1b1aeb2c2 = peter-giraffe-a1-b1-adam-elephant-b2-c2
-
-pga1b1aeb2c2-pgb1a1aec2b2-pga1b1aeb2c2
-             pgb1a1aec2b2-pga1b1aeb2c2-pgb1a1aec2b2
-
-Algorithm:
-if(moves.length >== 3){
-    if(movies[movies.length-1] === movies[movies.length-3]){
-        return true;
-    }
-    else return false;
-}
-return false;
-
-
-
-moves.forEach((item,index)=>{
-    let repetitionDetected = false;
-    if(moves[index+2]){
-         repetitionDetected = item === moves[index+2]
-    }
-    if(repetition){
-    return repetition
-    }
-    return false
-  }
-)
-
-compare: 0vs2, 1vs3, 2vs4, 3vs5
-
-
-
-
-handling the "tie" game result
--if the game result is tie, display a message to the users
--update user stats with "tie" for both of them
-
 Responsiveness for mobile
 
 =================================================================
@@ -66,15 +11,9 @@ write automated tests in jest and RTL
 Possible future enhancements:
 a created game can be password protected
 
-allow the player to send a link for a created game
---if a link is sent, the game is set to private only for the player with the link
---the game will open after the player logs in or creates an account
-
-
-
 
 =================================================================
-Reference 
+Reference
 https://getbootstrap.com/docs/5.0/layout/containers/
 https://variantslove.netlify.app/#
 
