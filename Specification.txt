@@ -1,5 +1,4 @@
 Next steps:
-Visually disable all reference to advanced version of the game
 Responsiveness for mobile
 
 =================================================================
@@ -16,6 +15,7 @@ a created game can be password protected
 Reference
 https://getbootstrap.com/docs/5.0/layout/containers/
 https://variantslove.netlify.app/#
+https://react-bootstrap.github.io/layout/stack/
 
 Get position of an element dynamically
 https://www.kindacode.com/article/react-get-the-position-x-y-of-an-element/
