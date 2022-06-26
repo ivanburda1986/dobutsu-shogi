@@ -41,7 +41,7 @@ export const CreateGame: FC = () => {
     }, [newGameNameInput, newGameType]);
 
     return (
-        <Container>
+        <Container className="text-success">
             <h2>Create Game</h2>
             <Container fluid className={`py-3 my-1 border-rounded-lightblue transparentContainer`}>
                 <Row>

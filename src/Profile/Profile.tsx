@@ -39,7 +39,7 @@ export const Profile: FC = () => {
     }, [appContext.loggedInUserUserId]);
 
     return (
-        <Container>
+        <Container className="text-success">
             <h2>Avatar and username</h2>
             {avatarUsernameEditModeOn && (
                 <Container fluid className="rounded py-1 mb-3 transparentContainer">
@@ -138,7 +138,7 @@ export const Profile: FC = () => {
                 </Container>
             )}
             <h2>Game statistics</h2>
-            <table className="table">
+            <table className="table text-success">
                 <thead>
                 <tr>
                     <th scope="col">Wins</th>
