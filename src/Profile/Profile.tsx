@@ -42,7 +42,7 @@ export const Profile: FC = () => {
         <Container>
             <h2>Avatar and username</h2>
             {avatarUsernameEditModeOn && (
-                <Container fluid className="rounded py-1 transparentContainer">
+                <Container fluid className="rounded py-1 mb-3 transparentContainer">
                     <Row>
                         <Form>
                             <Form.Group className="mb-3" controlId="formAvatarSelection">

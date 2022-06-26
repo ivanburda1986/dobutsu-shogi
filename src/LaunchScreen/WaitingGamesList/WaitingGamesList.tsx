@@ -28,7 +28,7 @@ export const WaitingGamesList: FC<WaitingGamesListInterface> = ({games}) => {
 
     return (
         <Container className="mb-4">
-            {games.length > 0 && <h2>Games waiting for an opponent</h2>}
+            {games.length > 0 && <h2 className="text-success">Games waiting for an opponent</h2>}
             <Container fluid>
                 <Row>
                     {games.map((game) => (

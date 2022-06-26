@@ -4,6 +4,16 @@
     align-items: center;
 }
 
-.MainHeader {
+.GameHeaderInfo {
+    justify-content: space-between;
+    align-items: center;
+}
+
+@media screen and (max-width: 768px ) {
+    .GameHeaderInfo {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
 
 }

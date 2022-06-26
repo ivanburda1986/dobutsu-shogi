@@ -120,9 +120,10 @@ export const Session = () => {
     }, [gameId, gameData, updateGame]);
 
     return (
-        <Container>
-            <Container fluid className={`d-flex mb-4 justify-content-between align-items-center ${styles.MainHeader}`}>
-                <h6 className="mt-1"><strong>Game name:</strong> {gameData?.name}</h6>
+        <Container className="pb-5">
+            <Container fluid
+                       className={`d-flex mb-4 ${styles.GameHeaderInfo}`}>
+                <h6 className="mt-1"><strong>Game:</strong> {gameData?.name}</h6>
                 <RecentMoves moves={gameData?.moves} creatorId={gameData?.creatorId}/>
             </Container>
             <Container fluid
