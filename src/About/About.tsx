@@ -4,7 +4,7 @@ import {Container} from "react-bootstrap";
 export const About: FC = () => {
 
     return (
-        <Container>
+        <Container className="text-success">
             <h2>About this site</h2>
             <p>This site has been created for two reasons:</p>
             <ul>
