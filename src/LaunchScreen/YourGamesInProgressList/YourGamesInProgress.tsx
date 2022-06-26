@@ -14,7 +14,7 @@ export const YourGamesInProgressList: FC<YourGamesInProgressListInterface> = ({g
 
     return (
         <Container>
-            {games.length > 0 && <h2>Your Games In Progress</h2>}
+            {games.length > 0 && <h2 className="text-success">Your Games In Progress</h2>}
             <Container fluid>
                 <Row>
                     {games.map((game) => (
