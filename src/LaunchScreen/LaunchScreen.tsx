@@ -84,7 +84,7 @@ export const LaunchScreen: React.FC = () => {
     }, [appContext.loggedInUserUserId]);
 
     return (
-        <Container>
+        <Container className="pb-5">
             {gamesLoaded && games.length < 1 && <SadPanda/>}
             <WaitingGamesList games={games.filter((game) => game.status === "WAITING")}/>
             <YourGamesInProgressList

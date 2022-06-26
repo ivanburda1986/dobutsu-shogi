@@ -3,9 +3,9 @@
 }
 
 .avatarIco {
-    height: 3rem;
-    width: 3rem;
-    border: 0.25em solid rgb(105, 158, 177);
+    height: 2.75rem;
+    width: 2.75rem;
+    border: 0.15em solid rgb(105, 158, 177);
     border-radius: 50%;
     background-size: cover;
     background-position: center;
