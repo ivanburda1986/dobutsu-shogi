@@ -1,4 +1,6 @@
 Next steps:
+Remove labels "Game" and "Latest move"
+-the ui should be clear even without them
 Responsiveness for mobile
 
 =================================================================
