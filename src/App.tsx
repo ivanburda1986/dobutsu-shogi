@@ -98,7 +98,6 @@ export const App = () => {
                     <Route path="/creategame" element={<CreateGame/>}/>
                     <Route path="/session/:gameId" element={<Session/>}/>
                 </Routes>
-                <Footer/>
             </AppContext.Provider>
         </div>
     );

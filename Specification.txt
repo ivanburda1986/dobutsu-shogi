@@ -1,16 +1,5 @@
 Next steps:
-Remove labels "Game" and "Latest move"
--the ui should be clear even without them
--the game name should also be in a box like the latest move
-
-Log out -> Logout to save space
-Instead of the footer, add an "i" icon to the navigation. The icon will open a page with:
--rules
--shogi
--this site
-
 Responsiveness for mobile
-
 Update player stats if a tie happens
 Moving stones should be possible not only by dragging but also by clicking, this is vital for touch devices. Or on a touch device the Board screen should not be scrollable.
 

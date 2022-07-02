@@ -8,3 +8,11 @@
     width: 6vw;
     height: 6vw;
 }
+
+@media screen and (max-width: 768px ) {
+    .Field {
+        width: 12vw;
+        height: 12vw;
+    }
+
+}

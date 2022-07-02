@@ -2,10 +2,10 @@
     box-sizing: content-box;
     position: absolute;
     z-index: 2;
-    min-height: 5.8vw;
-    min-width: 5.8vw;
-    height: 5.8vw;
-    width: 5.8vw;
+    min-height: 6vw;
+    min-width: 6vw;
+    height: 6vw;
+    width: 6vw;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -24,4 +24,14 @@
 
 .Invisible {
     z-index: -1
+}
+
+@media screen and (max-width: 768px ) {
+    .Stone {
+        min-height: 9vw;
+        min-width: 9vw;
+        height: 9vw;
+        width: 9vw;
+    }
+
 }

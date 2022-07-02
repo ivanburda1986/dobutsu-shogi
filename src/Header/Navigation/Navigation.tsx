@@ -15,15 +15,18 @@ export const Navigation: FunctionComponent<Pick<ProvidedContextInterface, "userL
     const logout = useLogoutUser;
     return (
         <header
-            className={`${styles.Navigation} d-none d-sm-flex flex-row justify-content-between align-items-center mb-2`}>
-            <NavLink to="/" className="btn">
-                <button type="button" className="btn btn-success fs4">Dobutsu Shogi</button>
-            </NavLink>
-            <NavLink to="about" className="btn">
-                <button type="button" className="btn btn-warning fs4">
-                    <TiInfoLargeOutline style={{fontSize: '24px', color: 'white'}}/>
-                </button>
-            </NavLink>
+            className={`${styles.Navigation} d-none d-md-flex flex-row justify-content-between align-items-center mb-2`}>
+
+            <div>
+                <NavLink to="/" className="btn">
+                    <button type="button" className="btn btn-success fs4">Dobutsu Shogi</button>
+                </NavLink>
+                {userLoggedIn && <NavLink to="about" className="btn">
+                    <button type="button" className="btn btn-warning fs4">
+                        <TiInfoLargeOutline style={{fontSize: '24px', color: 'white'}}/>
+                    </button>
+                </NavLink>}
+            </div>
             <div className="d-flex flex-row justify-content-between ">
                 {userLoggedIn && (
                     <NavLink to="/profile"
@@ -48,7 +51,7 @@ export const Navigation: FunctionComponent<Pick<ProvidedContextInterface, "userL
                 {userLoggedIn && (
                     <NavLink to="/" className="btn btn-danger mx-3 my-auto justify-content-center"
                              onClick={() => logout()}>
-                        Log out
+                        LogOut
                     </NavLink>
                 )}
             </div>
