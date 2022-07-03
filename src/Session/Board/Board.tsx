@@ -1,7 +1,7 @@
 import bg from "../../images/bg-clean.png";
 import bgRotated from "../../images/bg-clean-rotated.png";
 import {FC, MutableRefObject, useContext, useEffect, useRef, useState} from "react";
-import {Container, Row} from "react-bootstrap";
+import {Col, Container, Row} from "react-bootstrap";
 import {db, gameType, getSingleGameDetails} from "../../api/firestore";
 import {getBoardSize} from "./BoardService";
 import {BoardRow} from "./BoardRow/BoardRow";
@@ -82,49 +82,106 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
     }, [amIOpponent]);
 
     return (
-        <Container id="board" fluid className={`d-flex mb-4 justify-content-center ${styles.Board}`}>
+        <Container id="board" fluid className={`mb-4 ${styles.Board}`}>
 
-            <div style={{backgroundImage: `url(${amIOpponent === true ? bgRotated : bg})`}}
-                 className={`${styles.BoardBg}`}>
-                {rowNumbers.map((item) => (
-                    <BoardRow key={uuidv4()} rowNumber={item} columnLetters={columnLetters}
-                              amIOpponent={amIOpponent}
-                              gameData={gameData} stones={stones}
-                    />
-                ))}
-                {stones.map((stone) => (
-                    <Stone
-                        amIOpponent={amIOpponent}
-                        key={stone.id}
-                        id={stone.id}
-                        type={stone.type}
-                        originalOwner={stone.originalOwner}
-                        currentOwner={stone.currentOwner}
-                        highlighted={stone.highlighted}
-                        stashed={stone.stashed}
-                        invisible={stone.invisible}
-                        positionLetter={stone.positionLetter}
-                        positionNumber={stone.positionNumber}
-                        rowNumbers={rowNumbers}
-                        columnLetters={columnLetters}
-                        draggedStone={draggedStone}
-                        lyingStone={lyingStone}
-                        setDraggedStone={setDraggedStone}
-                        setLyingStone={setLyingStone}
-                        canTakeStone={canTakeStone}
-                        setCanTakeStone={setCanTakeStone}
-                        gameData={gameData}
-                        allStones={stones}
-                    />
-                ))}
-            </div>
-            <div className="d-flex justify-content-between flex-column align-items-center"
-                 style={{transform: `rotate(${amIOpponent === true ? 180 : 0}deg)`}}>
+            <div
+                className={`${styles.Interface1}`}
+                style={{transform: `rotate(${amIOpponent === true ? 180 : 0}deg)`}}>
                 <PlayerInterface type={type} amIOpponent={amIOpponent} creatorInterface={false} gameData={gameData}
                 />
+            </div>
+            <div
+                className={`my-4 my-md-0 ${styles.Brett}`}>
+                <div style={{backgroundImage: `url(${amIOpponent === true ? bgRotated : bg})`}}
+                     className={`${styles.BoardBg}`}>
+                    {rowNumbers.map((item) => (
+                        <BoardRow key={uuidv4()} rowNumber={item} columnLetters={columnLetters}
+                                  amIOpponent={amIOpponent}
+                                  gameData={gameData} stones={stones}
+                        />
+                    ))}
+                    {stones.map((stone) => (
+                        <Stone
+                            amIOpponent={amIOpponent}
+                            key={stone.id}
+                            id={stone.id}
+                            type={stone.type}
+                            originalOwner={stone.originalOwner}
+                            currentOwner={stone.currentOwner}
+                            highlighted={stone.highlighted}
+                            stashed={stone.stashed}
+                            invisible={stone.invisible}
+                            positionLetter={stone.positionLetter}
+                            positionNumber={stone.positionNumber}
+                            rowNumbers={rowNumbers}
+                            columnLetters={columnLetters}
+                            draggedStone={draggedStone}
+                            lyingStone={lyingStone}
+                            setDraggedStone={setDraggedStone}
+                            setLyingStone={setLyingStone}
+                            canTakeStone={canTakeStone}
+                            setCanTakeStone={setCanTakeStone}
+                            gameData={gameData}
+                            allStones={stones}
+                        />
+                    ))}
+                </div>
+            </div>
+            <div className={`${styles.Interface2}`}
+                 style={{transform: `rotate(${amIOpponent === true ? 180 : 0}deg)`}}>
                 <PlayerInterface type={type} amIOpponent={amIOpponent} creatorInterface={true} gameData={gameData}
                 />
             </div>
+
+
+            {/*<div className="d-flex justify-content-between flex-column align-items-center"*/}
+            {/*     >*/}
+            {/*    */}
+            {/*    */}
+            {/*</div>*/}
+
+
+            {/*<div style={{backgroundImage: `url(${amIOpponent === true ? bgRotated : bg})`}}*/}
+            {/*     className={`${styles.BoardBg}`}>*/}
+            {/*    {rowNumbers.map((item) => (*/}
+            {/*        <BoardRow key={uuidv4()} rowNumber={item} columnLetters={columnLetters}*/}
+            {/*                  amIOpponent={amIOpponent}*/}
+            {/*                  gameData={gameData} stones={stones}*/}
+            {/*        />*/}
+            {/*    ))}*/}
+            {/*    {stones.map((stone) => (*/}
+            {/*        <Stone*/}
+            {/*            amIOpponent={amIOpponent}*/}
+            {/*            key={stone.id}*/}
+            {/*            id={stone.id}*/}
+            {/*            type={stone.type}*/}
+            {/*            originalOwner={stone.originalOwner}*/}
+            {/*            currentOwner={stone.currentOwner}*/}
+            {/*            highlighted={stone.highlighted}*/}
+            {/*            stashed={stone.stashed}*/}
+            {/*            invisible={stone.invisible}*/}
+            {/*            positionLetter={stone.positionLetter}*/}
+            {/*            positionNumber={stone.positionNumber}*/}
+            {/*            rowNumbers={rowNumbers}*/}
+            {/*            columnLetters={columnLetters}*/}
+            {/*            draggedStone={draggedStone}*/}
+            {/*            lyingStone={lyingStone}*/}
+            {/*            setDraggedStone={setDraggedStone}*/}
+            {/*            setLyingStone={setLyingStone}*/}
+            {/*            canTakeStone={canTakeStone}*/}
+            {/*            setCanTakeStone={setCanTakeStone}*/}
+            {/*            gameData={gameData}*/}
+            {/*            allStones={stones}*/}
+            {/*        />*/}
+            {/*    ))}*/}
+            {/*</div>*/}
+            {/*<div className="d-flex justify-content-between flex-column align-items-center"*/}
+            {/*     style={{transform: `rotate(${amIOpponent === true ? 180 : 0}deg)`}}>*/}
+            {/*    <PlayerInterface type={type} amIOpponent={amIOpponent} creatorInterface={false} gameData={gameData}*/}
+            {/*    />*/}
+            {/*    <PlayerInterface type={type} amIOpponent={amIOpponent} creatorInterface={true} gameData={gameData}*/}
+            {/*    />*/}
+            {/*</div>*/}
         </Container>
 
     );
