@@ -15,12 +15,13 @@ interface AvatarProps {
     name: string | null;
     small?: boolean;
     medium?: boolean;
+    playerInterface?: boolean;
     square?: boolean;
 }
 
-export const Avatar: FC<AvatarProps> = ({name, small, medium, square}) => {
+export const Avatar: FC<AvatarProps> = ({name, small, medium, playerInterface, square}) => {
     return <div
-        className={`${styles.avatarNormal} ${small && styles.avatarSmall} ${medium && styles.avatarMedium} ${square && styles.avatarSquare} d-flex flex-row justify-content-between align-items-center`}
+        className={`${styles.avatarNormal} ${small && styles.avatarSmall} ${medium && styles.avatarMedium} ${playerInterface && styles.playerInterface} ${square && styles.avatarSquare} d-flex flex-row justify-content-between align-items-center`}
         style={{backgroundImage: `url(${getImgReference(name)})`}}/>;
 };
 
