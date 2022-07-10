@@ -19,3 +19,21 @@
     position: absolute;
     left: -20px;
 }
+
+@media screen and (max-width: 768px ) {
+    .Field {
+        width: 12vw;
+        height: 12vw;
+    }
+
+}
+
+@media screen and (max-width: 576px ) {
+    .Field {
+        min-height: 15vw;
+        min-width: 15vw;
+        width: 15vw;
+        height: 15vw;
+    }
+
+}
