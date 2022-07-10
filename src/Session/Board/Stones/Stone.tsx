@@ -87,6 +87,7 @@ export const Stone: FC<StoneInterface> = ({
     const [hideStoneStashCount, setHideStoneStashCount] = useState<boolean>(false);
     const [screenWidth, setScreenWidth] = useState<number>();
     const [screenHeight, setScreenHeight] = useState<number>();
+    const [scrolling, setScrolling] = useState<number>(0);
     const [isHighlighted, setIsHighlighted] = useState<boolean>(false);
     const [isInvisible, setIsInvisible] = useState<boolean>(false);
 
@@ -125,6 +126,12 @@ export const Stone: FC<StoneInterface> = ({
         newWidth: window.innerWidth
     }));
 
+    const onScrollHandler = () => {
+        let value = scrolling + 1;
+        setScrolling(value);
+    };
+    window.addEventListener('scroll', () => onScrollHandler());
+
     useEffect(() => {
         setStonePosition({
             stoneId: id,
@@ -136,7 +143,7 @@ export const Stone: FC<StoneInterface> = ({
             setPositionY
         });
 
-    }, [screenHeight, screenWidth]);
+    }, [screenHeight, screenWidth, scrolling]);
 
     //Position and rotate stones after game starts
     useEffect(() => {
