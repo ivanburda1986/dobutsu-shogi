@@ -7,6 +7,16 @@
                          "brett interface2";
 }
 
+.CreatorLayout {
+    grid-template-areas: "brett interface1"
+                         "brett interface2";
+}
+
+.OpponentLayout {
+    grid-template-areas: "brett interface2"
+                         "brett interface1";
+}
+
 .BoardBg {
     background-position: center;
     background-repeat: no-repeat;
@@ -34,10 +44,17 @@
 }
 
 @media screen and (max-width: 768px ) {
-    .Board {
+    .CreatorLayout {
         grid-template-areas: "interface1"
                          "brett"
                          "interface2";
+    }
+
+
+    .OpponentLayout {
+        grid-template-areas: "interface2"
+                         "brett"
+                         "interface1";
     }
 
     .Brett {
