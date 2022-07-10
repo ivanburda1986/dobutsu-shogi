@@ -32,11 +32,12 @@ export const PlayerInterface: FC<PlayerInterfaceInterface> = ({
             className={`${styles.PlayerInterface} ${isOnTurn({
                 creatorInterface,
                 gameData
-            }) ? styles.PlayerInterfaceCurrentTurn : styles.PlayerInterfaceNotOnTurn}  mx-3`}
+            }) ? styles.PlayerInterfaceCurrentTurn : styles.PlayerInterfaceNotOnTurn}  mx-3 my-1`}
             style={{transform: `rotate(${creatorInterface === true ? 0 : 180}deg)`}}>
             <div
                 className={`${creatorInterface ? styles.CreatorHeader : styles.OpponentHeader} d-flex justify-content-between align-items-center rounded mb-1 p-1`}>
-                <Avatar name={creatorInterface ? gameData?.creatorPhotoURL : gameData?.opponentPhotoURL}/>
+                <Avatar small
+                        name={creatorInterface ? gameData?.creatorPhotoURL : gameData?.opponentPhotoURL}/>
                 <span className="ms-1 fs-5 text-primary">{whatNameToDisplay({creatorInterface, gameData})}</span>
             </div>
             <div>

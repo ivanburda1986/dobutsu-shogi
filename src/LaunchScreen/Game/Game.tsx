@@ -38,8 +38,8 @@ export const Game: FC<ReturnedGameInterface> = ({
             <Card.Header className="d-flex justify-content-between">
                 <span className="d-flex align-items-center">
                     <Card.Title className="me-2">{name}</Card.Title>
-                <Avatar name={creatorPhotoURL} small={true}/>
-                     <Avatar name={opponentPhotoURL} small={true}/>
+                <Avatar name={creatorPhotoURL} medium={true}/>
+                     <Avatar name={opponentPhotoURL} medium={true}/>
                 </span>
                 {displayDeleteOption({creatorId, appContext, gameStatus: status}) && (
                     <button type="button" className="btn-close" aria-label="Close" onClick={() => deleteGame(gameId)}/>

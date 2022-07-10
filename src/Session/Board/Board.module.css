@@ -1,7 +1,8 @@
 .Board {
     font-size: 0.9rem;
     display: grid;
-
+    justify-content: center;
+    align-items: center;
     grid-template-areas: "brett interface1"
                          "brett interface2";
 }
@@ -50,5 +51,18 @@
     .Interface2 {
         width: 44vw;
     }
+}
 
+@media screen and (max-width: 576px ) {
+    .Brett {
+        width: 60vw;
+    }
+
+    .Interface1 {
+        width: 58vw;
+    }
+
+    .Interface2 {
+        width: 58vw;
+    }
 }

@@ -14,12 +14,13 @@ import styles from "./Avatar.module.css";
 interface AvatarProps {
     name: string | null;
     small?: boolean;
+    medium?: boolean;
     square?: boolean;
 }
 
-export const Avatar: FC<AvatarProps> = ({name, small, square}) => {
+export const Avatar: FC<AvatarProps> = ({name, small, medium, square}) => {
     return <div
-        className={`${styles.avatarIco} ${small && styles.avatarIcoSmall} ${square && styles.avatarIcoSquare} d-flex flex-row justify-content-between align-items-center`}
+        className={`${styles.avatarNormal} ${small && styles.avatarSmall} ${medium && styles.avatarMedium} ${square && styles.avatarSquare} d-flex flex-row justify-content-between align-items-center`}
         style={{backgroundImage: `url(${getImgReference(name)})`}}/>;
 };
 

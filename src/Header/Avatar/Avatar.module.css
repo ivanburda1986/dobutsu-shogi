@@ -1,8 +1,4 @@
-.avatar {
-    width: 10rem;
-}
-
-.avatarIco {
+.avatarNormal {
     height: 2.75rem;
     width: 2.75rem;
     border: 0.15em solid rgb(105, 158, 177);
@@ -14,16 +10,26 @@
     background-color: #fff;
 }
 
-.avatarIcoSmall {
+.avatarMedium {
     height: 2.25rem;
     width: 2.25rem;
     margin-right: 0.25rem;
 }
 
-.avatarIcoSquare {
+.avatarSmall {
+    height: 1.75rem;
+    width: 1.75rem;
+    margin-right: 0.25rem;
+}
+
+.avatarSquare {
     border-radius: 5px;
     height: 1.5rem;
     width: 1.5rem;
     margin-right: 0.25rem;
     border: 1px solid black;
+}
+
+@media screen and (max-width: 576px ) {
+
 }

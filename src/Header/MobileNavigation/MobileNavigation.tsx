@@ -40,7 +40,7 @@ export const MobileNavigation: FunctionComponent<Pick<ProvidedContextInterface, 
                 )}
                 {userLoggedIn && <NavLink to="/profile"
                                           className="btn d-flex flex-row justify-content-between align-items-center py-0">
-                    <Avatar name={loggedInUserPhotoURL} small/>
+                    <Avatar name={loggedInUserPhotoURL} medium/>
                 </NavLink>}
 
                 {!userLoggedIn && (

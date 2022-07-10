@@ -33,5 +33,13 @@
         height: 9vw;
         width: 9vw;
     }
+}
 
+@media screen and (max-width: 576px ) {
+    .Stone {
+        min-height: 12vw;
+        min-width: 12vw;
+        height: 12vw;
+        width: 12vw;
+    }
 }

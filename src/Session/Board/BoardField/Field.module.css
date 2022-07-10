@@ -27,3 +27,13 @@
     }
 
 }
+
+@media screen and (max-width: 576px ) {
+    .Field {
+        min-height: 15vw;
+        min-width: 15vw;
+        width: 15vw;
+        height: 15vw;
+    }
+
+}
