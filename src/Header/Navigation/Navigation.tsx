@@ -22,8 +22,8 @@ export const Navigation: FunctionComponent<Pick<ProvidedContextInterface, "userL
                     <button type="button" className="btn btn-success fs4">Dobutsu Shogi</button>
                 </NavLink>
                 {userLoggedIn && <NavLink to="about" className="btn">
-                    <button type="button" className="btn btn-warning fs4">
-                        <TiInfoLargeOutline style={{fontSize: '24px', color: 'white'}}/>
+                    <button type="button" className="btn btn-warning fs4 text-light">
+                        <TiInfoLargeOutline style={{fontSize: '24px', color: 'white'}}/> Info
                     </button>
                 </NavLink>}
             </div>

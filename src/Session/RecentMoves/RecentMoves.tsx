@@ -25,12 +25,12 @@ export const RecentMoves: FunctionComponent<RecentMovesInterface> = ({moves = []
 
     if (!lastMove) {
         return (<div className={`d-flex justify-content-center align-items-center`}>
-            <h6><strong>Latest move:</strong></h6>
+            <h6 className="d-none d-sm-inline-block"><strong>Latest move:</strong></h6>
         </div>);
     } else {
         return (
             <div className={`d-flex justify-content-center align-items-center me-2`}>
-                <h6 className="me-3"><strong>Latest move:</strong></h6>
+                <h6 className="d-none d-sm-inline-block me-3"><strong>Latest move:</strong></h6>
                 <div className={`${evaluateBeingOpponent({
                     creatorId: creatorId,
                     loggedInUserUserId: lastMove.movingPlayerId

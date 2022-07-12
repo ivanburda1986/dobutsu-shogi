@@ -5,6 +5,7 @@ import {FunctionComponent} from "react";
 import {ProvidedContextInterface} from "../../App";
 import {useLogoutUser} from "../../api/firestore";
 import {TiInfoLargeOutline} from "react-icons/ti";
+import {MdLogout} from "react-icons/md";
 
 
 export const MobileNavigation: FunctionComponent<Pick<ProvidedContextInterface, "userLoggedIn" | "loggedInUserDisplayName" | "loggedInUserPhotoURL">> = ({
@@ -55,7 +56,7 @@ export const MobileNavigation: FunctionComponent<Pick<ProvidedContextInterface, 
                 {userLoggedIn && (
                     <NavLink to="/" className="btn btn-danger me-3"
                              onClick={() => logout()}>
-                        LogOut
+                        <MdLogout/>
                     </NavLink>
                 )}
             </div>

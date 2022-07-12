@@ -122,8 +122,8 @@ export const Session = () => {
     return (
         <Container className="pb-5">
             <Container fluid
-                       className={`d-flex mb-4 ${styles.GameHeaderInfo}`}>
-                <h6 className="mt-1"><strong>Game:</strong> {gameData?.name}</h6>
+                       className={`d-flex justify-content-between flex-row mb-4 ${styles.GameHeaderInfo}`}>
+                <h6 className="mt-1 me-2"><strong>Game:</strong> {gameData?.name}</h6>
                 <RecentMoves moves={gameData?.moves} creatorId={gameData?.creatorId}/>
             </Container>
             <Container fluid

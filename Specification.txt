@@ -20,6 +20,9 @@ https://getbootstrap.com/docs/5.0/layout/containers/
 https://variantslove.netlify.app/#
 https://react-bootstrap.github.io/layout/stack/
 
+Detecting a touch device
+https://www.geeksforgeeks.org/how-to-detect-touch-screen-device-using-javascript/
+
 Get position of an element dynamically
 https://www.kindacode.com/article/react-get-the-position-x-y-of-an-element/
 
