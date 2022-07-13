@@ -92,7 +92,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
                 />
             </div>
             <div
-                className={`my-4 my-md-0 ${styles.Brett}`}>
+                className={`my-3 my-md-0 ${styles.Brett}`}>
                 <div style={{backgroundImage: `url(${amIOpponent === true ? bgRotated : bg})`}}
                      className={`${styles.BoardBg}`}>
                     {rowNumbers.map((item) => (

@@ -122,7 +122,7 @@ export const Session = () => {
     return (
         <Container className="pb-5">
             <Container fluid
-                       className={`d-flex justify-content-between flex-row mb-4 ${styles.GameHeaderInfo}`}>
+                       className={`d-flex justify-content-between flex-row mb-3 ${styles.GameHeaderInfo}`}>
                 <h6 className="mt-1 me-2"><strong>Game:</strong> {gameData?.name}</h6>
                 <RecentMoves moves={gameData?.moves} creatorId={gameData?.creatorId}/>
             </Container>

@@ -29,11 +29,13 @@
 }
 
 .Interface1 {
+    margin: 0 auto;
     grid-area: interface1;
     width: 22vw;
 }
 
 .Interface2 {
+    margin: 0 auto;
     grid-area: interface2;
     width: 22vw;
 }
