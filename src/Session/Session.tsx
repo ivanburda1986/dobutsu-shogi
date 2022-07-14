@@ -1,7 +1,13 @@
 import React, {useContext, useEffect, useRef, useState} from "react";
 import {Container} from "react-bootstrap";
 import {useParams} from "react-router";
-import {gamesCollectionRef, getSingleGameDetails, useUpdateGame} from "../api/firestore";
+import {
+    gamesCollectionRef,
+    getSingleGameDetails,
+    getSingleUserStats,
+    useUpdateGame,
+    useUpdateUserStats
+} from "../api/firestore";
 import {AppContext} from "../context/AppContext";
 
 import {ProvidedContextInterface} from "../App";
@@ -21,10 +27,12 @@ export const Session = () => {
     const [gameData, setGameData] = useState<DocumentData | undefined>();
     const [isTie, setIsTie] = useState(false);
     const updateGame = useUpdateGame;
+    const updateStats = useUpdateUserStats;
     const isComponentMountedRef = useRef(true);
 
     //Make sure move representations for the whole game are available even after reload/return
     useEffect(() => {
+        console.log('gameData', gameData);
         if (gameData && gameData.moves.length >= 2 && gameData.moves.length % 2 === 0) {
             const player1 = gameData.moves[gameData.moves.length - 1];
             const player2 = gameData.moves[gameData.moves.length - 2];
@@ -77,6 +85,14 @@ export const Session = () => {
                     finishedTimeStamp: Date.now(),
                 }
             });
+            getSingleUserStats({userId: gameData?.creatorId}).then((serverStats) => updateStats({
+                userId: gameData?.creatorId,
+                updatedDetails: {tie: serverStats.data()?.tie + 1}
+            }));
+            getSingleUserStats({userId: gameData?.opponentId}).then((serverStats) => updateStats({
+                userId: gameData?.opponentId,
+                updatedDetails: {tie: serverStats.data()?.tie + 1}
+            }));
         }
     }, [gameId, updateGame, isTie]);
 
