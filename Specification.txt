@@ -1,5 +1,5 @@
 Next steps:
-Update player stats if a tie happens
+Make sure stone position works correctly even when the screen is displayed as a column
 Moving stones should be possible not only by dragging but also by clicking, this is vital for touch devices. Or on a touch device the Board screen should not be scrollable.
 
 

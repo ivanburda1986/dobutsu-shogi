@@ -32,7 +32,6 @@ export const Session = () => {
 
     //Make sure move representations for the whole game are available even after reload/return
     useEffect(() => {
-        console.log('gameData', gameData);
         if (gameData && gameData.moves.length >= 2 && gameData.moves.length % 2 === 0) {
             const player1 = gameData.moves[gameData.moves.length - 1];
             const player2 = gameData.moves[gameData.moves.length - 2];
@@ -43,14 +42,12 @@ export const Session = () => {
             let latestMovePairRepresentation: string = (player1.movingPlayerId.charAt(0) + player1.type.charAt(0) + player1.fromCoordinates + player1.targetCoordinates + player2.movingPlayerId.charAt(0) + player2.type.charAt(0) + player2.fromCoordinates + player2.targetCoordinates).toLowerCase();
 
             if (latestMovePairRepresentation.length > 12) {
-                console.log('not gonna evaluate stash movement');
                 return;
             }
 
             if (moveRepresentations[moveRepresentations.length - 1] !== latestMovePairRepresentation) {
                 // console.log('latestMovePairRepresentation', latestMovePairRepresentation);
                 let updatedMoveRepresentations = [...moveRepresentations, latestMovePairRepresentation];
-                console.log('updatedMoveRepresentations', updatedMoveRepresentations);
                 updateGame({
                     id: gameId!,
                     updatedDetails: {moveRepresentations: updatedMoveRepresentations}
@@ -67,11 +64,11 @@ export const Session = () => {
             console.log(moveRepresentations[moveRepresentations.length - 3]);
             console.log(moveRepresentations[moveRepresentations.length - 5]);
             if (moveRepresentations[moveRepresentations.length - 1] === moveRepresentations[moveRepresentations.length - 3] && moveRepresentations[moveRepresentations.length - 3] === moveRepresentations[moveRepresentations.length - 5]) {
-                console.log('TIE');
+                // console.log('TIE');
                 setIsTie(true);
                 return;
             }
-            console.log('not tie');
+            // console.log('not tie');
             return;
         }
     }, [gameData, gameData?.moveRepresentations, gameId, updateGame]);
