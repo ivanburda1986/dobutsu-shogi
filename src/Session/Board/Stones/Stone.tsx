@@ -136,11 +136,11 @@ export const Stone: FC<StoneInterface> = ({
             setPositionY
         });
 
-    }, [screenHeight, screenWidth]);
+    }, [id, positionLetter, positionNumber, positionX, positionY, screenHeight, screenWidth, setStonePosition]);
 
 
     (function refreshPositions() {
-  
+
     })();
 
     //Position and rotate stones after game starts
@@ -481,15 +481,15 @@ export const Stone: FC<StoneInterface> = ({
             onDragEnd={onStoneDropHandler}
             style={{backgroundImage: `url(${getImgReference(type)})`, transform: `rotate(${rotateDegrees}deg)`}}
             className={`${styles.Stone} ${isHighlighted && styles.Highlighted} ${isInvisible && styles.Invisible} noselect`}
-            onClick={() => setStonePosition({
-                stoneId: id,
-                targetPositionLetter: positionLetter,
-                targetPositionNumber: positionNumber,
-                positionX,
-                positionY,
-                setPositionX,
-                setPositionY
-            })}
+            // onClick={() => setStonePosition({
+            //     stoneId: id,
+            //     targetPositionLetter: positionLetter,
+            //     targetPositionNumber: positionNumber,
+            //     positionX,
+            //     positionY,
+            //     setPositionX,
+            //     setPositionY
+            // })}
         >
             {/*{currentOwner.substr(0, 2)}*/}
             {stashedPillCount > 1 && !hideStoneStashCount ? <StoneStashCount
