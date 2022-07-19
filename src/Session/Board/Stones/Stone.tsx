@@ -89,6 +89,7 @@ export const Stone: FC<StoneInterface> = ({
     const [screenHeight, setScreenHeight] = useState<number>();
     const [isHighlighted, setIsHighlighted] = useState<boolean>(false);
     const [isInvisible, setIsInvisible] = useState<boolean>(false);
+    const [scroll, setScrollUpdate] = useState(0);
 
     const setStonePosition = useSetStonePosition;
     const updateStonePosition = useUpdateStonePosition;

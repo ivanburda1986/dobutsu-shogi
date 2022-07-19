@@ -40,7 +40,6 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
     const [draggedStone, setDraggedStone] = useState<StoneInterface | undefined>();
     const [lyingStone, setLyingStone] = useState<StoneInterface | undefined>();
     const [canTakeStone, setCanTakeStone] = useState<boolean>(false);
-    const [playerInterfacesDisplayed, setPlayerInterfacesDisplayed] = useState<boolean>(false);
     const [winner, setWinner] = useState<string>();
     const [victoryType, setVictoryType] = useState<VictoryType>();
 
@@ -90,10 +89,10 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
                 className={`${styles.Interface1}`}
                 style={{transform: `rotate(${amIOpponent === true ? 180 : 0}deg)`}}>
                 <PlayerInterface type={type} amIOpponent={amIOpponent} creatorInterface={false} gameData={gameData}
-                                 setDisplay={setPlayerInterfacesDisplayed}
+
                 />
             </div>
-            {playerInterfacesDisplayed && <div
+            <div
                 className={`my-3 my-md-0 ${styles.Brett}`}>
                 <div style={{backgroundImage: `url(${amIOpponent === true ? bgRotated : bg})`}}
                      className={`${styles.BoardBg}`}>
@@ -130,7 +129,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
                     ))}
                 </div>
             </div>
-            }
+            
             <div className={`${styles.Interface2}`}
                  style={{transform: `rotate(${amIOpponent === true ? 180 : 0}deg)`}}>
                 <PlayerInterface type={type} amIOpponent={amIOpponent} creatorInterface={true} gameData={gameData}

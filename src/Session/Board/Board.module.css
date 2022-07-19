@@ -1,7 +1,6 @@
 .Board {
     font-size: 0.9rem;
     display: grid;
-    justify-content: center;
     align-items: center;
     grid-template-areas: "brett interface1"
                          "brett interface2";

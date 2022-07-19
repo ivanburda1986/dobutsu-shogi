@@ -14,20 +14,18 @@ interface PlayerInterfaceInterface {
     amIOpponent: boolean;
     creatorInterface: boolean;
     gameData: DocumentData | undefined;
-    setDisplay?: Function;
 }
 
 export const PlayerInterface: FC<PlayerInterfaceInterface> = ({
                                                                   type,
                                                                   amIOpponent,
                                                                   creatorInterface,
-                                                                  gameData,
-                                                                  setDisplay
+                                                                  gameData
                                                               }) => {
     const appContext: ProvidedContextInterface = useContext(AppContext);
     const [rowNumbers, setRowNumbers] = useState<number[]>(getStashSize({type, creatorInterface}).rowNumbers);
     const [columnLetters, setColumnLetters] = useState<string[]>(getStashSize({type, creatorInterface}).columnLetters);
-    setDisplay && setDisplay(true);
+
     return (
         <div
             className={`${styles.PlayerInterface} ${isOnTurn({
