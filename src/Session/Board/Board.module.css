@@ -45,6 +45,10 @@
 }
 
 @media screen and (max-width: 768px ) {
+    .Board {
+        justify-content: center;
+    }
+
     .CreatorLayout {
         grid-template-areas: "interface1"
                          "brett"

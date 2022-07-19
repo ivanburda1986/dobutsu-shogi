@@ -82,7 +82,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
     }, [amIOpponent]);
 
     return (
-        <Container id="board" fluid
+        <Container id="board"
                    className={`mb-4 ${styles.Board}  ${amIOpponent ? styles.OpponentLayout : styles.CreatorLayout}`}>
 
             <div
@@ -129,7 +129,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
                     ))}
                 </div>
             </div>
-            
+
             <div className={`${styles.Interface2}`}
                  style={{transform: `rotate(${amIOpponent === true ? 180 : 0}deg)`}}>
                 <PlayerInterface type={type} amIOpponent={amIOpponent} creatorInterface={true} gameData={gameData}
