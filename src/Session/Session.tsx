@@ -133,18 +133,23 @@ export const Session = () => {
     }, [gameId, gameData, updateGame]);
 
     return (
-        <Container className="pb-5">
+        <Container className="d-flex justify-content-start align-items-center flex-column pb-5">
             <Container fluid
                        className={`d-flex justify-content-between flex-row mb-3 ${styles.GameHeaderInfo}`}>
                 <h6 className="mt-1 me-2"><strong>Game:</strong> {gameData?.name}</h6>
                 <RecentMoves moves={gameData?.moves} creatorId={gameData?.creatorId}/>
             </Container>
+
             <Container fluid
                        className={`d-flex flex-column justify-content-start align-items-center ${styles.Session}`}>
                 {
                     <Board type="DOBUTSU" amIOpponent={amIOpponent} gameData={gameData}
                     />
                 }
+            </Container>
+
+            <Container fluid
+                       className={`d-flex flex-column justify-content-start align-items-center ${styles.EndMessage}`}>
                 {
                     gameData?.winner && evaluateBeingWinner({
                         winnerId: gameData.winner,
@@ -160,6 +165,7 @@ export const Session = () => {
                     gameData?.status === "TIE" && <GameFinishedMessage messageType={"TIE"}/>
                 }
             </Container>
+
         </Container>
     );
 };

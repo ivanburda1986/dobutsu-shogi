@@ -1,12 +1,15 @@
-.Session {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .GameHeaderInfo {
     justify-content: space-between;
     align-items: center;
+    order: 0
+}
+
+.Session {
+    order: 1
+}
+
+.EndMessage {
+    order: 2
 }
 
 @media screen and (max-width: 768px ) {
@@ -15,5 +18,14 @@
         justify-content: flex-start;
         align-items: flex-start;
     }
+
+    .Session {
+        order: 2
+    }
+
+    .EndMessage {
+        order: 1
+    }
+
 
 }
