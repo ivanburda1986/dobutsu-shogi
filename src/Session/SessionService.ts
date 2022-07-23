@@ -74,6 +74,9 @@ export const evaluateBeingWinner = ({
     // if (winnerId !== loggedInUserUserId && victoryType === "HOMEBASE_CONQUERED_FAILURE")
 };
 
+export function isTouchEnabled(): boolean {
+    return 'ontouchstart' in window;
+}
 
 
 

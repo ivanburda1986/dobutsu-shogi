@@ -34,7 +34,7 @@ export const Game: FC<ReturnedGameInterface> = ({
 
     return (
         <Card style={{width: "18rem"}}
-              className={`${styles[whichBackroundToUse(type)]} ${appContext.loggedInUserUserId === currentPlayerTurn && styles.YourTurn} p-0 m-2 border-radius border-4`}>
+              className={`${styles[whichBackroundToUse(type)]} ${appContext.loggedInUserUserId === currentPlayerTurn && status !== "COMPLETED" && styles.YourTurn} p-0 m-2 border-radius border-4`}>
             <Card.Header className="d-flex justify-content-between">
                 <span className="d-flex align-items-center">
                     <Card.Title className="me-2">{name}</Card.Title>
@@ -48,7 +48,7 @@ export const Game: FC<ReturnedGameInterface> = ({
             <Card.Body>
                 <p>Created by: {creatorName}</p>
                 <p>Joined by: {opponentName}</p>
-                {appContext.loggedInUserUserId === currentPlayerTurn &&
+                {appContext.loggedInUserUserId === currentPlayerTurn && status !== "COMPLETED" &&
                     <span style={{color: "darkgreen"}}>Your turn!</span>}
                 {/*<p>State: {status}</p>*/}
             </Card.Body>

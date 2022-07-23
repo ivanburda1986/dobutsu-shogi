@@ -16,7 +16,6 @@ import {ProvidedContextInterface} from "../../App";
 import {PlayerInterface} from "../PlayerInterface/PlayerInterface";
 import {RecentMoves} from "../RecentMoves/RecentMoves";
 
-
 interface BoardInterface {
     type: gameType;
     amIOpponent: boolean;
@@ -43,8 +42,8 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
     const [winner, setWinner] = useState<string>();
     const [victoryType, setVictoryType] = useState<VictoryType>();
 
-
     const isComponentMountedRef = useRef(true);
+
     useEffect(() => {
         return () => {
             isComponentMountedRef.current = false;

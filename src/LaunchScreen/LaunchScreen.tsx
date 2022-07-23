@@ -7,6 +7,7 @@ import {db, statusType} from "../api/firestore";
 import {ProvidedContextInterface} from "../App";
 import {AppContext} from "../context/AppContext";
 import {SadPanda} from "./SadPanda/SadPanda";
+import {CompletedGamesList} from "./CompletedGamesList/CompletedGamesList";
 
 
 interface shouldGameBeExcludedInterface {
@@ -23,6 +24,9 @@ const shouldGameBeExcluded = ({
                                   loggedInPlayerId
                               }: shouldGameBeExcludedInterface): boolean => {
     if (status === "WAITING") {
+        return true;
+    }
+    if (status === "COMPLETED") {
         return true;
     }
     if (status === "INPROGRESS") {
@@ -65,11 +69,11 @@ export const LaunchScreen: React.FC = () => {
                                creatorId,
                                opponentId,
                                status
-                           }) => status === "WAITING" || status === "INPROGRESS").filter(({
-                                                                                              creatorId,
-                                                                                              opponentId,
-                                                                                              status
-                                                                                          }) => shouldGameBeExcluded({
+                           }) => status === "WAITING" || status === "INPROGRESS" || status === "COMPLETED").filter(({
+                                                                                                                        creatorId,
+                                                                                                                        opponentId,
+                                                                                                                        status
+                                                                                                                    }) => shouldGameBeExcluded({
                     creatorId,
                     opponentId,
                     status,
@@ -89,6 +93,8 @@ export const LaunchScreen: React.FC = () => {
             <WaitingGamesList games={games.filter((game) => game.status === "WAITING")}/>
             <YourGamesInProgressList
                 games={games.filter((game) => game.status === "INPROGRESS" && (game.creatorId === appContext.loggedInUserUserId || game.opponentId === appContext.loggedInUserUserId))}/>
+            <CompletedGamesList
+                games={games.filter((game) => game.status === "COMPLETED" && (game.creatorId === appContext.loggedInUserUserId || game.opponentId === appContext.loggedInUserUserId))}/>
         </Container>
     );
 };
