@@ -1,5 +1,6 @@
 Next steps:
 Make sure stone position works correctly even when the screen is displayed as a column
+-could render stones directly in containers of fields
 Moving stones should be possible not only by dragging but also by clicking, this is vital for touch devices. Or on a touch device the Board screen should not be scrollable.
 
 =================================================================
