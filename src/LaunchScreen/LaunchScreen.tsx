@@ -87,9 +87,20 @@ export const LaunchScreen: React.FC = () => {
 
     }, [appContext.loggedInUserUserId]);
 
+    const shouldShowPanda = () => {
+        const someWaitingGames = games.filter((game) => game.status === "WAITING");
+        const someOwnInProgressGames = games.filter((game) => game.status === "INPROGRESS").filter((inProgressGame) => inProgressGame.creatorId === appContext.loggedInUserUserId || inProgressGame.opponentId === appContext.loggedInUserUserId);
+        const someOwnCompletedGames = games.filter((game) => game.status === "COMPLETED").filter((someOwnCompletedGames) => someOwnCompletedGames.creatorId === appContext.loggedInUserUserId || someOwnCompletedGames.opponentId === appContext.loggedInUserUserId);
+        if ((someWaitingGames.length > 0) || (someOwnInProgressGames.length > 0) || (someOwnCompletedGames.length > 0)) {
+            return false;
+        } else {
+            return true;
+        }
+    };
+
     return (
         <Container className="pb-5">
-            {gamesLoaded && games.length < 1 && <SadPanda/>}
+            {gamesLoaded && shouldShowPanda() && <SadPanda/>}
             <WaitingGamesList games={games.filter((game) => game.status === "WAITING")}/>
             <YourGamesInProgressList
                 games={games.filter((game) => game.status === "INPROGRESS" && (game.creatorId === appContext.loggedInUserUserId || game.opponentId === appContext.loggedInUserUserId))}/>
