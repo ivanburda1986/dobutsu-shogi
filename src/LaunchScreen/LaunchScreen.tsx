@@ -88,12 +88,10 @@ export const LaunchScreen: React.FC = () => {
     }, [appContext.loggedInUserUserId]);
 
     const shouldShowPanda = () => {
-        console.log(games);
-        const someWaitingGames = games.filter((game) => game.status === "WAITING").length > 0;
-        const someOwnInProgressGames = games.filter((game) => game.status === "INPROGRESS").filter((inProgressGame) => inProgressGame.creatorId === appContext.loggedInUserUserId || inProgressGame.opponentId === appContext.loggedInUserUserId).length > 0;
-        const someOwnCompletedGames = games.filter((game) => game.status === "COMPLETED").filter((inProgressGame) => inProgressGame.creatorId === appContext.loggedInUserUserId || inProgressGame.opponentId === appContext.loggedInUserUserId).length > 0;
-        console.log(someOwnInProgressGames ?? someOwnCompletedGames ?? someWaitingGames ?? true);
-        if (someOwnInProgressGames ?? someOwnCompletedGames ?? someWaitingGames) {
+        const someWaitingGames = games.filter((game) => game.status === "WAITING");
+        const someOwnInProgressGames = games.filter((game) => game.status === "INPROGRESS").filter((inProgressGame) => inProgressGame.creatorId === appContext.loggedInUserUserId || inProgressGame.opponentId === appContext.loggedInUserUserId);
+        const someOwnCompletedGames = games.filter((game) => game.status === "COMPLETED").filter((someOwnCompletedGames) => someOwnCompletedGames.creatorId === appContext.loggedInUserUserId || someOwnCompletedGames.opponentId === appContext.loggedInUserUserId);
+        if ((someWaitingGames.length > 0) || (someOwnInProgressGames.length > 0) || (someOwnCompletedGames.length > 0)) {
             return false;
         } else {
             return true;
