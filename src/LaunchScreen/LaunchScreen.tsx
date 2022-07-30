@@ -4,7 +4,7 @@ import {ReturnedGameInterface, WaitingGamesList} from "./WaitingGamesList/Waitin
 import {YourGamesInProgressList} from "./YourGamesInProgressList/YourGamesInProgress";
 import {collection, onSnapshot} from "firebase/firestore";
 import {db, statusType} from "../api/firestore";
-import {ProvidedContextInterface} from "../App";
+import {appContextInterface} from "../App";
 import {AppContext} from "../context/AppContext";
 import {SadPanda} from "./SadPanda/SadPanda";
 import {CompletedGamesList} from "./CompletedGamesList/CompletedGamesList";
@@ -46,7 +46,7 @@ const shouldGameBeExcluded = ({
 };
 
 export const LaunchScreen: React.FC = () => {
-    const appContext: ProvidedContextInterface = useContext(AppContext);
+    const appContext: appContextInterface = useContext(AppContext);
     const [games, setGames] = useState<ReturnedGameInterface[]>([]);
     const [gamesLoaded, setGamesLoaded] = useState(false);
     const isComponentMountedRef = useRef(true);

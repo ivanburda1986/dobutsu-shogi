@@ -3,12 +3,12 @@ import {Button, Col, Container, Form, Row} from "react-bootstrap";
 
 import {db, updatePlayerAvatarInGames, useUpdateUserProfile} from "../api/firestore";
 import {AppContext} from "../context/AppContext";
-import {ProvidedContextInterface} from "../App";
+import {appContextInterface} from "../App";
 import {Avatar} from "../Header/Avatar/Avatar";
 import {doc, onSnapshot} from "firebase/firestore";
 
 export const Profile: FC = () => {
-    const appContext: ProvidedContextInterface = useContext(AppContext);
+    const appContext: appContextInterface = useContext(AppContext);
     const [avatarUsernameEditModeOn, setAvatarUsernameEditModeOn] = useState<boolean>(false);
     const [avatarImgSelection, setAvatarImgSelection] = useState<string | null>(appContext.loggedInUserPhotoURL);
     const usernameRef = useRef<HTMLInputElement>(null);

@@ -23,7 +23,7 @@ export interface UserDataInterface {
     photoURL: string | null;
 }
 
-export interface ProvidedContextInterface {
+export interface appContextInterface {
     userLoggedIn: boolean;
     loggedInUserEmail: string | null;
     loggedInUserDisplayName: string | null;
@@ -58,7 +58,7 @@ export const App = () => {
         photoURL && setLoggedInUserPhotoURL(photoURL);
     };
 
-    const providedContext: ProvidedContextInterface = {
+    const providedAppContext: appContextInterface = {
         userLoggedIn: isUserLoggedIn,
         loggedInUserEmail,
         loggedInUserDisplayName,
@@ -69,7 +69,7 @@ export const App = () => {
 
     return (
         <div>
-            <AppContext.Provider value={providedContext}>
+            <AppContext.Provider value={providedAppContext}>
                 <Header/>
                 <Routes>
                     <Route path="*" element={<LaunchScreen/>}/>

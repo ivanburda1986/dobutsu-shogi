@@ -1,7 +1,7 @@
 import {FC, useContext} from "react";
 
 
-import {ProvidedContextInterface} from "../App";
+import {appContextInterface} from "../App";
 import {AppContext} from "../context/AppContext";
 import {MobileNavigation} from "./MobileNavigation/MobileNavigation";
 import {Navigation} from "./Navigation/Navigation";
@@ -11,7 +11,7 @@ export const Header: FC = () => {
         userLoggedIn,
         loggedInUserDisplayName,
         loggedInUserPhotoURL
-    }: ProvidedContextInterface = useContext(AppContext);
+    }: appContextInterface = useContext(AppContext);
 
 
     return (<>

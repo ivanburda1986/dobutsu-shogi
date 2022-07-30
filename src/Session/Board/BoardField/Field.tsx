@@ -16,7 +16,7 @@ import {
 } from "./FieldService";
 import styles from "./Field.module.css";
 import {nextTurnPlayerId} from "../Stones/StoneService";
-import {ProvidedContextInterface} from "../../../App";
+import {appContextInterface} from "../../../App";
 import {AppContext} from "../../../context/AppContext";
 import {DocumentData} from "firebase/firestore";
 import {StoneInterface} from "../Stones/Stone";
@@ -32,7 +32,7 @@ interface FieldInterface {
 
 export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent, gameData, stones}) => {
     const {gameId} = useParams();
-    const appContext: ProvidedContextInterface = useContext(AppContext);
+    const appContext: appContextInterface = useContext(AppContext);
     const updateStonePosition = useUpdateStonePosition;
     const empowerStone = useEmpowerStone;
     const highlightStone = useHighlightStone;

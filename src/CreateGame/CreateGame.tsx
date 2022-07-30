@@ -5,14 +5,14 @@ import {Button, Container, Form, Row} from "react-bootstrap";
 import {v4 as uuidv4} from "uuid";
 
 import {AppContext} from "../context/AppContext";
-import {ProvidedContextInterface} from "../App";
+import {appContextInterface} from "../App";
 
 export const CreateGame: FC = () => {
     const [newGameNameInput, setNewGameNameInput] = useState<string | undefined>("");
     const [newGameType, setNewGameType] = useState<gameType>("DOBUTSU");
     const [formValid, setFormValid] = useState<boolean>(false);
 
-    const appContext: ProvidedContextInterface = useContext(AppContext);
+    const appContext: appContextInterface = useContext(AppContext);
     const gameNameRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
     const createGame = useCreateGame;

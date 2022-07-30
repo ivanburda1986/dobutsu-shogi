@@ -2,17 +2,17 @@ import styles from "./MobileNavigation.module.css";
 import {NavLink} from "react-router-dom";
 import {Avatar} from "../Avatar/Avatar";
 import {FunctionComponent} from "react";
-import {ProvidedContextInterface} from "../../App";
+import {appContextInterface} from "../../App";
 import {useLogoutUser} from "../../api/firestore";
 import {TiInfoLargeOutline} from "react-icons/ti";
 import {MdLogout} from "react-icons/md";
 
 
-export const MobileNavigation: FunctionComponent<Pick<ProvidedContextInterface, "userLoggedIn" | "loggedInUserDisplayName" | "loggedInUserPhotoURL">> = ({
-                                                                                                                                                             userLoggedIn,
-                                                                                                                                                             loggedInUserDisplayName,
-                                                                                                                                                             loggedInUserPhotoURL
-                                                                                                                                                         }) => {
+export const MobileNavigation: FunctionComponent<Pick<appContextInterface, "userLoggedIn" | "loggedInUserDisplayName" | "loggedInUserPhotoURL">> = ({
+                                                                                                                                                        userLoggedIn,
+                                                                                                                                                        loggedInUserDisplayName,
+                                                                                                                                                        loggedInUserPhotoURL
+                                                                                                                                                    }) => {
     const logout = useLogoutUser;
     return (
         <header

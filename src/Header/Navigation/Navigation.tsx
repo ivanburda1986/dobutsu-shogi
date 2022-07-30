@@ -2,16 +2,16 @@ import styles from "./Navigation.module.css";
 import {NavLink} from "react-router-dom";
 import {Avatar} from "../Avatar/Avatar";
 import {FunctionComponent} from "react";
-import {ProvidedContextInterface} from "../../App";
+import {appContextInterface} from "../../App";
 import {useLogoutUser} from "../../api/firestore";
 import {TiInfoLargeOutline} from 'react-icons/ti';
 
 
-export const Navigation: FunctionComponent<Pick<ProvidedContextInterface, "userLoggedIn" | "loggedInUserDisplayName" | "loggedInUserPhotoURL">> = ({
-                                                                                                                                                       userLoggedIn,
-                                                                                                                                                       loggedInUserDisplayName,
-                                                                                                                                                       loggedInUserPhotoURL
-                                                                                                                                                   }) => {
+export const Navigation: FunctionComponent<Pick<appContextInterface, "userLoggedIn" | "loggedInUserDisplayName" | "loggedInUserPhotoURL">> = ({
+                                                                                                                                                  userLoggedIn,
+                                                                                                                                                  loggedInUserDisplayName,
+                                                                                                                                                  loggedInUserPhotoURL
+                                                                                                                                              }) => {
     const logout = useLogoutUser;
     return (
         <header
