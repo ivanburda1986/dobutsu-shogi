@@ -1,23 +1,23 @@
 import {FC, useContext} from "react";
 
 
-import {ProvidedContextInterface} from "../App";
+import {AppContextInterface} from "../App";
 import {AppContext} from "../context/AppContext";
 import {MobileNavigation} from "./MobileNavigation/MobileNavigation";
 import {Navigation} from "./Navigation/Navigation";
 
 export const Header: FC = () => {
     const {
-        userLoggedIn,
+        isUserLoggedIn,
         loggedInUserDisplayName,
         loggedInUserPhotoURL
-    }: ProvidedContextInterface = useContext(AppContext);
+    }: AppContextInterface = useContext(AppContext);
 
 
     return (<>
-            <MobileNavigation userLoggedIn={userLoggedIn} loggedInUserDisplayName={loggedInUserDisplayName}
+            <MobileNavigation isUserLoggedIn={isUserLoggedIn} loggedInUserDisplayName={loggedInUserDisplayName}
                               loggedInUserPhotoURL={loggedInUserPhotoURL}/>
-            <Navigation userLoggedIn={userLoggedIn} loggedInUserDisplayName={loggedInUserDisplayName}
+            <Navigation isUserLoggedIn={isUserLoggedIn} loggedInUserDisplayName={loggedInUserDisplayName}
                         loggedInUserPhotoURL={loggedInUserPhotoURL}/>
         </>
     );
