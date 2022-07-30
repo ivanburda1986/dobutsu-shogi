@@ -30,11 +30,14 @@ export const Profile: FC = () => {
 
     useEffect(() => {
         //Listening to change of the player stats
-        const docRef = doc(db, "stats", appContext.loggedInUserUserId!);
+        if (!appContext.loggedInUserUserId || !db) {
+            return;
+        }
+        const docRef = doc(db, "stats", appContext.loggedInUserUserId);
         onSnapshot(docRef, (doc) => {
-            setWins(doc.data()!.win);
-            setLosses(doc.data()!.loss);
-            setTies(doc.data()!.tie);
+            setWins(doc.data()?.win);
+            setLosses(doc.data()?.loss);
+            setTies(doc.data()?.tie);
         });
     }, [appContext.loggedInUserUserId]);
 
