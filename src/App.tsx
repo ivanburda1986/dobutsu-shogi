@@ -1,6 +1,5 @@
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router";
-import {Route, Routes, useLocation} from "react-router-dom";
+import {useState} from "react";
+import {Route, Routes} from "react-router-dom";
 
 import {onAuthStateChanged} from "firebase/auth";
 import {auth} from "./api/firestore";
@@ -15,8 +14,8 @@ import {CreateGame} from "./CreateGame/CreateGame";
 import {Session} from "./Session/Session";
 
 import "bootstrap/dist/css/bootstrap.min.css";
-import {Footer} from "./Footer/Footer";
 import {About} from "./About/About";
+import {useRoute} from "./hooks/useRoute";
 
 export interface UserDataInterface {
     email: string | null;
@@ -34,38 +33,22 @@ export interface ProvidedContextInterface {
 }
 
 export const App = () => {
-    const [userLoggedIn, setUserLoggedIn] = useState<boolean>(false);
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(false);
     const [loggedInUserEmail, setLoggedInUserEmail] = useState<string | null>("");
     const [loggedInUserDisplayName, setLoggedInUserDisplayName] = useState<string | null>("Username");
     const [loggedInUserUserId, setLoggedInUserUserId] = useState<string>("");
     const [loggedInUserPhotoURL, setLoggedInUserPhotoURL] = useState<string | null>("placeholder");
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    useEffect(() => {
-        if (userLoggedIn && location.pathname === "/login") {
-            navigate("../", {replace: false});
-            return;
-        }
-        if (userLoggedIn && location.pathname === "/register") {
-            navigate("../", {replace: false});
-            return;
-        }
-        if (!userLoggedIn && location.pathname === "/") {
-            navigate("../login", {replace: false});
-            return;
-        }
-    }, [userLoggedIn, navigate, location.pathname]);
+    useRoute(isUserLoggedIn);
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            setUserLoggedIn(true);
+            setIsUserLoggedIn(true);
             setLoggedInUserEmail(user.email);
             setLoggedInUserDisplayName(user.displayName);
             setLoggedInUserUserId(user.uid);
             setLoggedInUserPhotoURL(user.photoURL);
         } else {
-            setUserLoggedIn(false);
+            setIsUserLoggedIn(false);
         }
     });
 
@@ -76,7 +59,7 @@ export const App = () => {
     };
 
     const providedContext: ProvidedContextInterface = {
-        userLoggedIn,
+        userLoggedIn: isUserLoggedIn,
         loggedInUserEmail,
         loggedInUserDisplayName,
         loggedInUserUserId,
