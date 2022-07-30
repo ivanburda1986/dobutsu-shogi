@@ -46,6 +46,34 @@ export const db = getFirestore();
 //Init authentication
 export const auth = getAuth();
 
+// USER REGISTRATION
+// ======================================================
+interface RegisterUserInterface {
+    email: string;
+    username: string;
+    password: string;
+    registerUserCb: {
+        onError: (error: string) => void;
+        onSuccess: ({email, displayName, photoURL}: UserDataInterface) => void;
+    };
+}
+
+export const useRegisterUser = ({email, username, password, registerUserCb}: RegisterUserInterface) => {
+    const updateUserProfile = useUpdateUserProfile;
+    const createUserStats = useCreateUserStats;
+    createUserWithEmailAndPassword(auth, email, password)
+        .then((credentials) => {
+            updateUserProfile({displayName: username, photoURL: "placeholder", cb: registerUserCb.onSuccess});
+            createUserStats({userId: credentials.user.uid, userName: username});
+            console.log("user created:", credentials.user);
+        })
+        .catch((err) => {
+            registerUserCb.onError(err.message);
+            console.log(err.message);
+        });
+};
+
+
 //TYPES
 export type gameType = "DOBUTSU" | "GOROGORO" | "GREENWOOD";
 export type statusType = "WAITING" | "INPROGRESS" | "COMPLETED" | "CANCELLED" | "RESIGNED" | "TIE";
@@ -342,33 +370,6 @@ export const updatePlayerAvatarInGames = async ({playerId, updatedAvatar}: Updat
     });
 };
 
-
-// USER REGISTRATION
-// ======================================================
-interface RegisterUserInterface {
-    email: string;
-    username: string;
-    password: string;
-    registerUserCb: {
-        forwardError: (error: string) => void;
-        updateUserData: ({email, displayName, photoURL}: UserDataInterface) => void;
-    };
-}
-
-export const useRegisterUser = ({email, username, password, registerUserCb}: RegisterUserInterface) => {
-    const updateUserProfile = useUpdateUserProfile;
-    const createUserStats = useCreateUserStats;
-    createUserWithEmailAndPassword(auth, email, password)
-        .then((cred) => {
-            updateUserProfile({displayName: username, photoURL: "placeholder", cb: registerUserCb.updateUserData});
-            createUserStats({userId: cred.user.uid, userName: username});
-            console.log("user created:", cred.user);
-        })
-        .catch((err) => {
-            registerUserCb.forwardError(err.message);
-            console.log(err.message);
-        });
-};
 
 // USER LOGIN
 // ======================================================

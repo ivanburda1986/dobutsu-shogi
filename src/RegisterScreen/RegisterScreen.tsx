@@ -1,62 +1,65 @@
-import {FC, useEffect, useState, useContext, useRef} from "react";
+import {FC, useContext, useEffect, useRef, useState} from "react";
 import {NavLink} from "react-router-dom";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 
 import {AppContext} from "../context/AppContext";
+
 import {useRegisterUser} from "../api/firestore";
-import {appContextInterface} from "../App";
 import {
+    validateEmail,
     validatePasswordInputLength,
-    validateUsernameInputLength,
     validatePasswordMatch,
-    validateEmail
+    validateUsernameInputLength
 } from "./RegisterScreenService";
 
 export const RegisterScreen: FC = () => {
-    const appContext: appContextInterface = useContext(AppContext);
+    const {setUserData} = useContext(AppContext);
+
     const emailRef = useRef<HTMLInputElement>(null);
     const [emailInput, setEmailInput] = useState<string>("");
-    const [emailValidity, setEmailValidity] = useState<boolean>(false);
-    const [startedEmailEntry, setStartedEmailEntry] = useState<boolean>(false);
-    const [emailAlreadyUsed, setEmailAlreadyUsed] = useState<boolean>(false);
+    const [isEnteredEmailValid, setIsEnteredEmailValid] = useState<boolean>(false);
+    const [isEnteringEmail, setIsEnteringEmail] = useState<boolean>(false);
+    const [isEmailAlreadyUsed, setIsEmailAlreadyUsed] = useState<boolean>(false);
 
     const usernameRef = useRef<HTMLInputElement>(null);
     const [usernameInput, setUsernameInput] = useState<string>("");
-    const [usernameValidity, setUsernameValidity] = useState<boolean>(false);
-    const [startedUsernameEntry, setStartedUsernameEntry] = useState<boolean>(false);
+    const [isEnteredUsernameValid, setIsEnteredUsernameValid] = useState<boolean>(false);
+    const [isEnteringUsername, setIsEnteringUsername] = useState<boolean>(false);
 
     const passwordRef = useRef<HTMLInputElement>(null);
     const [passwordInput, setPasswordInput] = useState<string>("");
-    const confirmPasswordRef = useRef<HTMLInputElement>(null);
-    const [confirmPasswordInput, setConfirmPasswordInput] = useState<string>("");
-    const [passLengthValidity, setPassLengthValidity] = useState<boolean>(false);
-    const [passMatchValidity, setPassMatchValidity] = useState<boolean>(false);
-    const [startedPassEntry, setStartedPassEntry] = useState<boolean>(false);
+    const passwordConfirmationRef = useRef<HTMLInputElement>(null);
+    const [passwordConfirmationInput, setPasswordConfirmationInput] = useState<string>("");
+    const [isPasswordLengthValid, setIsPasswordLengthValid] = useState<boolean>(false);
+    const [isPasswordConfirmationMatching, setIsPasswordConfirmationMatching] = useState<boolean>(false);
+    const [isEnteringPassword, setIsEnteringPassword] = useState<boolean>(false);
 
-    const [formValid, setFormValid] = useState<boolean>(false);
+    const [isFormValid, setIsFormValid] = useState<boolean>(false);
     const registerUser = useRegisterUser;
 
     useEffect(() => {
-        if (emailValidity && usernameValidity && passLengthValidity && passMatchValidity) {
-            return setFormValid(true);
+        if (isEnteredEmailValid && isEnteredUsernameValid && isPasswordLengthValid && isPasswordConfirmationMatching) {
+            return setIsFormValid(true);
         }
-        return setFormValid(false);
-    }, [emailValidity, usernameValidity, passLengthValidity, passMatchValidity]);
+        return setIsFormValid(false);
+    }, [isEnteredEmailValid, isEnteredUsernameValid, isPasswordLengthValid, isPasswordConfirmationMatching]);
 
     const onRegistration = () => {
-        registerUser({
-            email: emailRef.current!.value,
-            username: usernameRef.current!.value,
-            password: passwordRef.current!.value,
-            registerUserCb: {forwardError, updateUserData: appContext.setUserData}
-        });
+        if (emailRef.current && usernameRef.current && passwordRef.current) {
+            registerUser({
+                email: emailRef.current.value,
+                username: usernameRef.current.value,
+                password: passwordRef.current.value,
+                registerUserCb: {onError: forwardError, onSuccess: setUserData}
+            });
+        }
     };
 
     const forwardError = (error: string) => {
         if (error === "Firebase: Error (auth/email-already-in-use).") {
-            setEmailAlreadyUsed(true);
+            setIsEmailAlreadyUsed(true);
             setTimeout(() => {
-                setEmailAlreadyUsed(false);
+                setIsEmailAlreadyUsed(false);
             }, 3000);
         }
     };
@@ -67,12 +70,12 @@ export const RegisterScreen: FC = () => {
                 <Col md={8} lg={5}>
                     <h2>Registration</h2>
                     <div className="d-flex">
-                        <p className="me-1">Already registred?</p>
+                        <p className="me-1">Already registered?</p>
                         <NavLink to="/login">Login</NavLink>
                     </div>
                     <Form id="registrationForm" className="border-rounded-lightblue transparentContainer p-3">
                         <Form.Group className="mb-3" controlId="formBasicEmail">
-                            <Form.Label>Your email address</Form.Label>
+                            <Form.Label>Email address</Form.Label>
                             <Form.Control
                                 type="email"
                                 placeholder="This will be your login"
@@ -81,17 +84,17 @@ export const RegisterScreen: FC = () => {
                                 autoComplete="email"
                                 onChange={() => {
                                     setEmailInput(emailRef.current!.value);
-                                    setStartedEmailEntry(true);
-                                    setEmailValidity(validateEmail(emailRef.current?.value));
+                                    setIsEnteringEmail(true);
+                                    setIsEnteredEmailValid(validateEmail(emailRef.current?.value));
                                 }}
                             />
-                            {startedEmailEntry && !emailValidity &&
+                            {isEnteringEmail && !isEnteredEmailValid &&
                                 <Form.Text className="text-danger">Invalid email address</Form.Text>}
-                            {emailAlreadyUsed && <Form.Text className="text-danger">Email already used. Try to login
+                            {isEmailAlreadyUsed && <Form.Text className="text-danger">Email already used. Try to login
                                 instead.</Form.Text>}
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formBasicEmail"></Form.Group>
-                        <Form.Group className="mb-3">
+
+                        <Form.Group className="mb-3" controlId="formPassword">
                             <Form.Label>Password</Form.Label>
                             <Form.Control
                                 type="password"
@@ -101,33 +104,43 @@ export const RegisterScreen: FC = () => {
                                 autoComplete="new-password"
                                 onChange={() => {
                                     setPasswordInput(passwordRef.current!.value);
-                                    setStartedPassEntry(true);
-                                    validatePasswordInputLength({passwordRef, setPassLengthValidity});
-                                    validatePasswordMatch({passwordRef, confirmPasswordRef, setPassMatchValidity});
+                                    setIsEnteringPassword(true);
+                                    validatePasswordInputLength(passwordRef, setIsPasswordLengthValid);
+                                    validatePasswordMatch(
+                                        passwordRef,
+                                        passwordConfirmationRef,
+                                        setIsPasswordConfirmationMatching
+                                    );
                                 }}
                             />
-                            {startedPassEntry && !passLengthValidity &&
+                            {isEnteringPassword && !isPasswordLengthValid &&
                                 <Form.Text className="text-danger">At least 6 characters please.</Form.Text>}
                         </Form.Group>
-                        <Form.Group className="mb-3">
+
+                        <Form.Group className="mb-3" controlId="formConfirmPassword">
                             <Form.Label>Confirm password</Form.Label>
                             <Form.Control
                                 type="password"
                                 placeholder="Confirm password"
-                                ref={confirmPasswordRef}
-                                value={confirmPasswordInput}
+                                ref={passwordConfirmationRef}
+                                value={passwordConfirmationInput}
                                 autoComplete="new-password"
                                 onChange={() => {
-                                    setConfirmPasswordInput(confirmPasswordRef.current!.value);
-                                    setStartedPassEntry(true);
-                                    validatePasswordMatch({passwordRef, confirmPasswordRef, setPassMatchValidity});
+                                    setPasswordConfirmationInput(passwordConfirmationRef.current!.value);
+                                    setIsEnteringPassword(true);
+                                    validatePasswordMatch(
+                                        passwordRef,
+                                        passwordConfirmationRef,
+                                        setIsPasswordConfirmationMatching
+                                    );
                                 }}
                             />
-                            {startedPassEntry && !passMatchValidity &&
+                            {isEnteringPassword && !isPasswordConfirmationMatching &&
                                 <Form.Text className="text-danger">Passwords do not match.</Form.Text>}
                         </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Your username</Form.Label>
+
+                        <Form.Group className="mb-3" controlId="formUsername">
+                            <Form.Label>Username</Form.Label>
                             <Form.Control
                                 type="text"
                                 placeholder="Min. 2 characters"
@@ -136,14 +149,17 @@ export const RegisterScreen: FC = () => {
                                 autoComplete="username"
                                 onChange={() => {
                                     setUsernameInput(usernameRef.current!.value);
-                                    setStartedUsernameEntry(true);
-                                    validateUsernameInputLength({usernameRef, setUsernameValidity});
+                                    setIsEnteringUsername(true);
+                                    validateUsernameInputLength(usernameRef,
+                                        setIsEnteredUsernameValid);
                                 }}
                             />
-                            {startedUsernameEntry && !usernameValidity &&
+                            {isEnteringUsername && !isEnteredUsernameValid &&
                                 <Form.Text className="text-danger">Choose a longer username</Form.Text>}
                         </Form.Group>
-                        <Button variant="primary" type="button" disabled={!formValid} onClick={() => onRegistration()}>
+                        
+                        <Button variant="primary" type="button" disabled={!isFormValid}
+                                onClick={() => onRegistration()}>
                             Register
                         </Button>
                     </Form>
