@@ -1,16 +1,12 @@
 import {RefObject} from 'react';
-
+// RefObject<HTMLInputElement>
 export const validatePasswordInputLength = (
-    passwordRef: RefObject<HTMLInputElement>,
-    setIsPasswordLengthValid: (newValue: boolean) => void
+    password: string | undefined
 ) => {
-    if (passwordRef.current) {
-        if (passwordRef.current.value.length >= 6) {
-            return setIsPasswordLengthValid(true);
-        }
-        return setIsPasswordLengthValid(false);
+    if (password) {
+        return password.length >= 6;
     }
-    setIsPasswordLengthValid(false);
+    return false;
 };
 
 export const validateUsernameInputLength = (

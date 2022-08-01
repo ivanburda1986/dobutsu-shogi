@@ -103,9 +103,10 @@ export const RegisterScreen: FC = () => {
                                 value={passwordInput}
                                 autoComplete="new-password"
                                 onChange={() => {
+                                    const password = passwordRef.current?.value;
                                     setPasswordInput(passwordRef.current!.value);
                                     setIsEnteringPassword(true);
-                                    validatePasswordInputLength(passwordRef, setIsPasswordLengthValid);
+                                    setIsPasswordLengthValid(validatePasswordInputLength(password));
                                     validatePasswordMatch(
                                         passwordRef,
                                         passwordConfirmationRef,
@@ -157,7 +158,7 @@ export const RegisterScreen: FC = () => {
                             {isEnteringUsername && !isEnteredUsernameValid &&
                                 <Form.Text className="text-danger">Choose a longer username</Form.Text>}
                         </Form.Group>
-                        
+
                         <Button variant="primary" type="button" disabled={!isFormValid}
                                 onClick={() => onRegistration()}>
                             Register
