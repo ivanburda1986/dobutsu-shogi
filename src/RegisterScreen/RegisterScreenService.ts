@@ -10,29 +10,22 @@ export const validatePasswordInputLength = (
 };
 
 export const validateUsernameInputLength = (
-    usernameRef: RefObject<HTMLInputElement>,
-    setIsEnteredUsernameValid: (newValue: boolean) => void
+    username: string | undefined
 ) => {
-    if (usernameRef.current) {
-        if (usernameRef.current.value.length >= 2) {
-            return setIsEnteredUsernameValid(true);
-        }
-        return setIsEnteredUsernameValid(false);
+    if (username) {
+        return username.length >= 2;
     }
-    setIsEnteredUsernameValid(false);
+    return false;
 };
 
 
 export const validatePasswordMatch = (
-    passwordRef: RefObject<HTMLInputElement>,
-    confirmPasswordRef: RefObject<HTMLInputElement>,
-    setIsPasswordConfirmationMatching: (newValue: boolean) => void) => {
-    if (passwordRef.current && confirmPasswordRef.current) {
-        if (passwordRef.current?.value === confirmPasswordRef.current?.value) {
-            return setIsPasswordConfirmationMatching(true);
-        }
+    password: string | undefined,
+    confirmPassword: string | undefined) => {
+    if (password && confirmPassword) {
+        return password === confirmPassword;
     }
-    return setIsPasswordConfirmationMatching(false);
+    return false;
 };
 
 export const validateEmail = (email: string | undefined) => {

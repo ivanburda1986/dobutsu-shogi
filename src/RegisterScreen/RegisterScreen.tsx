@@ -16,20 +16,21 @@ export const RegisterScreen: FC = () => {
     const {setUserData} = useContext(AppContext);
 
     const emailRef = useRef<HTMLInputElement>(null);
-    const [emailInput, setEmailInput] = useState<string>("");
+    const [emailInput, setEmailInput] = useState<string | undefined>("");
     const [isEnteredEmailValid, setIsEnteredEmailValid] = useState<boolean>(false);
     const [isEnteringEmail, setIsEnteringEmail] = useState<boolean>(false);
     const [isEmailAlreadyUsed, setIsEmailAlreadyUsed] = useState<boolean>(false);
 
     const usernameRef = useRef<HTMLInputElement>(null);
-    const [usernameInput, setUsernameInput] = useState<string>("");
+    const [usernameInput, setUsernameInput] = useState<string | undefined>("");
     const [isEnteredUsernameValid, setIsEnteredUsernameValid] = useState<boolean>(false);
     const [isEnteringUsername, setIsEnteringUsername] = useState<boolean>(false);
 
     const passwordRef = useRef<HTMLInputElement>(null);
-    const [passwordInput, setPasswordInput] = useState<string>("");
+    const [passwordInput, setPasswordInput] = useState<string | undefined>("");
+
     const passwordConfirmationRef = useRef<HTMLInputElement>(null);
-    const [passwordConfirmationInput, setPasswordConfirmationInput] = useState<string>("");
+    const [passwordConfirmationInput, setPasswordConfirmationInput] = useState<string | undefined>("");
     const [isPasswordLengthValid, setIsPasswordLengthValid] = useState<boolean>(false);
     const [isPasswordConfirmationMatching, setIsPasswordConfirmationMatching] = useState<boolean>(false);
     const [isEnteringPassword, setIsEnteringPassword] = useState<boolean>(false);
@@ -45,11 +46,11 @@ export const RegisterScreen: FC = () => {
     }, [isEnteredEmailValid, isEnteredUsernameValid, isPasswordLengthValid, isPasswordConfirmationMatching]);
 
     const onRegistration = () => {
-        if (emailRef.current && usernameRef.current && passwordRef.current) {
+        if (emailInput && usernameInput && passwordInput) {
             registerUser({
-                email: emailRef.current.value,
-                username: usernameRef.current.value,
-                password: passwordRef.current.value,
+                email: emailInput,
+                username: usernameInput,
+                password: passwordInput,
                 registerUserCb: {onError: forwardError, onSuccess: setUserData}
             });
         }
@@ -83,9 +84,10 @@ export const RegisterScreen: FC = () => {
                                 value={emailInput}
                                 autoComplete="email"
                                 onChange={() => {
-                                    setEmailInput(emailRef.current!.value);
+                                    const email = emailRef.current?.value;
+                                    setEmailInput(email);
                                     setIsEnteringEmail(true);
-                                    setIsEnteredEmailValid(validateEmail(emailRef.current?.value));
+                                    setIsEnteredEmailValid(validateEmail(email));
                                 }}
                             />
                             {isEnteringEmail && !isEnteredEmailValid &&
@@ -104,14 +106,14 @@ export const RegisterScreen: FC = () => {
                                 autoComplete="new-password"
                                 onChange={() => {
                                     const password = passwordRef.current?.value;
-                                    setPasswordInput(passwordRef.current!.value);
+                                    const passwordConfirmation = passwordConfirmationRef.current?.value;
+                                    setPasswordInput(password);
                                     setIsEnteringPassword(true);
                                     setIsPasswordLengthValid(validatePasswordInputLength(password));
-                                    validatePasswordMatch(
-                                        passwordRef,
-                                        passwordConfirmationRef,
-                                        setIsPasswordConfirmationMatching
-                                    );
+                                    setIsPasswordConfirmationMatching(validatePasswordMatch(
+                                        password,
+                                        passwordConfirmation
+                                    ));
                                 }}
                             />
                             {isEnteringPassword && !isPasswordLengthValid &&
@@ -127,13 +129,14 @@ export const RegisterScreen: FC = () => {
                                 value={passwordConfirmationInput}
                                 autoComplete="new-password"
                                 onChange={() => {
-                                    setPasswordConfirmationInput(passwordConfirmationRef.current!.value);
+                                    const password = passwordRef.current?.value;
+                                    const passwordConfirmation = passwordConfirmationRef.current?.value;
+                                    setPasswordConfirmationInput(passwordConfirmation);
                                     setIsEnteringPassword(true);
-                                    validatePasswordMatch(
-                                        passwordRef,
-                                        passwordConfirmationRef,
-                                        setIsPasswordConfirmationMatching
-                                    );
+                                    setIsPasswordConfirmationMatching(validatePasswordMatch(
+                                        password,
+                                        passwordConfirmation
+                                    ));
                                 }}
                             />
                             {isEnteringPassword && !isPasswordConfirmationMatching &&
@@ -149,10 +152,11 @@ export const RegisterScreen: FC = () => {
                                 value={usernameInput}
                                 autoComplete="username"
                                 onChange={() => {
-                                    setUsernameInput(usernameRef.current!.value);
+                                    const username = usernameRef.current?.value;
+                                    setUsernameInput(username);
                                     setIsEnteringUsername(true);
-                                    validateUsernameInputLength(usernameRef,
-                                        setIsEnteredUsernameValid);
+                                    setIsEnteredUsernameValid(validateUsernameInputLength(username
+                                    ));
                                 }}
                             />
                             {isEnteringUsername && !isEnteredUsernameValid &&
