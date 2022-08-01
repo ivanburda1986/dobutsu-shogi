@@ -1,4 +1,4 @@
-import {validatePasswordInputLength, validateUsernameInputLength} from "../RegisterScreenService";
+import {validateEmail, validatePasswordInputLength, validateUsernameInputLength} from "../RegisterScreenService";
 
 describe('RegisterScreenService', () => {
     describe('validatePasswordInputLength', () => {
@@ -48,6 +48,32 @@ describe('RegisterScreenService', () => {
             const username = undefined;
 
             const isValid = validateUsernameInputLength(username);
+
+            expect(isValid).toBe(false);
+        });
+    });
+
+    describe('validateEmail', () => {
+        it('return true when email address is valid', () => {
+            const email = "johndoe@gmail.com";
+
+            const isValid = validateEmail(email);
+
+            expect(isValid).toBe(true);
+        });
+
+        it('return false when email address is invalid', () => {
+            const email = "johndoe@gmail.";
+
+            const isValid = validateEmail(email);
+
+            expect(isValid).toBe(false);
+        });
+
+        it('return false when email address is not provided', () => {
+            const email = undefined;
+
+            const isValid = validateEmail(email);
 
             expect(isValid).toBe(false);
         });
