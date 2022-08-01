@@ -1,16 +1,17 @@
-Next steps:
+=================================================================
+Refactoring and testing:
+refactor the whole game
+write automated tests in jest and RTL
+=================================================================
+
+Next enhancements:
+Latest move should visualise also a lion takeover
+
 Make sure stone position works correctly even when the screen is displayed as a column
 -could render stones directly in containers of fields
 -board field, stash field
 
 Moving stones should be possible not only by dragging but also by clicking, this is vital for touch devices. Or on a touch device the Board screen should not be scrollable.
-
-
-
-=================================================================
-Refactoring and testing:
-refactor the whole game
-write automated tests in jest and RTL
 
 =================================================================
 Possible future enhancements:
