@@ -78,6 +78,4 @@ describe('RegisterScreenService', () => {
             expect(isValid).toBe(false);
         });
     });
-
-
 });
