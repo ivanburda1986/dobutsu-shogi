@@ -1,4 +1,10 @@
-import {validateEmail, validatePasswordInputLength, validateUsernameInputLength} from "../RegisterScreenService";
+import {
+    evaluateFormValidity,
+    validateEmail,
+    validatePasswordInputLength,
+    validatePasswordMatch,
+    validateUsernameInputLength
+} from "../RegisterScreenService";
 
 describe('RegisterScreenService', () => {
     describe('validatePasswordInputLength', () => {
@@ -27,8 +33,28 @@ describe('RegisterScreenService', () => {
         });
     });
 
+    describe('validatePasswordMatch', () => {
+        it('returns true when password and password confirmation match', function () {
+            const password = '1234567';
+            const passwordConfirmation = '1234567';
+
+            const areMatching = validatePasswordMatch(password, passwordConfirmation);
+
+            expect(areMatching).toBe(true);
+        });
+
+        it('returns false when password and password confirmation match', function () {
+            const password = '1234567';
+            const passwordConfirmation = 'abcdefg';
+
+            const areMatching = validatePasswordMatch(password, passwordConfirmation);
+
+            expect(areMatching).toBe(false);
+        });
+    });
+
     describe('validateUsernameInputLength', () => {
-        it('return true when username has at least 2 characters', () => {
+        it('returns true when username has at least 2 characters', () => {
             const username = "ab";
 
             const isValid = validateUsernameInputLength(username);
@@ -36,7 +62,7 @@ describe('RegisterScreenService', () => {
             expect(isValid).toBe(true);
         });
 
-        it('return false when username has fewer than 2 characters', () => {
+        it('returns false when username has fewer than 2 characters', () => {
             const username = "a";
 
             const isValid = validateUsernameInputLength(username);
@@ -44,7 +70,7 @@ describe('RegisterScreenService', () => {
             expect(isValid).toBe(false);
         });
 
-        it('return true when username is not provided', () => {
+        it('returns true when username is not provided', () => {
             const username = undefined;
 
             const isValid = validateUsernameInputLength(username);
@@ -53,8 +79,9 @@ describe('RegisterScreenService', () => {
         });
     });
 
+
     describe('validateEmail', () => {
-        it('return true when email address is valid', () => {
+        it('returns true when email address is valid', () => {
             const email = "johndoe@gmail.com";
 
             const isValid = validateEmail(email);
@@ -62,7 +89,7 @@ describe('RegisterScreenService', () => {
             expect(isValid).toBe(true);
         });
 
-        it('return false when email address is invalid', () => {
+        it('returns false when email address is invalid', () => {
             const email = "johndoe@gmail.";
 
             const isValid = validateEmail(email);
@@ -70,12 +97,30 @@ describe('RegisterScreenService', () => {
             expect(isValid).toBe(false);
         });
 
-        it('return false when email address is not provided', () => {
+        it('returns false when email address is not provided', () => {
             const email = undefined;
 
             const isValid = validateEmail(email);
 
             expect(isValid).toBe(false);
+        });
+    });
+
+    describe('evaluateFormValidity', () => {
+        it('returns true when all individual validations are true', () => {
+            const individualValidations = [true, true, true, true];
+
+            const isFormValid = evaluateFormValidity(individualValidations);
+
+            expect(isFormValid).toBe(true);
+        });
+
+        it('returns false when any of individual validations is false', () => {
+            const individualValidations = [true, true, false, true];
+
+            const isFormValid = evaluateFormValidity(individualValidations);
+
+            expect(isFormValid).toBe(false);
         });
     });
 });

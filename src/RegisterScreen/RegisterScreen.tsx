@@ -6,6 +6,7 @@ import {AppContext} from "../context/AppContext";
 
 import {useRegisterUser} from "../api/firestore";
 import {
+    evaluateFormValidity,
     validateEmail,
     validatePasswordInputLength,
     validatePasswordMatch,
@@ -39,10 +40,7 @@ export const RegisterScreen: FC = () => {
     const registerUser = useRegisterUser;
 
     useEffect(() => {
-        if (isEnteredEmailValid && isEnteredUsernameValid && isPasswordLengthValid && isPasswordConfirmationMatching) {
-            return setIsFormValid(true);
-        }
-        return setIsFormValid(false);
+        setIsFormValid(evaluateFormValidity([isEnteredEmailValid, isEnteredUsernameValid, isPasswordLengthValid, isPasswordConfirmationMatching]));
     }, [isEnteredEmailValid, isEnteredUsernameValid, isPasswordLengthValid, isPasswordConfirmationMatching]);
 
     const onRegistration = () => {
