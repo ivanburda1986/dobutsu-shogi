@@ -1,6 +1,3 @@
-import React from "react";
-import {useLoginUser} from "../api/firestore";
-
 interface onRequestPasswordResetInterface {
     email: string | undefined;
     requestPasswordReset: ({email}: { email: string }) => void;

@@ -37,6 +37,7 @@ export const RegisterScreen: FC = () => {
     const [isEnteringPassword, setIsEnteringPassword] = useState<boolean>(false);
 
     const [isFormValid, setIsFormValid] = useState<boolean>(false);
+    
     const registerUser = useRegisterUser;
 
     useEffect(() => {
