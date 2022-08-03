@@ -19,18 +19,13 @@ export const LoginScreen: FC = () => {
     const [passwordInput, setPasswordInput] = useState<string | undefined>("");
     const [isPasswordLengthValid, setIsPasswordLengthValid] = useState<boolean>(false);
     const [isEnteringPassword, setIsEnteringPassword] = useState<boolean>(false);
-    const [isWrongPasswordEntered, setIsWrongPasswordEntered] = useState<boolean>(false);
+    const [isEnteredPasswordWrong, setIsEnteredPasswordWrong] = useState<boolean>(false);
     const [hasPasswordResetLinkBeenSent, setHasPasswordResetLinkBeenSent] = useState<boolean>(false);
 
-    const [isFormValid, setIsFormValid] = useState<boolean>(false);
+    const isFormValid = evaluateFormValidity([isEnteredEmailValid, isPasswordLengthValid]);
 
     const loginUser = useLoginUser;
     const requestPasswordReset = useRequestPasswordReset;
-
-
-    useEffect(() => {
-        setIsFormValid(evaluateFormValidity([isEnteredEmailValid, isPasswordLengthValid]));
-    }, [isEnteredEmailValid, isPasswordLengthValid]);
 
 
     const forwardError = (error: string) => {
@@ -42,9 +37,9 @@ export const LoginScreen: FC = () => {
         }
 
         if (error === "Firebase: Error (auth/wrong-password).") {
-            setIsWrongPasswordEntered(true);
+            setIsEnteredPasswordWrong(true);
             setTimeout(() => {
-                setIsWrongPasswordEntered(false);
+                setIsEnteredPasswordWrong(false);
             }, 3000);
         }
     };
@@ -107,7 +102,7 @@ export const LoginScreen: FC = () => {
                             />
                             {isEnteringPassword && !isPasswordLengthValid &&
                                 <Form.Text className="text-danger">Enter your password.</Form.Text>}
-                            {isWrongPasswordEntered && isPasswordLengthValid &&
+                            {isEnteredPasswordWrong && isPasswordLengthValid &&
                                 <Form.Text className="text-danger">Wrong password. </Form.Text>}
                         </Form.Group>
 

@@ -36,13 +36,8 @@ export const RegisterScreen: FC = () => {
     const [isPasswordConfirmationMatching, setIsPasswordConfirmationMatching] = useState<boolean>(false);
     const [isEnteringPassword, setIsEnteringPassword] = useState<boolean>(false);
 
-    const [isFormValid, setIsFormValid] = useState<boolean>(false);
-    
+    const isFormValid = evaluateFormValidity([isEnteredEmailValid, isEnteredUsernameValid, isPasswordLengthValid, isPasswordConfirmationMatching]);
     const registerUser = useRegisterUser;
-
-    useEffect(() => {
-        setIsFormValid(evaluateFormValidity([isEnteredEmailValid, isEnteredUsernameValid, isPasswordLengthValid, isPasswordConfirmationMatching]));
-    }, [isEnteredEmailValid, isEnteredUsernameValid, isPasswordLengthValid, isPasswordConfirmationMatching]);
 
     const onRegistration = () => {
         if (emailInput && usernameInput && passwordInput) {
