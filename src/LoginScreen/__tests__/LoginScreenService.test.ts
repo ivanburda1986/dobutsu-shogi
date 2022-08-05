@@ -3,7 +3,7 @@ import {validatePasswordInputLength} from '../LoginScreenService';
 describe('loginScreenService', () => {
     describe('validatePasswordInputLength', () => {
         it('returns true when password has at least 1 character', () => {
-            const password = "12";
+            const password = "123";
 
             const isValid = validatePasswordInputLength(password);
 
