@@ -1,6 +1,8 @@
 =================================================================
 Refactoring and testing:
 refactor the whole game
+-register
+-login
 write automated tests in jest and RTL
 =================================================================
 

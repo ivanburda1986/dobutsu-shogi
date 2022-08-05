@@ -1,88 +1,113 @@
-import React, {FC, useContext, useEffect, useRef, useState} from "react";
+import React, {FunctionComponent, useContext, useEffect, useRef, useState} from "react";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 
 import {db, updatePlayerAvatarInGames, useUpdateUserProfile} from "../api/firestore";
 import {AppContext} from "../context/AppContext";
 import {appContextInterface} from "../App";
 import {Avatar} from "../Header/Avatar/Avatar";
-import {doc, onSnapshot} from "firebase/firestore";
+import {getPlayerGameStats, shouldBeChecked} from "./ProfileService";
 
-export const Profile: FC = () => {
-    const appContext: appContextInterface = useContext(AppContext);
-    const [avatarUsernameEditModeOn, setAvatarUsernameEditModeOn] = useState<boolean>(false);
-    const [avatarImgSelection, setAvatarImgSelection] = useState<string | null>(appContext.loggedInUserPhotoURL);
-    const usernameRef = useRef<HTMLInputElement>(null);
-    const [usernameInput, setUsernameInput] = useState<string>("");
-    const [wins, setWins] = useState<number>(0);
-    const [losses, setLosses] = useState<number>(0);
-    const [ties, setTies] = useState<number>(0);
+export interface PlayerGameStats {
+    wins: number,
+    losses: number,
+    ties: number,
+}
+
+export const Profile: FunctionComponent = () => {
+    const {
+        loggedInUserPhotoURL,
+        loggedInUserDisplayName,
+        loggedInUserUserId,
+        setUserData
+    }: appContextInterface = useContext(AppContext);
     const updateUserProfile = useUpdateUserProfile;
 
-    const shouldBeChecked = (optionName: string) => {
-        return appContext.loggedInUserPhotoURL === optionName;
-    };
+    const [isEditingProfile, setIsEditingProfile] = useState<boolean>(false);
+    const [selectedAvatar, setSelectedAvatar] = useState<string | null>(loggedInUserPhotoURL);
+    const [usernameInput, setUsernameInput] = useState<string>("");
+    const usernameRef = useRef<HTMLInputElement>(null);
+
+    const [stats, setStats] = useState<PlayerGameStats>({wins: 0, losses: 0, ties: 0});
+
 
     useEffect(() => {
-        if (!appContext.loggedInUserPhotoURL || !appContext.loggedInUserDisplayName) {
-            setAvatarUsernameEditModeOn(true);
+        if (!loggedInUserPhotoURL || !loggedInUserDisplayName) {
+            setIsEditingProfile(true);
         }
-    }, [appContext.loggedInUserDisplayName, appContext.loggedInUserPhotoURL]);
+    }, [loggedInUserPhotoURL, loggedInUserDisplayName]);
 
     useEffect(() => {
-        //Listening to change of the player stats
-        if (!appContext.loggedInUserUserId || !db) {
+        if (!loggedInUserUserId || !db) {
             return;
         }
-        const docRef = doc(db, "stats", appContext.loggedInUserUserId);
-        onSnapshot(docRef, (doc) => {
-            setWins(doc.data()?.win);
-            setLosses(doc.data()?.loss);
-            setTies(doc.data()?.tie);
+        getPlayerGameStats(loggedInUserUserId, setStats);
+    }, [loggedInUserUserId,]);
+
+    const onSubmitHandler = () => {
+        const newUsername = usernameRef.current?.value;
+        updateUserProfile({
+            displayName: newUsername ? newUsername : loggedInUserDisplayName,
+            photoURL: selectedAvatar,
+            cb: setUserData
         });
-    }, [appContext.loggedInUserUserId]);
+        updatePlayerAvatarInGames({
+            playerId: loggedInUserUserId,
+            updatedAvatar: selectedAvatar
+        }).then(response => console.log('Avatar updated in player games'));
+        setIsEditingProfile(false);
+    };
 
     return (
         <Container className="text-success">
             <h2>Avatar and username</h2>
-            {avatarUsernameEditModeOn && (
+            {isEditingProfile && (
                 <Container fluid className="rounded py-1 mb-3 transparentContainer">
                     <Row>
-                        <Form>
+                        <Form onSubmit={onSubmitHandler}>
                             <Form.Group className="mb-3" controlId="formAvatarSelection">
                                 <Form.Label>Select an avatar</Form.Label>
                                 {["radio"].map(() => (
                                     <div key={`inline-radio`} className="mb-3">
-                                        <Form.Check inline defaultChecked={shouldBeChecked("chicken")}
+                                        <Form.Check inline
+                                                    defaultChecked={shouldBeChecked("chicken", loggedInUserPhotoURL)}
                                                     label={<Avatar name="chicken"/>} name="group1" type="radio"
                                                     id={`chicken`}
-                                                    onChange={(e) => setAvatarImgSelection(e.target.id)}/>
-                                        <Form.Check inline defaultChecked={shouldBeChecked("boar")}
+                                                    onChange={(e) => setSelectedAvatar(e.target.id)}/>
+                                        <Form.Check inline
+                                                    defaultChecked={shouldBeChecked("boar", loggedInUserPhotoURL)}
                                                     label={<Avatar name="boar"/>} name="group1" type="radio" id={`boar`}
-                                                    onChange={(e) => setAvatarImgSelection(e.target.id)}/>
-                                        <Form.Check inline defaultChecked={shouldBeChecked("dog")}
+                                                    onChange={(e) => setSelectedAvatar(e.target.id)}/>
+                                        <Form.Check inline
+                                                    defaultChecked={shouldBeChecked("dog", loggedInUserPhotoURL)}
                                                     label={<Avatar name="dog"/>} name="group1" type="radio"
-                                                    id={`dog`} onChange={(e) => setAvatarImgSelection(e.target.id)}/>
-                                        <Form.Check inline defaultChecked={shouldBeChecked("hen")}
+                                                    id={`dog`} onChange={(e) => setSelectedAvatar(e.target.id)}/>
+                                        <Form.Check inline
+                                                    defaultChecked={shouldBeChecked("hen", loggedInUserPhotoURL)}
                                                     label={<Avatar name="hen"/>} name="group1" type="radio"
-                                                    id={`hen`} onChange={(e) => setAvatarImgSelection(e.target.id)}/>
-                                        <Form.Check inline defaultChecked={shouldBeChecked("cat")}
+                                                    id={`hen`} onChange={(e) => setSelectedAvatar(e.target.id)}/>
+                                        <Form.Check inline
+                                                    defaultChecked={shouldBeChecked("cat", loggedInUserPhotoURL)}
                                                     label={<Avatar name="cat"/>} name="group1" type="radio" id={`cat`}
-                                                    onChange={(e) => setAvatarImgSelection(e.target.id)}/>
-                                        <Form.Check inline defaultChecked={shouldBeChecked("rabbit")}
+                                                    onChange={(e) => setSelectedAvatar(e.target.id)}/>
+                                        <Form.Check inline
+                                                    defaultChecked={shouldBeChecked("rabbit", loggedInUserPhotoURL)}
                                                     label={<Avatar name="rabbit"/>} name="group1" type="radio"
                                                     id={`rabbit`}
-                                                    onChange={(e) => setAvatarImgSelection(e.target.id)}/>
-                                        <Form.Check inline defaultChecked={shouldBeChecked("elephant")}
+                                                    onChange={(e) => setSelectedAvatar(e.target.id)}/>
+                                        <Form.Check inline
+                                                    defaultChecked={shouldBeChecked("elephant", loggedInUserPhotoURL)}
                                                     label={<Avatar name="elephant"/>} name="group1" type="radio"
                                                     id={`elephant`}
-                                                    onChange={(e) => setAvatarImgSelection(e.target.id)}/>
-                                        <Form.Check inline defaultChecked={shouldBeChecked("giraffe")}
+                                                    onChange={(e) => setSelectedAvatar(e.target.id)}/>
+                                        <Form.Check inline
+                                                    defaultChecked={shouldBeChecked("giraffe", loggedInUserPhotoURL)}
                                                     label={<Avatar name="giraffe"/>} name="group1" type="radio"
                                                     id={`giraffe`}
-                                                    onChange={(e) => setAvatarImgSelection(e.target.id)}/>
-                                        <Form.Check inline defaultChecked={shouldBeChecked("lion")}
+                                                    onChange={(e) => setSelectedAvatar(e.target.id)}/>
+                                        <Form.Check inline
+                                                    defaultChecked={shouldBeChecked("lion", loggedInUserPhotoURL)}
                                                     label={<Avatar name="lion"/>} name="group1" type="radio" id={`lion`}
-                                                    onChange={(e) => setAvatarImgSelection(e.target.id)}/>
+                                                    onChange={(e) => setSelectedAvatar(e.target.id)}/>
                                     </div>
                                 ))}
                             </Form.Group>
@@ -92,7 +117,7 @@ export const Profile: FC = () => {
                                     type="text"
                                     ref={usernameRef}
                                     value={usernameInput}
-                                    placeholder={appContext.loggedInUserDisplayName ? appContext.loggedInUserDisplayName : "Username"}
+                                    placeholder={loggedInUserDisplayName ? loggedInUserDisplayName : "Username"}
                                     onChange={() => {
                                         setUsernameInput(usernameRef.current!.value);
                                     }}
@@ -100,19 +125,7 @@ export const Profile: FC = () => {
                             </Form.Group>
                             <Button
                                 variant="primary"
-                                type="button"
-                                onClick={() => {
-                                    updateUserProfile({
-                                        displayName: usernameRef.current?.value ? usernameRef.current.value : appContext.loggedInUserDisplayName,
-                                        photoURL: avatarImgSelection,
-                                        cb: appContext.setUserData
-                                    });
-                                    updatePlayerAvatarInGames({
-                                        playerId: appContext.loggedInUserUserId,
-                                        updatedAvatar: avatarImgSelection
-                                    }).then(response => console.log('avatar updated in player games'));
-                                    setAvatarUsernameEditModeOn(false);
-                                }}
+                                type="submit"
                             >
                                 Save
                             </Button>
@@ -120,18 +133,18 @@ export const Profile: FC = () => {
                     </Row>
                 </Container>
             )}
-            {!avatarUsernameEditModeOn && (
+            {!isEditingProfile && (
                 <Container fluid className="rounded py-1 my-1 mb-3 transparentContainer">
                     <Row>
                         <Col className="d-flex flex-row justify-content-between align-items-center">
                             <div className="d-flex flex-row justify-content-between align-items-center">
-                                <Avatar name={appContext.loggedInUserPhotoURL}/>
-                                <p className="fs-4 mx-2 align-middle my-auto">{appContext.loggedInUserDisplayName ? appContext.loggedInUserDisplayName : "Username"}</p>
+                                <Avatar name={loggedInUserPhotoURL}/>
+                                <p className="fs-4 mx-2 align-middle my-auto">{loggedInUserDisplayName ? loggedInUserDisplayName : "Username"}</p>
                             </div>
                             <Button
                                 className="btn-height-40 justify-content-center"
                                 onClick={() => {
-                                    setAvatarUsernameEditModeOn(true);
+                                    setIsEditingProfile(true);
                                 }}
                             >
                                 Change
@@ -151,9 +164,9 @@ export const Profile: FC = () => {
                 </thead>
                 <tbody>
                 <tr>
-                    <td>{wins}</td>
-                    <td>{losses}</td>
-                    <td>{ties}</td>
+                    <td>{stats.wins}</td>
+                    <td>{stats.losses}</td>
+                    <td>{stats.ties}</td>
                 </tr>
                 </tbody>
             </table>

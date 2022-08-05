@@ -1,11 +1,10 @@
-import React, {FC, useEffect, useState, useRef} from "react";
+import React, {FC, useRef, useState} from "react";
 import {NavLink} from "react-router-dom";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 
 import {useLoginUser, useRequestPasswordReset} from "../api/firestore";
 import {onRequestPasswordReset, validatePasswordInputLength} from "./LoginScreenService";
-import {evaluateFormValidity} from "../RegisterScreen/RegisterScreenService";
-import {validateEmail} from "../RegisterScreen/RegisterScreenService";
+import {evaluateFormValidity, validateEmail} from "../RegisterScreen/RegisterScreenService";
 
 export const LoginScreen: FC = () => {
     const emailRef = useRef<HTMLInputElement>(null);
@@ -26,7 +25,6 @@ export const LoginScreen: FC = () => {
 
     const loginUser = useLoginUser;
     const requestPasswordReset = useRequestPasswordReset;
-
 
     const forwardError = (error: string) => {
         if (error === "Firebase: Error (auth/user-not-found).") {
@@ -51,7 +49,6 @@ export const LoginScreen: FC = () => {
             loginUser({email: email, password: password, loginUserCb: {forwardError}});
         }
     };
-    // passwordRef: React.RefObject<HTMLInputElement>
 
     return (
         <Container fluid className="my-3">
