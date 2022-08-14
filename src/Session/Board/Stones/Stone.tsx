@@ -26,7 +26,7 @@ import {
     shouldChickenTurnIntoHen,
     useSetStonePosition
 } from "./StoneService";
-import {appContextInterface} from "../../../App";
+import {AppContextInterface} from "../../../App";
 import {AppContext} from "../../../context/AppContext";
 import {useParams} from "react-router";
 import {DocumentData} from "firebase/firestore";
@@ -79,7 +79,7 @@ export const Stone: FC<StoneInterface> = ({
                                               gameData,
                                               allStones,
                                           }) => {
-    const appContext: appContextInterface = useContext(AppContext);
+    const appContext: AppContextInterface = useContext(AppContext);
     const {gameId} = useParams();
     const [rotateDegrees, setRotateDegrees] = useState<number>(0);
     const [positionX, setPositionX] = useState<number>(0);

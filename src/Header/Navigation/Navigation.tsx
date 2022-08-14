@@ -2,12 +2,12 @@ import styles from "./Navigation.module.css";
 import {NavLink} from "react-router-dom";
 import {Avatar} from "../Avatar/Avatar";
 import {FunctionComponent} from "react";
-import {appContextInterface} from "../../App";
+import {AppContextInterface} from "../../App";
 import {useLogoutUser} from "../../api/firestore";
 import {TiInfoLargeOutline} from 'react-icons/ti';
 
 
-export const Navigation: FunctionComponent<Pick<appContextInterface, "userLoggedIn" | "loggedInUserDisplayName" | "loggedInUserPhotoURL">> = ({
+export const Navigation: FunctionComponent<Pick<AppContextInterface, "userLoggedIn" | "loggedInUserDisplayName" | "loggedInUserPhotoURL">> = ({
                                                                                                                                                   userLoggedIn,
                                                                                                                                                   loggedInUserDisplayName,
                                                                                                                                                   loggedInUserPhotoURL

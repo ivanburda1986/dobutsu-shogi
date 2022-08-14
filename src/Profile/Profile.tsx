@@ -3,7 +3,7 @@ import {Button, Col, Container, Form, Row} from "react-bootstrap";
 
 import {db, updatePlayerAvatarInGames, useUpdateUserProfile} from "../api/firestore";
 import {AppContext} from "../context/AppContext";
-import {appContextInterface} from "../App";
+import {AppContextInterface} from "../App";
 import {Avatar} from "../Header/Avatar/Avatar";
 import {getPlayerGameStats, shouldBeChecked} from "./ProfileService";
 
@@ -19,16 +19,14 @@ export const Profile: FunctionComponent = () => {
         loggedInUserDisplayName,
         loggedInUserUserId,
         setUserData
-    }: appContextInterface = useContext(AppContext);
+    }: AppContextInterface = useContext(AppContext);
     const updateUserProfile = useUpdateUserProfile;
 
     const [isEditingProfile, setIsEditingProfile] = useState<boolean>(false);
     const [selectedAvatar, setSelectedAvatar] = useState<string | null>(loggedInUserPhotoURL);
-    const [usernameInput, setUsernameInput] = useState<string>("");
-    const usernameRef = useRef<HTMLInputElement>(null);
-
+    const [usernameInput, setUsernameInput] = useState<string | undefined>(loggedInUserDisplayName ?? "");
     const [stats, setStats] = useState<PlayerGameStats>({wins: 0, losses: 0, ties: 0});
-
+    const usernameRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         if (!loggedInUserPhotoURL || !loggedInUserDisplayName) {
@@ -44,9 +42,8 @@ export const Profile: FunctionComponent = () => {
     }, [loggedInUserUserId,]);
 
     const onSubmitHandler = () => {
-        const newUsername = usernameRef.current?.value;
         updateUserProfile({
-            displayName: newUsername ? newUsername : loggedInUserDisplayName,
+            displayName: usernameRef.current?.value ?? loggedInUserDisplayName,
             photoURL: selectedAvatar,
             cb: setUserData
         });
@@ -70,43 +67,47 @@ export const Profile: FunctionComponent = () => {
                                     <div key={`inline-radio`} className="mb-3">
                                         <Form.Check inline
                                                     defaultChecked={shouldBeChecked("chicken", loggedInUserPhotoURL)}
-                                                    label={<Avatar name="chicken"/>} name="group1" type="radio"
+                                                    label={<Avatar name="chicken"/>} name="AvatarSelection" type="radio"
                                                     id={`chicken`}
                                                     onChange={(e) => setSelectedAvatar(e.target.id)}/>
                                         <Form.Check inline
                                                     defaultChecked={shouldBeChecked("boar", loggedInUserPhotoURL)}
-                                                    label={<Avatar name="boar"/>} name="group1" type="radio" id={`boar`}
+                                                    label={<Avatar name="boar"/>} name="AvatarSelection" type="radio"
+                                                    id={`boar`}
                                                     onChange={(e) => setSelectedAvatar(e.target.id)}/>
                                         <Form.Check inline
                                                     defaultChecked={shouldBeChecked("dog", loggedInUserPhotoURL)}
-                                                    label={<Avatar name="dog"/>} name="group1" type="radio"
+                                                    label={<Avatar name="dog"/>} name="AvatarSelection" type="radio"
                                                     id={`dog`} onChange={(e) => setSelectedAvatar(e.target.id)}/>
                                         <Form.Check inline
                                                     defaultChecked={shouldBeChecked("hen", loggedInUserPhotoURL)}
-                                                    label={<Avatar name="hen"/>} name="group1" type="radio"
+                                                    label={<Avatar name="hen"/>} name="AvatarSelection" type="radio"
                                                     id={`hen`} onChange={(e) => setSelectedAvatar(e.target.id)}/>
                                         <Form.Check inline
                                                     defaultChecked={shouldBeChecked("cat", loggedInUserPhotoURL)}
-                                                    label={<Avatar name="cat"/>} name="group1" type="radio" id={`cat`}
+                                                    label={<Avatar name="cat"/>} name="AvatarSelection" type="radio"
+                                                    id={`cat`}
                                                     onChange={(e) => setSelectedAvatar(e.target.id)}/>
                                         <Form.Check inline
                                                     defaultChecked={shouldBeChecked("rabbit", loggedInUserPhotoURL)}
-                                                    label={<Avatar name="rabbit"/>} name="group1" type="radio"
+                                                    label={<Avatar name="rabbit"/>} name="AvatarSelection" type="radio"
                                                     id={`rabbit`}
                                                     onChange={(e) => setSelectedAvatar(e.target.id)}/>
                                         <Form.Check inline
                                                     defaultChecked={shouldBeChecked("elephant", loggedInUserPhotoURL)}
-                                                    label={<Avatar name="elephant"/>} name="group1" type="radio"
+                                                    label={<Avatar name="elephant"/>} name="AvatarSelection"
+                                                    type="radio"
                                                     id={`elephant`}
                                                     onChange={(e) => setSelectedAvatar(e.target.id)}/>
                                         <Form.Check inline
                                                     defaultChecked={shouldBeChecked("giraffe", loggedInUserPhotoURL)}
-                                                    label={<Avatar name="giraffe"/>} name="group1" type="radio"
+                                                    label={<Avatar name="giraffe"/>} name="AvatarSelection" type="radio"
                                                     id={`giraffe`}
                                                     onChange={(e) => setSelectedAvatar(e.target.id)}/>
                                         <Form.Check inline
                                                     defaultChecked={shouldBeChecked("lion", loggedInUserPhotoURL)}
-                                                    label={<Avatar name="lion"/>} name="group1" type="radio" id={`lion`}
+                                                    label={<Avatar name="lion"/>} name="AvatarSelection" type="radio"
+                                                    id={`lion`}
                                                     onChange={(e) => setSelectedAvatar(e.target.id)}/>
                                     </div>
                                 ))}
@@ -117,9 +118,9 @@ export const Profile: FunctionComponent = () => {
                                     type="text"
                                     ref={usernameRef}
                                     value={usernameInput}
-                                    placeholder={loggedInUserDisplayName ? loggedInUserDisplayName : "Username"}
+                                    placeholder={loggedInUserDisplayName ?? "Username"}
                                     onChange={() => {
-                                        setUsernameInput(usernameRef.current!.value);
+                                        setUsernameInput(usernameRef.current?.value);
                                     }}
                                 />
                             </Form.Group>
@@ -139,7 +140,7 @@ export const Profile: FunctionComponent = () => {
                         <Col className="d-flex flex-row justify-content-between align-items-center">
                             <div className="d-flex flex-row justify-content-between align-items-center">
                                 <Avatar name={loggedInUserPhotoURL}/>
-                                <p className="fs-4 mx-2 align-middle my-auto">{loggedInUserDisplayName ? loggedInUserDisplayName : "Username"}</p>
+                                <p className="fs-4 mx-2 align-middle my-auto">{loggedInUserDisplayName ?? "Username"}</p>
                             </div>
                             <Button
                                 className="btn-height-40 justify-content-center"

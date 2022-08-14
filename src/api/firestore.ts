@@ -1,17 +1,6 @@
 import {UserDataInterface} from "../App";
 import {initializeApp} from "firebase/app";
-import {
-    addDoc,
-    collection,
-    deleteDoc,
-    doc,
-    getDoc,
-    getDocs,
-    getFirestore,
-    onSnapshot,
-    setDoc,
-    updateDoc
-} from "firebase/firestore";
+import {collection, deleteDoc, doc, getDoc, getDocs, getFirestore, setDoc, updateDoc} from "firebase/firestore";
 
 import {
     createUserWithEmailAndPassword,
@@ -65,7 +54,6 @@ export const useRegisterUser = ({email, username, password, registerUserCb}: Reg
         .then((credentials) => {
             updateUserProfile({displayName: username, photoURL: "placeholder", cb: registerUserCb.onSuccess});
             createUserStats({userId: credentials.user.uid, userName: username});
-            console.log("user created:", credentials.user);
         })
         .catch((err) => {
             registerUserCb.onError(err.message);

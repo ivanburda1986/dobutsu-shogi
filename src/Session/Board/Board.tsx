@@ -12,7 +12,7 @@ import {Stone, StoneInterface} from "./Stones/Stone";
 import {useParams} from "react-router";
 import {collection, doc, DocumentData, onSnapshot} from "firebase/firestore";
 import {AppContext} from "../../context/AppContext";
-import {appContextInterface} from "../../App";
+import {AppContextInterface} from "../../App";
 import {PlayerInterface} from "../PlayerInterface/PlayerInterface";
 import {RecentMoves} from "../RecentMoves/RecentMoves";
 
@@ -32,7 +32,7 @@ export type VictoryType =
 export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
     const params = useParams();
     const gameId = params.gameId;
-    const appContext: appContextInterface = useContext(AppContext);
+    const appContext: AppContextInterface = useContext(AppContext);
     const [stones, setStones] = useState<StoneInterface[]>([]);
     const [rowNumbers, setRowNumbers] = useState<number[]>(getBoardSize({type}).rowNumbers);
     const [columnLetters, setColumnLetters] = useState<string[]>(getBoardSize({type}).columnLetters);

@@ -23,7 +23,7 @@ export interface UserDataInterface {
     photoURL: string | null;
 }
 
-export interface appContextInterface {
+export interface AppContextInterface {
     userLoggedIn: boolean;
     loggedInUserEmail: string | null;
     loggedInUserDisplayName: string | null;
@@ -35,7 +35,7 @@ export interface appContextInterface {
 export const App = () => {
     const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(false);
     const [loggedInUserEmail, setLoggedInUserEmail] = useState<string | null>("");
-    const [loggedInUserDisplayName, setLoggedInUserDisplayName] = useState<string | null>("Username");
+    const [loggedInUserDisplayName, setLoggedInUserDisplayName] = useState<string | null>("");
     const [loggedInUserUserId, setLoggedInUserUserId] = useState<string>("");
     const [loggedInUserPhotoURL, setLoggedInUserPhotoURL] = useState<string | null>("placeholder");
     useRoute(isUserLoggedIn);
@@ -58,7 +58,7 @@ export const App = () => {
         photoURL && setLoggedInUserPhotoURL(photoURL);
     };
 
-    const providedAppContext: appContextInterface = {
+    const providedAppContext: AppContextInterface = {
         userLoggedIn: isUserLoggedIn,
         loggedInUserEmail,
         loggedInUserDisplayName,

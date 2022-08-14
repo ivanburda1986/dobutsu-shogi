@@ -10,7 +10,7 @@ import {
 } from "../api/firestore";
 import {AppContext} from "../context/AppContext";
 
-import {appContextInterface} from "../App";
+import {AppContextInterface} from "../App";
 import {Board} from "./Board/Board";
 
 import {evaluateBeingOpponent, evaluateBeingWinner} from "./SessionService";
@@ -23,7 +23,7 @@ import {RecentMoves} from "./RecentMoves/RecentMoves";
 export const Session = () => {
     const [amIOpponent, setAmIOpponent] = useState(false);
     const {gameId} = useParams();
-    const appContext: appContextInterface = useContext(AppContext);
+    const appContext: AppContextInterface = useContext(AppContext);
     const [gameData, setGameData] = useState<DocumentData | undefined>();
     const [isTie, setIsTie] = useState(false);
     const updateGame = useUpdateGame;

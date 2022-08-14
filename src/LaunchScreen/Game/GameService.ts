@@ -1,5 +1,5 @@
 import {gameType, statusType} from "../../api/firestore";
-import {appContextInterface} from "../../App";
+import {AppContextInterface} from "../../App";
 
 export const whichBackroundToUse = (type: gameType) => {
     if (type === "DOBUTSU") {
@@ -15,7 +15,7 @@ export const displayDeleteOption = ({
                                         creatorId,
                                         appContext,
                                         gameStatus
-                                    }: { creatorId: string; appContext: appContextInterface, gameStatus: statusType }) => {
+                                    }: { creatorId: string; appContext: AppContextInterface, gameStatus: statusType }) => {
     if (creatorId === appContext.loggedInUserUserId && gameStatus !== "INPROGRESS") {
         return true;
     }

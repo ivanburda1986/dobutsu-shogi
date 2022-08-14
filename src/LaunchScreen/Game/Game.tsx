@@ -4,7 +4,7 @@ import {Card} from "react-bootstrap";
 import styles from './Game.module.css';
 
 import {AppContext} from "../../context/AppContext";
-import {appContextInterface} from "../../App";
+import {AppContextInterface} from "../../App";
 import {getSingleGameDetails, useDeleteGame, useJoinGame} from "../../api/firestore";
 import {ReturnedGameInterface} from "../WaitingGamesList/WaitingGamesList";
 import {
@@ -28,7 +28,7 @@ export const Game: FC<ReturnedGameInterface> = ({
                                                     status,
                                                     type
                                                 }) => {
-    const appContext: appContextInterface = useContext(AppContext);
+    const appContext: AppContextInterface = useContext(AppContext);
     const deleteGame = useDeleteGame;
     const joinGame = useJoinGame;
 

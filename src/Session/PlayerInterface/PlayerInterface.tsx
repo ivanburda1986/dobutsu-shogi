@@ -1,6 +1,6 @@
 import React, {FC, useContext, useState} from "react";
 import {gameType} from "../../api/firestore";
-import {appContextInterface} from "../../App";
+import {AppContextInterface} from "../../App";
 import {AppContext} from "../../context/AppContext";
 import {Avatar} from "../../Header/Avatar/Avatar";
 import styles from "./PlayerInterface.module.css";
@@ -22,7 +22,7 @@ export const PlayerInterface: FC<PlayerInterfaceInterface> = ({
                                                                   creatorInterface,
                                                                   gameData
                                                               }) => {
-    const appContext: appContextInterface = useContext(AppContext);
+    const appContext: AppContextInterface = useContext(AppContext);
     const [rowNumbers, setRowNumbers] = useState<number[]>(getStashSize({type, creatorInterface}).rowNumbers);
     const [columnLetters, setColumnLetters] = useState<string[]>(getStashSize({type, creatorInterface}).columnLetters);
 
