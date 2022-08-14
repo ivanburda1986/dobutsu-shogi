@@ -61,12 +61,10 @@ export const useRegisterUser = ({email, username, password, registerUserCb}: Reg
         });
 };
 
-
 //TYPES
 export type gameType = "DOBUTSU" | "GOROGORO" | "GREENWOOD";
 export type statusType = "WAITING" | "INPROGRESS" | "COMPLETED" | "CANCELLED" | "RESIGNED" | "TIE";
 export type playerType = "CREATOR" | "OPPONENT";
-
 
 // Update stone position
 interface useUpdateStonePositionInterface {
@@ -276,7 +274,7 @@ export const useJoinGame = ({
                 console.log(err.message);
             });
         //Create creator stones
-        let gameStones: StoneInterface[] = getCreatorStones({creatorId: joiningPlayerId, type: type});
+        let gameStones: StoneInterface[] = getCreatorStones(joiningPlayerId);
         gameStones.forEach((stone) => {
             setDoc(doc(db, `games/${gameId}/stones`, stone.id), {
                 ...stone,
@@ -296,7 +294,7 @@ export const useJoinGame = ({
                 console.log(err.message);
             });
         //Create opponent stones
-        let gameStones: StoneInterface[] = getOpponentStones({opponentId: joiningPlayerId, type: type});
+        let gameStones: StoneInterface[] = getOpponentStones(joiningPlayerId);
         gameStones.forEach((stone) => {
             setDoc(doc(db, `games/${gameId}/stones`, stone.id), {
                 ...stone,

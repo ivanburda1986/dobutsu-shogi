@@ -9,7 +9,6 @@ import {AppContextInterface} from "../App";
 
 export const CreateGame: FC = () => {
     const [newGameNameInput, setNewGameNameInput] = useState<string | undefined>("");
-    const [newGameType, setNewGameType] = useState<gameType>("DOBUTSU");
     const [formValid, setFormValid] = useState<boolean>(false);
 
     const appContext: AppContextInterface = useContext(AppContext);
@@ -34,11 +33,11 @@ export const CreateGame: FC = () => {
     };
 
     useEffect(() => {
-        if (newGameNameInput && newGameType) {
+        if (newGameNameInput) {
             return setFormValid(true);
         }
         return setFormValid(false);
-    }, [newGameNameInput, newGameType]);
+    }, [newGameNameInput]);
 
     return (
         <Container className="text-success">
@@ -60,24 +59,6 @@ export const CreateGame: FC = () => {
                                 }}
                             />
                         </Form.Group>
-                        {/*<Form.Group className="mb-3" controlId="formGameType">*/}
-                        {/*    <Form.Label>*/}
-                        {/*        <h4>Game type</h4>*/}
-                        {/*    </Form.Label>*/}
-                        {/*    {["radio"].map(() => (*/}
-                        {/*        <div key={`inline-radio`} className="mb-3">*/}
-                        {/*            <Form.Check inline defaultChecked label="Dobutsu Shogi" name="group1" type="radio"*/}
-                        {/*                        id="DOBUTSU" onChange={(e) => setNewGameType(e.target.id as gameType)}/>*/}
-                        {/*            <Form.Check inline disabled label="Goro Goro Dobutsu Shogi" name="group1"*/}
-                        {/*                        type="radio" id="GOROGORO"*/}
-                        {/*                        onChange={(e) => setNewGameType(e.target.id as gameType)}/>*/}
-                        {/*            <Form.Check inline disabled label="Dobutsu Shogi in the Green Wood" name="group1"*/}
-                        {/*                        type="radio" id="GREENWOOD"*/}
-                        {/*                        onChange={(e) => setNewGameType(e.target.id as gameType)}/>*/}
-                        {/*        </div>*/}
-                        {/*    ))}*/}
-                        {/*</Form.Group>*/}
-
                         <Button
                             variant="primary"
                             disabled={!formValid}

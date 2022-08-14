@@ -2,7 +2,6 @@ import React, {FC} from "react";
 import {Container} from "react-bootstrap";
 
 export const About: FC = () => {
-
     return (
         <Container className="text-success">
             <h2>How to play</h2>
