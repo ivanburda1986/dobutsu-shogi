@@ -4,16 +4,11 @@ import {Card} from "react-bootstrap";
 import styles from './Game.module.css';
 
 import {AppContext} from "../../context/AppContext";
-import {appContextInterface} from "../../App";
+import {AppContextInterface} from "../../App";
 import {getSingleGameDetails, useDeleteGame, useJoinGame} from "../../api/firestore";
 import {ReturnedGameInterface} from "../WaitingGamesList/WaitingGamesList";
-import {
-    displayDeleteOption,
-    shouldShowAcceptButton,
-    shouldShowGoToGameButton,
-    whichBackroundToUse
-} from "./GameService";
-import {Avatar} from "../../Header/Avatar/Avatar";
+import {displayDeleteOption, shouldShowAcceptButton, shouldShowGoToGameButton} from "./GameService";
+import {Avatar} from "../../Avatar/Avatar";
 
 export const Game: FC<ReturnedGameInterface> = ({
                                                     gameId,
@@ -26,20 +21,19 @@ export const Game: FC<ReturnedGameInterface> = ({
                                                     currentPlayerTurn,
                                                     name,
                                                     status,
-                                                    type
                                                 }) => {
-    const appContext: appContextInterface = useContext(AppContext);
+    const appContext: AppContextInterface = useContext(AppContext);
     const deleteGame = useDeleteGame;
     const joinGame = useJoinGame;
 
     return (
         <Card style={{width: "18rem"}}
-              className={`${styles[whichBackroundToUse(type)]} ${appContext.loggedInUserUserId === currentPlayerTurn && status !== "COMPLETED" && styles.YourTurn} p-0 m-2 border-radius border-4`}>
+              className={`${styles.DobutsuGreen} ${appContext.loggedInUserUserId === currentPlayerTurn && status !== "COMPLETED" && styles.YourTurn} p-0 m-2 border-radius border-4`}>
             <Card.Header className="d-flex justify-content-between">
                 <span className="d-flex align-items-center">
                     <Card.Title className="me-2">{name}</Card.Title>
-                <Avatar name={creatorPhotoURL} medium={true}/>
-                     <Avatar name={opponentPhotoURL} medium={true}/>
+                <Avatar name={creatorPhotoURL} small/>
+                    <Avatar name={opponentPhotoURL} small/>
                 </span>
                 {displayDeleteOption({creatorId, appContext, gameStatus: status}) && (
                     <button type="button" className="btn-close" aria-label="Close" onClick={() => deleteGame(gameId)}/>
@@ -71,7 +65,6 @@ export const Game: FC<ReturnedGameInterface> = ({
                                         joiningPlayerId: appContext.loggedInUserUserId,
                                         joiningPlayerName: appContext.loggedInUserDisplayName,
                                         joiningPlayerPhotoURL: appContext.loggedInUserPhotoURL,
-                                        type: type
                                     });
                                 }
                                 return;
@@ -99,7 +92,6 @@ export const Game: FC<ReturnedGameInterface> = ({
                                         joiningPlayerId: appContext.loggedInUserUserId,
                                         joiningPlayerName: appContext.loggedInUserDisplayName,
                                         joiningPlayerPhotoURL: appContext.loggedInUserPhotoURL,
-                                        type: type
                                     });
                                 }
                                 return;

@@ -1,23 +1,18 @@
+import {FC, useEffect, useRef, useState} from "react";
+import {useParams} from "react-router";
+import {Container} from "react-bootstrap";
+import {collection, doc, DocumentData, onSnapshot} from "firebase/firestore";
+import {db} from "../../api/firestore";
+import {v4 as uuidv4} from "uuid";
 import bg from "../../images/bg-clean.png";
 import bgRotated from "../../images/bg-clean-rotated.png";
-import {FC, MutableRefObject, useContext, useEffect, useRef, useState} from "react";
-import {Col, Container, Row} from "react-bootstrap";
-import {db, gameType, getSingleGameDetails} from "../../api/firestore";
-import {getBoardSize} from "./BoardService";
-import {BoardRow} from "./BoardRow/BoardRow";
-import {v4 as uuidv4} from "uuid";
 
-import styles from "./Board.module.css";
-import {Stone, StoneInterface} from "./Stones/Stone";
-import {useParams} from "react-router";
-import {collection, doc, DocumentData, onSnapshot} from "firebase/firestore";
-import {AppContext} from "../../context/AppContext";
-import {appContextInterface} from "../../App";
+import {BoardRow} from "./BoardRow/BoardRow";
 import {PlayerInterface} from "../PlayerInterface/PlayerInterface";
-import {RecentMoves} from "../RecentMoves/RecentMoves";
+import {Stone, StoneInterface} from "./Stones/Stone";
+import styles from "./Board.module.css";
 
 interface BoardInterface {
-    type: gameType;
     amIOpponent: boolean;
     gameData: DocumentData | undefined;
 }
@@ -29,13 +24,12 @@ export type VictoryType =
     | undefined
     | null;
 
-export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
+export const Board: FC<BoardInterface> = ({amIOpponent, gameData}) => {
     const params = useParams();
     const gameId = params.gameId;
-    const appContext: appContextInterface = useContext(AppContext);
     const [stones, setStones] = useState<StoneInterface[]>([]);
-    const [rowNumbers, setRowNumbers] = useState<number[]>(getBoardSize({type}).rowNumbers);
-    const [columnLetters, setColumnLetters] = useState<string[]>(getBoardSize({type}).columnLetters);
+    const [rowNumbers, setRowNumbers] = useState<number[]>([1, 2, 3, 4]);
+    const [columnLetters, setColumnLetters] = useState<string[]>(["A", "B", "C"]);
     const [draggedStone, setDraggedStone] = useState<StoneInterface | undefined>();
     const [lyingStone, setLyingStone] = useState<StoneInterface | undefined>();
     const [canTakeStone, setCanTakeStone] = useState<boolean>(false);
@@ -75,10 +69,10 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
 
     useEffect(() => {
         if (amIOpponent === true) {
-            setRowNumbers(getBoardSize({type}).rowNumbers.reverse());
-            setColumnLetters(getBoardSize({type}).columnLetters.reverse());
+            setRowNumbers(rowNumbers.reverse());
+            setColumnLetters(columnLetters.reverse());
         }
-    }, [amIOpponent]);
+    }, [amIOpponent, columnLetters, rowNumbers]);
 
     return (
         <Container id="board"
@@ -87,7 +81,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
             <div
                 className={`${styles.Interface1}`}
                 style={{transform: `rotate(${amIOpponent === true ? 180 : 0}deg)`}}>
-                <PlayerInterface type={type} amIOpponent={amIOpponent} creatorInterface={false} gameData={gameData}
+                <PlayerInterface amIOpponent={amIOpponent} creatorInterface={false} gameData={gameData}
 
                 />
             </div>
@@ -131,7 +125,7 @@ export const Board: FC<BoardInterface> = ({type, amIOpponent, gameData}) => {
 
             <div className={`${styles.Interface2}`}
                  style={{transform: `rotate(${amIOpponent === true ? 180 : 0}deg)`}}>
-                <PlayerInterface type={type} amIOpponent={amIOpponent} creatorInterface={true} gameData={gameData}
+                <PlayerInterface amIOpponent={amIOpponent} creatorInterface={true} gameData={gameData}
                 />
             </div>
         </Container>

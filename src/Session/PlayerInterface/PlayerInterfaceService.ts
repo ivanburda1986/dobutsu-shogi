@@ -1,5 +1,4 @@
 import {DocumentData} from "firebase/firestore";
-import {gameType} from "../../api/firestore";
 
 
 export type columnLetterType =
@@ -21,16 +20,11 @@ interface BoardInterface {
     columnLetters: string[];
 }
 
-export const getStashSize = ({
-                                 type,
-                                 creatorInterface
-                             }: { type: gameType; creatorInterface: boolean }): BoardInterface => {
-    if (type === "DOBUTSU" && creatorInterface) {
+export const getStashSize = (creatorInterface: boolean): BoardInterface => {
+    if (creatorInterface) {
         return {rowNumbers: [1], columnLetters: ["CREATOR-ELEPHANT", "CREATOR-GIRAFFE", "CREATOR-CHICKEN"]};
     }
-    if (type === "DOBUTSU" && !creatorInterface) {
-        return {rowNumbers: [1], columnLetters: ["OPPONENT-ELEPHANT", "OPPONENT-GIRAFFE", "OPPONENT-CHICKEN"]};
-    } else return {rowNumbers: [1, 2], columnLetters: ["J", "K", "L", "M"]};
+    return {rowNumbers: [1], columnLetters: ["OPPONENT-ELEPHANT", "OPPONENT-GIRAFFE", "OPPONENT-CHICKEN"]};
 };
 
 export const whatNameToDisplay = ({

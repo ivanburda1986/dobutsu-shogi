@@ -1,0 +1,12 @@
+.recentMoveStone {
+    background-position: center;
+    background-size: 105%;
+    background-repeat: no-repeat;
+    background-color: #fff;
+    border-radius: 5px;
+    height: 1.5rem;
+    width: 1.5rem;
+    margin-right: 0.25rem;
+    border: 1px solid black;
+}
+

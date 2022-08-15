@@ -1,44 +1,39 @@
-import {FC, useContext, useEffect, useRef, useState} from "react";
+import {FC, useContext, useRef, useState} from "react";
 import {useNavigate} from "react-router";
-import {useCreateGame, gameType, useJoinGame} from "../api/firestore";
+import {useCreateGame, useJoinGame} from "../api/firestore";
 import {Button, Container, Form, Row} from "react-bootstrap";
 import {v4 as uuidv4} from "uuid";
 
 import {AppContext} from "../context/AppContext";
-import {appContextInterface} from "../App";
+import {AppContextInterface} from "../App";
 
 export const CreateGame: FC = () => {
-    const [newGameNameInput, setNewGameNameInput] = useState<string | undefined>("");
-    const [newGameType, setNewGameType] = useState<gameType>("DOBUTSU");
-    const [formValid, setFormValid] = useState<boolean>(false);
-
-    const appContext: appContextInterface = useContext(AppContext);
-    const gameNameRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
     const createGame = useCreateGame;
     const joinGame = useJoinGame;
+
+    const {
+        loggedInUserUserId,
+        loggedInUserDisplayName,
+        loggedInUserPhotoURL
+    }: AppContextInterface = useContext(AppContext);
+
+    const gameNameRef = useRef<HTMLInputElement>(null);
+    const [newGameNameInput, setNewGameNameInput] = useState<string | undefined>("");
 
     const navigateToLaunchScreen = (createdGameId: string) => {
         navigate(`../session/${createdGameId}`, {replace: false});
     };
 
-    const joinGameUponCreation = ({createdGameId, type}: { createdGameId: string, type: gameType }) => {
+    const joinGameUponCreation = (createdGameId: string) => {
         joinGame({
             gameId: createdGameId,
             joiningPlayerType: "CREATOR",
-            joiningPlayerId: appContext.loggedInUserUserId,
-            joiningPlayerName: appContext.loggedInUserDisplayName,
-            joiningPlayerPhotoURL: appContext.loggedInUserPhotoURL,
-            type: type
+            joiningPlayerId: loggedInUserUserId,
+            joiningPlayerName: loggedInUserDisplayName,
+            joiningPlayerPhotoURL: loggedInUserPhotoURL,
         });
     };
-
-    useEffect(() => {
-        if (newGameNameInput && newGameType) {
-            return setFormValid(true);
-        }
-        return setFormValid(false);
-    }, [newGameNameInput, newGameType]);
 
     return (
         <Container className="text-success">
@@ -54,40 +49,22 @@ export const CreateGame: FC = () => {
                                 type="text"
                                 ref={gameNameRef}
                                 value={newGameNameInput}
-                                placeholder="New game name"
+                                placeholder="My new game"
+                                autoComplete="off"
                                 onChange={() => {
                                     setNewGameNameInput(gameNameRef.current?.value);
                                 }}
                             />
                         </Form.Group>
-                        {/*<Form.Group className="mb-3" controlId="formGameType">*/}
-                        {/*    <Form.Label>*/}
-                        {/*        <h4>Game type</h4>*/}
-                        {/*    </Form.Label>*/}
-                        {/*    {["radio"].map(() => (*/}
-                        {/*        <div key={`inline-radio`} className="mb-3">*/}
-                        {/*            <Form.Check inline defaultChecked label="Dobutsu Shogi" name="group1" type="radio"*/}
-                        {/*                        id="DOBUTSU" onChange={(e) => setNewGameType(e.target.id as gameType)}/>*/}
-                        {/*            <Form.Check inline disabled label="Goro Goro Dobutsu Shogi" name="group1"*/}
-                        {/*                        type="radio" id="GOROGORO"*/}
-                        {/*                        onChange={(e) => setNewGameType(e.target.id as gameType)}/>*/}
-                        {/*            <Form.Check inline disabled label="Dobutsu Shogi in the Green Wood" name="group1"*/}
-                        {/*                        type="radio" id="GREENWOOD"*/}
-                        {/*                        onChange={(e) => setNewGameType(e.target.id as gameType)}/>*/}
-                        {/*        </div>*/}
-                        {/*    ))}*/}
-                        {/*</Form.Group>*/}
-
                         <Button
                             variant="primary"
-                            disabled={!formValid}
+                            disabled={!newGameNameInput}
                             type="button"
                             onClick={() => createGame({
                                 gameId: uuidv4(),
-                                creatorId: appContext.loggedInUserUserId,
-                                creatorName: appContext.loggedInUserDisplayName!,
-                                name: gameNameRef.current!.value,
-                                type: "DOBUTSU",
+                                creatorId: loggedInUserUserId,
+                                creatorName: loggedInUserDisplayName ?? "Username",
+                                name: gameNameRef.current?.value ?? "My new game",
                                 createGameCb: {join: joinGameUponCreation, redirect: navigateToLaunchScreen}
                             })}
                         >

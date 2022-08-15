@@ -1,17 +1,6 @@
 import {UserDataInterface} from "../App";
 import {initializeApp} from "firebase/app";
-import {
-    addDoc,
-    collection,
-    deleteDoc,
-    doc,
-    getDoc,
-    getDocs,
-    getFirestore,
-    onSnapshot,
-    setDoc,
-    updateDoc
-} from "firebase/firestore";
+import {collection, deleteDoc, doc, getDoc, getDocs, getFirestore, setDoc, updateDoc} from "firebase/firestore";
 
 import {
     createUserWithEmailAndPassword,
@@ -65,7 +54,6 @@ export const useRegisterUser = ({email, username, password, registerUserCb}: Reg
         .then((credentials) => {
             updateUserProfile({displayName: username, photoURL: "placeholder", cb: registerUserCb.onSuccess});
             createUserStats({userId: credentials.user.uid, userName: username});
-            console.log("user created:", credentials.user);
         })
         .catch((err) => {
             registerUserCb.onError(err.message);
@@ -73,12 +61,9 @@ export const useRegisterUser = ({email, username, password, registerUserCb}: Reg
         });
 };
 
-
 //TYPES
-export type gameType = "DOBUTSU" | "GOROGORO" | "GREENWOOD";
 export type statusType = "WAITING" | "INPROGRESS" | "COMPLETED" | "CANCELLED" | "RESIGNED" | "TIE";
 export type playerType = "CREATOR" | "OPPONENT";
-
 
 // Update stone position
 interface useUpdateStonePositionInterface {
@@ -203,9 +188,8 @@ export interface CreateGameInputInterface {
     creatorId: string;
     creatorName: string;
     name: string;
-    type: gameType;
     createGameCb: {
-        join: ({createdGameId, type}: { createdGameId: string, type: gameType }) => void;
+        join: (createdGameId: string) => void;
         redirect: (createdGameId: string) => void;
     };
 }
@@ -218,7 +202,6 @@ export interface Game {
     creatorPhotoURL: string | null;
     creatorJoined: boolean;
     name: string;
-    type: gameType;
     status: statusType;
     opponentId: string;
     opponentName: string;
@@ -235,7 +218,7 @@ export interface Game {
 
 
 export const gamesCollectionRef = collection(db, "games");
-export const useCreateGame = ({creatorId, creatorName, name, type, gameId, createGameCb}: CreateGameInputInterface) => {
+export const useCreateGame = ({creatorId, creatorName, name, gameId, createGameCb}: CreateGameInputInterface) => {
     setDoc(doc(db, "games", gameId), {
         gameId: gameId,
         createdOn: Date.now(),
@@ -243,7 +226,6 @@ export const useCreateGame = ({creatorId, creatorName, name, type, gameId, creat
         creatorName: creatorName,
         creatorJoined: false,
         name: name,
-        type: type,
         status: "WAITING",
         opponentId: null,
         opponentName: null,
@@ -256,7 +238,7 @@ export const useCreateGame = ({creatorId, creatorName, name, type, gameId, creat
         victoryType: null,
         finishedTimeStamp: null,
     }).then((docRef) => {
-        createGameCb.join({createdGameId: gameId, type: type});
+        createGameCb.join(gameId);
         createGameCb.redirect(gameId);
     });
 };
@@ -269,7 +251,6 @@ interface JoinGame {
     joiningPlayerId: string;
     joiningPlayerName: string | null;
     joiningPlayerPhotoURL: string | null;
-    type: gameType;
 }
 
 export const useJoinGame = ({
@@ -278,7 +259,6 @@ export const useJoinGame = ({
                                 joiningPlayerId,
                                 joiningPlayerName,
                                 joiningPlayerPhotoURL,
-                                type
                             }: JoinGame) => {
     if (joiningPlayerType === "CREATOR") {
         //Update game details
@@ -288,7 +268,7 @@ export const useJoinGame = ({
                 console.log(err.message);
             });
         //Create creator stones
-        let gameStones: StoneInterface[] = getCreatorStones({creatorId: joiningPlayerId, type: type});
+        let gameStones: StoneInterface[] = getCreatorStones(joiningPlayerId);
         gameStones.forEach((stone) => {
             setDoc(doc(db, `games/${gameId}/stones`, stone.id), {
                 ...stone,
@@ -308,7 +288,7 @@ export const useJoinGame = ({
                 console.log(err.message);
             });
         //Create opponent stones
-        let gameStones: StoneInterface[] = getOpponentStones({opponentId: joiningPlayerId, type: type});
+        let gameStones: StoneInterface[] = getOpponentStones(joiningPlayerId);
         gameStones.forEach((stone) => {
             setDoc(doc(db, `games/${gameId}/stones`, stone.id), {
                 ...stone,

@@ -22,7 +22,7 @@ export const CompletedGamesList: FC<CompletedGamesListInterface> = ({games}) => 
                               creatorId={game.creatorId}
                               creatorName={game.creatorName} opponentName={game.opponentName}
                               opponentId={game.opponentId !== null ? game.opponentId : null} name={game.name}
-                              status={game.status} type={game.type} creatorPhotoURL={game.creatorPhotoURL}
+                              status={game.status} creatorPhotoURL={game.creatorPhotoURL}
                               opponentPhotoURL={game.opponentPhotoURL} currentPlayerTurn={game.currentPlayerTurn}/>
                     ))}
                 </Row>

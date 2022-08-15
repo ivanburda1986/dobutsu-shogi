@@ -1,23 +1,21 @@
-import styles from "./MobileNavigation.module.css";
+import {FC} from "react";
 import {NavLink} from "react-router-dom";
-import {Avatar} from "../Avatar/Avatar";
-import {FunctionComponent} from "react";
-import {appContextInterface} from "../../App";
 import {useLogoutUser} from "../../api/firestore";
+import {AppContextInterface} from "../../App";
+
+import {Avatar} from "../../Avatar/Avatar";
 import {TiInfoLargeOutline} from "react-icons/ti";
 import {MdLogout} from "react-icons/md";
+import styles from "./MobileNavigation.module.css";
 
-
-export const MobileNavigation: FunctionComponent<Pick<appContextInterface, "userLoggedIn" | "loggedInUserDisplayName" | "loggedInUserPhotoURL">> = ({
-                                                                                                                                                        userLoggedIn,
-                                                                                                                                                        loggedInUserDisplayName,
-                                                                                                                                                        loggedInUserPhotoURL
-                                                                                                                                                    }) => {
+export const MobileNavigation: FC<Pick<AppContextInterface, "userLoggedIn" | "loggedInUserPhotoURL">> = ({
+                                                                                                             userLoggedIn,
+                                                                                                             loggedInUserPhotoURL
+                                                                                                         }) => {
     const logout = useLogoutUser;
     return (
         <header
             className={`${styles.MobileNavigation} d-flex d-md-none justify-content-between align-items-center mb-2`}>
-            {/*Logged-out: Top navigation*/}
             <div className="d-flex justify-content-between align-items-center w-100 py-2">
                 {userLoggedIn &&
                     <NavLink to="/"
@@ -41,7 +39,7 @@ export const MobileNavigation: FunctionComponent<Pick<appContextInterface, "user
                 )}
                 {userLoggedIn && <NavLink to="/profile"
                                           className="btn d-flex flex-row justify-content-between align-items-center py-0">
-                    <Avatar name={loggedInUserPhotoURL} medium/>
+                    <Avatar name={loggedInUserPhotoURL}/>
                 </NavLink>}
 
                 {!userLoggedIn && (
@@ -61,6 +59,5 @@ export const MobileNavigation: FunctionComponent<Pick<appContextInterface, "user
                 )}
             </div>
         </header>
-
     );
 };
