@@ -1,9 +1,9 @@
 =================================================================
 Refactoring and testing:
-refactor the whole game. Refactored:
--register
--login
--profile
+refactor the whole game. Remaining:
+-launchscreen
+-api
+-session
 
 write automated tests in jest and RTL
 =================================================================
