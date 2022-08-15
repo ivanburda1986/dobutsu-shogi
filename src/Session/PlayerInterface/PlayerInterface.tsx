@@ -1,5 +1,4 @@
 import React, {FC, useContext, useState} from "react";
-import {gameType} from "../../api/firestore";
 import {AppContextInterface} from "../../App";
 import {AppContext} from "../../context/AppContext";
 import {Avatar} from "../../Header/Avatar/Avatar";
@@ -10,21 +9,20 @@ import {DocumentData} from "firebase/firestore";
 import {StashRow} from "../Board/StashRow/StashRow";
 
 interface PlayerInterfaceInterface {
-    type: gameType;
     amIOpponent: boolean;
     creatorInterface: boolean;
     gameData: DocumentData | undefined;
 }
 
 export const PlayerInterface: FC<PlayerInterfaceInterface> = ({
-                                                                  type,
+
                                                                   amIOpponent,
                                                                   creatorInterface,
                                                                   gameData
                                                               }) => {
     const appContext: AppContextInterface = useContext(AppContext);
-    const [rowNumbers, setRowNumbers] = useState<number[]>(getStashSize({type, creatorInterface}).rowNumbers);
-    const [columnLetters, setColumnLetters] = useState<string[]>(getStashSize({type, creatorInterface}).columnLetters);
+    const [rowNumbers, setRowNumbers] = useState<number[]>(getStashSize(creatorInterface).rowNumbers);
+    const [columnLetters, setColumnLetters] = useState<string[]>(getStashSize(creatorInterface).columnLetters);
 
     return (
         <div

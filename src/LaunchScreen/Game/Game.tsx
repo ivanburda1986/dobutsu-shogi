@@ -7,12 +7,7 @@ import {AppContext} from "../../context/AppContext";
 import {AppContextInterface} from "../../App";
 import {getSingleGameDetails, useDeleteGame, useJoinGame} from "../../api/firestore";
 import {ReturnedGameInterface} from "../WaitingGamesList/WaitingGamesList";
-import {
-    displayDeleteOption,
-    shouldShowAcceptButton,
-    shouldShowGoToGameButton,
-    whichBackroundToUse
-} from "./GameService";
+import {displayDeleteOption, shouldShowAcceptButton, shouldShowGoToGameButton} from "./GameService";
 import {Avatar} from "../../Header/Avatar/Avatar";
 
 export const Game: FC<ReturnedGameInterface> = ({
@@ -26,7 +21,6 @@ export const Game: FC<ReturnedGameInterface> = ({
                                                     currentPlayerTurn,
                                                     name,
                                                     status,
-                                                    type
                                                 }) => {
     const appContext: AppContextInterface = useContext(AppContext);
     const deleteGame = useDeleteGame;
@@ -34,7 +28,7 @@ export const Game: FC<ReturnedGameInterface> = ({
 
     return (
         <Card style={{width: "18rem"}}
-              className={`${styles[whichBackroundToUse(type)]} ${appContext.loggedInUserUserId === currentPlayerTurn && status !== "COMPLETED" && styles.YourTurn} p-0 m-2 border-radius border-4`}>
+              className={`${styles.DobutsuGreen} ${appContext.loggedInUserUserId === currentPlayerTurn && status !== "COMPLETED" && styles.YourTurn} p-0 m-2 border-radius border-4`}>
             <Card.Header className="d-flex justify-content-between">
                 <span className="d-flex align-items-center">
                     <Card.Title className="me-2">{name}</Card.Title>
@@ -71,7 +65,6 @@ export const Game: FC<ReturnedGameInterface> = ({
                                         joiningPlayerId: appContext.loggedInUserUserId,
                                         joiningPlayerName: appContext.loggedInUserDisplayName,
                                         joiningPlayerPhotoURL: appContext.loggedInUserPhotoURL,
-                                        type: type
                                     });
                                 }
                                 return;
@@ -99,7 +92,6 @@ export const Game: FC<ReturnedGameInterface> = ({
                                         joiningPlayerId: appContext.loggedInUserUserId,
                                         joiningPlayerName: appContext.loggedInUserDisplayName,
                                         joiningPlayerPhotoURL: appContext.loggedInUserPhotoURL,
-                                        type: type
                                     });
                                 }
                                 return;

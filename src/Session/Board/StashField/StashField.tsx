@@ -1,8 +1,6 @@
 import React, {FC} from "react";
-import {useParams} from "react-router";
 import styles from "./StashField.module.css";
 import {getImgReference} from "../../../Header/Avatar/Avatar";
-import {columnLetterType} from "../../PlayerInterface/PlayerInterfaceService";
 
 interface FieldInterface {
     rowNumber: number;

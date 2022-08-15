@@ -62,7 +62,6 @@ export const useRegisterUser = ({email, username, password, registerUserCb}: Reg
 };
 
 //TYPES
-export type gameType = "DOBUTSU" | "GOROGORO" | "GREENWOOD";
 export type statusType = "WAITING" | "INPROGRESS" | "COMPLETED" | "CANCELLED" | "RESIGNED" | "TIE";
 export type playerType = "CREATOR" | "OPPONENT";
 
@@ -189,9 +188,8 @@ export interface CreateGameInputInterface {
     creatorId: string;
     creatorName: string;
     name: string;
-    type: gameType;
     createGameCb: {
-        join: ({createdGameId, type}: { createdGameId: string, type: gameType }) => void;
+        join: (createdGameId: string) => void;
         redirect: (createdGameId: string) => void;
     };
 }
@@ -204,7 +202,6 @@ export interface Game {
     creatorPhotoURL: string | null;
     creatorJoined: boolean;
     name: string;
-    type: gameType;
     status: statusType;
     opponentId: string;
     opponentName: string;
@@ -221,7 +218,7 @@ export interface Game {
 
 
 export const gamesCollectionRef = collection(db, "games");
-export const useCreateGame = ({creatorId, creatorName, name, type, gameId, createGameCb}: CreateGameInputInterface) => {
+export const useCreateGame = ({creatorId, creatorName, name, gameId, createGameCb}: CreateGameInputInterface) => {
     setDoc(doc(db, "games", gameId), {
         gameId: gameId,
         createdOn: Date.now(),
@@ -229,7 +226,6 @@ export const useCreateGame = ({creatorId, creatorName, name, type, gameId, creat
         creatorName: creatorName,
         creatorJoined: false,
         name: name,
-        type: type,
         status: "WAITING",
         opponentId: null,
         opponentName: null,
@@ -242,7 +238,7 @@ export const useCreateGame = ({creatorId, creatorName, name, type, gameId, creat
         victoryType: null,
         finishedTimeStamp: null,
     }).then((docRef) => {
-        createGameCb.join({createdGameId: gameId, type: type});
+        createGameCb.join(gameId);
         createGameCb.redirect(gameId);
     });
 };
@@ -255,7 +251,6 @@ interface JoinGame {
     joiningPlayerId: string;
     joiningPlayerName: string | null;
     joiningPlayerPhotoURL: string | null;
-    type: gameType;
 }
 
 export const useJoinGame = ({
@@ -264,7 +259,6 @@ export const useJoinGame = ({
                                 joiningPlayerId,
                                 joiningPlayerName,
                                 joiningPlayerPhotoURL,
-                                type
                             }: JoinGame) => {
     if (joiningPlayerType === "CREATOR") {
         //Update game details

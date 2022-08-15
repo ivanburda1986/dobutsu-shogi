@@ -1,6 +1,6 @@
 import {FC} from "react";
 import {Container, Row} from "react-bootstrap";
-import {gameType, statusType} from "../../api/firestore";
+import {statusType} from "../../api/firestore";
 
 import {Game} from "../Game/Game";
 
@@ -15,7 +15,6 @@ export interface ReturnedGameInterface {
     currentPlayerTurn: string;
     name: string;
     status: statusType;
-    type: gameType;
     opponentId: string | null;
 }
 
@@ -36,7 +35,7 @@ export const WaitingGamesList: FC<WaitingGamesListInterface> = ({games}) => {
                               creatorId={game.creatorId}
                               creatorName={game.creatorName} opponentName={game.opponentName}
                               opponentId={game.opponentId !== null ? game.opponentId : null} name={game.name}
-                              status={game.status} type={game.type} creatorPhotoURL={game.creatorPhotoURL}
+                              status={game.status} creatorPhotoURL={game.creatorPhotoURL}
                               opponentPhotoURL={game.opponentPhotoURL} currentPlayerTurn={game.currentPlayerTurn}/>
                     ))}
                 </Row>

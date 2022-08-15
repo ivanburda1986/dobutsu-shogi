@@ -1,15 +1,5 @@
-import {gameType, statusType} from "../../api/firestore";
+import {statusType} from "../../api/firestore";
 import {AppContextInterface} from "../../App";
-
-export const whichBackroundToUse = (type: gameType) => {
-    if (type === "DOBUTSU") {
-        return "DobutsuGreen";
-    }
-    if (type === "GOROGORO") {
-        return "warning";
-    }
-    return "danger";
-};
 
 export const displayDeleteOption = ({
                                         creatorId,
