@@ -67,46 +67,51 @@ export const Profile: FunctionComponent = () => {
                                     <div key={`inline-radio`} className="mb-3">
                                         <Form.Check inline
                                                     defaultChecked={shouldBeChecked("chicken", loggedInUserPhotoURL)}
-                                                    label={<Avatar name="chicken"/>} name="AvatarSelection" type="radio"
+                                                    label={<Avatar name="chicken" big/>} name="AvatarSelection"
+                                                    type="radio"
                                                     id={`chicken`}
                                                     onChange={(e) => setSelectedAvatar(e.target.id)}/>
                                         <Form.Check inline
                                                     defaultChecked={shouldBeChecked("boar", loggedInUserPhotoURL)}
-                                                    label={<Avatar name="boar"/>} name="AvatarSelection" type="radio"
+                                                    label={<Avatar name="boar" big/>} name="AvatarSelection"
+                                                    type="radio"
                                                     id={`boar`}
                                                     onChange={(e) => setSelectedAvatar(e.target.id)}/>
                                         <Form.Check inline
                                                     defaultChecked={shouldBeChecked("dog", loggedInUserPhotoURL)}
-                                                    label={<Avatar name="dog"/>} name="AvatarSelection" type="radio"
+                                                    label={<Avatar name="dog" big/>} name="AvatarSelection" type="radio"
                                                     id={`dog`} onChange={(e) => setSelectedAvatar(e.target.id)}/>
                                         <Form.Check inline
                                                     defaultChecked={shouldBeChecked("hen", loggedInUserPhotoURL)}
-                                                    label={<Avatar name="hen"/>} name="AvatarSelection" type="radio"
+                                                    label={<Avatar name="hen" big/>} name="AvatarSelection" type="radio"
                                                     id={`hen`} onChange={(e) => setSelectedAvatar(e.target.id)}/>
                                         <Form.Check inline
                                                     defaultChecked={shouldBeChecked("cat", loggedInUserPhotoURL)}
-                                                    label={<Avatar name="cat"/>} name="AvatarSelection" type="radio"
+                                                    label={<Avatar name="cat" big/>} name="AvatarSelection" type="radio"
                                                     id={`cat`}
                                                     onChange={(e) => setSelectedAvatar(e.target.id)}/>
                                         <Form.Check inline
                                                     defaultChecked={shouldBeChecked("rabbit", loggedInUserPhotoURL)}
-                                                    label={<Avatar name="rabbit"/>} name="AvatarSelection" type="radio"
+                                                    label={<Avatar name="rabbit" big/>} name="AvatarSelection"
+                                                    type="radio"
                                                     id={`rabbit`}
                                                     onChange={(e) => setSelectedAvatar(e.target.id)}/>
                                         <Form.Check inline
                                                     defaultChecked={shouldBeChecked("elephant", loggedInUserPhotoURL)}
-                                                    label={<Avatar name="elephant"/>} name="AvatarSelection"
+                                                    label={<Avatar name="elephant" big/>} name="AvatarSelection"
                                                     type="radio"
                                                     id={`elephant`}
                                                     onChange={(e) => setSelectedAvatar(e.target.id)}/>
                                         <Form.Check inline
                                                     defaultChecked={shouldBeChecked("giraffe", loggedInUserPhotoURL)}
-                                                    label={<Avatar name="giraffe"/>} name="AvatarSelection" type="radio"
+                                                    label={<Avatar name="giraffe" big/>} name="AvatarSelection"
+                                                    type="radio"
                                                     id={`giraffe`}
                                                     onChange={(e) => setSelectedAvatar(e.target.id)}/>
                                         <Form.Check inline
                                                     defaultChecked={shouldBeChecked("lion", loggedInUserPhotoURL)}
-                                                    label={<Avatar name="lion"/>} name="AvatarSelection" type="radio"
+                                                    label={<Avatar name="lion" big/>} name="AvatarSelection"
+                                                    type="radio"
                                                     id={`lion`}
                                                     onChange={(e) => setSelectedAvatar(e.target.id)}/>
                                     </div>
@@ -139,7 +144,7 @@ export const Profile: FunctionComponent = () => {
                     <Row>
                         <Col className="d-flex flex-row justify-content-between align-items-center">
                             <div className="d-flex flex-row justify-content-between align-items-center">
-                                <Avatar name={loggedInUserPhotoURL}/>
+                                <Avatar name={loggedInUserPhotoURL} big/>
                                 <p className="fs-4 mx-2 align-middle my-auto">{loggedInUserDisplayName ?? "Username"}</p>
                             </div>
                             <Button

@@ -34,7 +34,8 @@ export const PlayerInterface: FC<PlayerInterfaceInterface> = ({
             <div
                 className={`${creatorInterface ? styles.CreatorHeader : styles.OpponentHeader} d-flex justify-content-between align-items-center rounded ps-1 pe-3 mb-1 p-1`}>
                 <Avatar
-                    name={creatorInterface ? gameData?.creatorPhotoURL : gameData?.opponentPhotoURL}/>
+                    name={creatorInterface ? gameData?.creatorPhotoURL : gameData?.opponentPhotoURL}
+                    playerInterface/>
                 <span className={`${styles.PlayerName} text-primary`}>{whatNameToDisplay({
                     creatorInterface,
                     gameData

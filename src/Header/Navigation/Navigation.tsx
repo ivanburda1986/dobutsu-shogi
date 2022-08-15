@@ -31,7 +31,7 @@ export const Navigation: FC<Pick<AppContextInterface, "userLoggedIn" | "loggedIn
                 {userLoggedIn && (
                     <NavLink to="/profile"
                              className="btn mx-2 d-flex flex-row justify-content-between align-items-center">
-                        <Avatar name={loggedInUserPhotoURL}/>
+                        <Avatar name={loggedInUserPhotoURL} big/>
                         <span
                             className="ms-1 fs-4">{loggedInUserDisplayName ? loggedInUserDisplayName : "Username"}</span>
                     </NavLink>

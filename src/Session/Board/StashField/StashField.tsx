@@ -1,6 +1,6 @@
 import React, {FC} from "react";
 import styles from "./StashField.module.css";
-import {getImgReference} from "../../../Avatar/Avatar";
+import {getImgReference} from "./StashFieldService";
 
 interface FieldInterface {
     rowNumber: number;
@@ -9,8 +9,6 @@ interface FieldInterface {
 }
 
 export const StashField: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent}) => {
-
-
     return (
         <div style={{
             backgroundImage: `url(${getImgReference(columnLetter)})`,

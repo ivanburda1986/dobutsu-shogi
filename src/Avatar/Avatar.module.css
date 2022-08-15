@@ -22,3 +22,26 @@
     margin-right: 0.25rem;
 }
 
+@media screen and (max-width: 992px ) {
+    .playerInterfaceAvatar {
+        height: 2rem;
+        width: 2rem;
+        margin-right: 0.25rem;
+    }
+}
+
+@media screen and (max-width: 768px ) {
+    .playerInterfaceAvatar {
+        height: 1.75rem;
+        width: 1.75rem;
+        margin-right: 0.25rem;
+    }
+}
+
+@media screen and (max-width: 576px ) {
+    .playerInterfaceAvatar {
+        height: 1.5rem;
+        width: 1.5rem;
+        margin-right: 0.25rem;
+    }
+}
