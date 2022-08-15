@@ -1,0 +1,24 @@
+.avatar {
+    border: 0.15em solid rgb(105, 158, 177);
+    border-radius: 50%;
+    background-position: center;
+    background-size: 105%;
+    background-repeat: no-repeat;
+    background-color: #fff;
+    height: 2.25rem;
+    width: 2.25rem;
+    margin-right: 0.25rem;
+}
+
+.avatarBig {
+    height: 2.75rem;
+    width: 2.75rem;
+
+}
+
+.avatarSmall {
+    height: 1.75rem;
+    width: 1.75rem;
+    margin-right: 0.25rem;
+}
+

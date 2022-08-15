@@ -3,9 +3,8 @@
     width: 2.75rem;
     border: 0.15em solid rgb(105, 158, 177);
     border-radius: 50%;
-    background-size: cover;
     background-position: center;
-    background-size: 100%;
+    background-size: 105%;
     background-repeat: no-repeat;
     background-color: #fff;
 }

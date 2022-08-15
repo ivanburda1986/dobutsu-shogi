@@ -1,14 +1,14 @@
-import React, {FC} from "react";
-import boar from "./images/boar.png";
-import cat from "./images/cat.png";
-import chicken from "./images/chicken.png";
-import hen from "./images/hen.png";
-import dog from "./images/dog.png";
-import elephant from "./images/elephant.png";
-import giraffe from "./images/giraffe.png";
-import lion from "./images/lion.png";
-import rabbit from "./images/rabbit.png";
-import placeholder from "./images/placeholder.png";
+import {FC} from "react";
+import boar from "../images/boar.png";
+import cat from "../images/cat.png";
+import chicken from "../images/chicken.png";
+import dog from "../images/dog.png";
+import elephant from "../images/elephant.png";
+import giraffe from "../images/giraffe.png";
+import hen from "../images/hen.png";
+import lion from "../images/lion.png";
+import placeholder from "../images/placeholder.png";
+import rabbit from "../images/rabbit.png";
 import styles from "./Avatar.module.css";
 
 interface AvatarProps {
@@ -16,12 +16,11 @@ interface AvatarProps {
     small?: boolean;
     medium?: boolean;
     playerInterface?: boolean;
-    square?: boolean;
 }
 
-export const Avatar: FC<AvatarProps> = ({name, small, medium, playerInterface, square}) => {
+export const Avatar: FC<AvatarProps> = ({name, small, medium, playerInterface}) => {
     return <div
-        className={`${styles.avatarNormal} ${small && styles.avatarSmall} ${medium && styles.avatarMedium} ${playerInterface && styles.playerInterface} ${square && styles.avatarSquare} d-flex flex-row justify-content-between align-items-center`}
+        className={`${styles.avatarNormal} ${small && styles.avatarSmall} ${medium && styles.avatarMedium} ${playerInterface && styles.playerInterface}  d-flex flex-row justify-content-between align-items-center`}
         style={{backgroundImage: `url(${getImgReference(name)})`}}/>;
 };
 

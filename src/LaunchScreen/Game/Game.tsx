@@ -8,7 +8,7 @@ import {AppContextInterface} from "../../App";
 import {getSingleGameDetails, useDeleteGame, useJoinGame} from "../../api/firestore";
 import {ReturnedGameInterface} from "../WaitingGamesList/WaitingGamesList";
 import {displayDeleteOption, shouldShowAcceptButton, shouldShowGoToGameButton} from "./GameService";
-import {Avatar} from "../../Header/Avatar/Avatar";
+import {Avatar} from "../../Avatar/Avatar";
 
 export const Game: FC<ReturnedGameInterface> = ({
                                                     gameId,
@@ -32,8 +32,8 @@ export const Game: FC<ReturnedGameInterface> = ({
             <Card.Header className="d-flex justify-content-between">
                 <span className="d-flex align-items-center">
                     <Card.Title className="me-2">{name}</Card.Title>
-                <Avatar name={creatorPhotoURL} medium={true}/>
-                     <Avatar name={opponentPhotoURL} medium={true}/>
+                <Avatar name={creatorPhotoURL}/>
+                     <Avatar name={opponentPhotoURL}/>
                 </span>
                 {displayDeleteOption({creatorId, appContext, gameStatus: status}) && (
                     <button type="button" className="btn-close" aria-label="Close" onClick={() => deleteGame(gameId)}/>

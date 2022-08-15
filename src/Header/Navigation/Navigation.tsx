@@ -1,17 +1,17 @@
-import styles from "./Navigation.module.css";
+import {FC} from "react";
 import {NavLink} from "react-router-dom";
-import {Avatar} from "../Avatar/Avatar";
-import {FunctionComponent} from "react";
-import {AppContextInterface} from "../../App";
 import {useLogoutUser} from "../../api/firestore";
+import {AppContextInterface} from "../../App";
+import {Avatar} from "../../Avatar/Avatar";
 import {TiInfoLargeOutline} from 'react-icons/ti';
+import styles from "./Navigation.module.css";
 
 
-export const Navigation: FunctionComponent<Pick<AppContextInterface, "userLoggedIn" | "loggedInUserDisplayName" | "loggedInUserPhotoURL">> = ({
-                                                                                                                                                  userLoggedIn,
-                                                                                                                                                  loggedInUserDisplayName,
-                                                                                                                                                  loggedInUserPhotoURL
-                                                                                                                                              }) => {
+export const Navigation: FC<Pick<AppContextInterface, "userLoggedIn" | "loggedInUserDisplayName" | "loggedInUserPhotoURL">> = ({
+                                                                                                                                   userLoggedIn,
+                                                                                                                                   loggedInUserDisplayName,
+                                                                                                                                   loggedInUserPhotoURL
+                                                                                                                               }) => {
     const logout = useLogoutUser;
     return (
         <header

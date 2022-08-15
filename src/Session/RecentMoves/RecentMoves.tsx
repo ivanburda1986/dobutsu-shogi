@@ -1,10 +1,10 @@
 import React, {FunctionComponent} from "react";
 import styles from "./RecentMoves.module.css";
 import {MoveInterface} from "../../api/firestore";
-import {Avatar} from "../../Header/Avatar/Avatar";
 import {RiSwordFill} from 'react-icons/ri';
 import {GiOpenChest} from 'react-icons/gi';
 import {evaluateBeingOpponent} from "../SessionService";
+import {RecentMoveStone} from "./RecentMoveStone";
 
 interface RecentMovesInterface {
     moves: MoveInterface[];
@@ -37,8 +37,8 @@ export const RecentMoves: FunctionComponent<RecentMovesInterface> = ({moves = []
                 }) ? styles.OpponentBg : styles.CreatorBg} d-flex justify-content-center align-items-center`}>
                     {
                         lastMove.isTakeOver && <div className="d-flex justify-content-center align-items-center">
-                            {(<Avatar name={lastButOneMove!.type.toLowerCase()}
-                                      square={true}/>)}
+                            {(<RecentMoveStone name={lastButOneMove!.type.toLowerCase()}
+                            />)}
                             {lastButOneMove?.fromCoordinates}
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                  className="bi bi-arrow-right-short" viewBox="0 0 16 16">
@@ -50,8 +50,8 @@ export const RecentMoves: FunctionComponent<RecentMovesInterface> = ({moves = []
                         </div>
                     }
                     <div className="d-flex justify-content-center align-items-center ms-1">
-                        <Avatar name={lastMove.type.toLowerCase()}
-                                square={true}/>
+                        <RecentMoveStone name={lastMove.type.toLowerCase()}
+                        />
                         {lastMove.fromCoordinates.length <= 2 ? lastMove.fromCoordinates : <GiOpenChest/>}
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              className="bi bi-arrow-right-short" viewBox="0 0 16 16">

@@ -1,7 +1,7 @@
 import React, {FC, useContext, useState} from "react";
 import {AppContextInterface} from "../../App";
 import {AppContext} from "../../context/AppContext";
-import {Avatar} from "../../Header/Avatar/Avatar";
+import {Avatar} from "../../Avatar/Avatar";
 import styles from "./PlayerInterface.module.css";
 import {getStashSize, isOnTurn, whatNameToDisplay} from "./PlayerInterfaceService";
 import {v4 as uuidv4} from "uuid";
@@ -33,8 +33,8 @@ export const PlayerInterface: FC<PlayerInterfaceInterface> = ({
             style={{transform: `rotate(${creatorInterface === true ? 0 : 180}deg)`}}>
             <div
                 className={`${creatorInterface ? styles.CreatorHeader : styles.OpponentHeader} d-flex justify-content-between align-items-center rounded ps-1 pe-3 mb-1 p-1`}>
-                <Avatar playerInterface
-                        name={creatorInterface ? gameData?.creatorPhotoURL : gameData?.opponentPhotoURL}/>
+                <Avatar
+                    name={creatorInterface ? gameData?.creatorPhotoURL : gameData?.opponentPhotoURL}/>
                 <span className={`${styles.PlayerName} text-primary`}>{whatNameToDisplay({
                     creatorInterface,
                     gameData

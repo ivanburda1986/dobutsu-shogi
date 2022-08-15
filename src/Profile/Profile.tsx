@@ -4,7 +4,7 @@ import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import {db, updatePlayerAvatarInGames, useUpdateUserProfile} from "../api/firestore";
 import {AppContext} from "../context/AppContext";
 import {AppContextInterface} from "../App";
-import {Avatar} from "../Header/Avatar/Avatar";
+import {Avatar} from "../Avatar/Avatar";
 import {getPlayerGameStats, shouldBeChecked} from "./ProfileService";
 
 export interface PlayerGameStats {
