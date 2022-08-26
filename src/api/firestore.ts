@@ -62,7 +62,7 @@ export const useRegisterUser = ({email, username, password, registerUserCb}: Reg
 };
 
 //TYPES
-export type statusType = "WAITING" | "INPROGRESS" | "COMPLETED" | "CANCELLED" | "RESIGNED" | "TIE";
+export type statusType = "WAITING" | "INPROGRESS" | "COMPLETED" | "TIE";
 export type playerType = "CREATOR" | "OPPONENT";
 
 // Update stone position

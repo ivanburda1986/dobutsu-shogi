@@ -10,6 +10,8 @@ write automated tests in jest and RTL
 
 Next enhancements:
 Latest move should visualise also a lion takeover
+Handle TIE games -> display them on the game screen among completed
+Show game LOSS/VICTORY/TIE status on game cards on launch screen
 
 Make sure stone position works correctly even when the screen is displayed as a column
 -could render stones directly in containers of fields

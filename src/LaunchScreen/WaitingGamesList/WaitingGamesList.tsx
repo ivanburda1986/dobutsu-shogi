@@ -1,21 +1,30 @@
 import {FC} from "react";
 import {Container, Row} from "react-bootstrap";
-import {statusType} from "../../api/firestore";
+import {MoveInterface, statusType} from "../../api/firestore";
 
 import {Game} from "../Game/Game";
+import {VictoryType} from "../../Session/Board/Board";
 
 export interface ReturnedGameInterface {
-    gameId: string;
-    createdOn: number;
+    createdOn?: number;
     creatorId: string;
-    creatorName: string;
-    opponentName: string;
+    creatorJoined?: boolean;
+    creatorName?: string;
     creatorPhotoURL: string;
-    opponentPhotoURL: string;
-    currentPlayerTurn: string;
+    currentPlayerTurn?: string;
+    finishedTimeStamp?: number;
+    gameId: string;
+    moveRepresentations?: string[];
+    moves?: MoveInterface[];
     name: string;
-    status: statusType;
     opponentId: string | null;
+    opponentJoined?: boolean;
+    opponentName?: string;
+    opponentPhotoURL: string;
+    startingPlayer?: string;
+    status: statusType;
+    victoryType?: VictoryType;
+    winner?: string;
 }
 
 interface WaitingGamesListInterface {
@@ -36,7 +45,8 @@ export const WaitingGamesList: FC<WaitingGamesListInterface> = ({games}) => {
                               creatorName={game.creatorName} opponentName={game.opponentName}
                               opponentId={game.opponentId !== null ? game.opponentId : null} name={game.name}
                               status={game.status} creatorPhotoURL={game.creatorPhotoURL}
-                              opponentPhotoURL={game.opponentPhotoURL} currentPlayerTurn={game.currentPlayerTurn}/>
+                              opponentPhotoURL={game.opponentPhotoURL} currentPlayerTurn={game.currentPlayerTurn}
+                              creatorJoined/>
                     ))}
                 </Row>
             </Container>
