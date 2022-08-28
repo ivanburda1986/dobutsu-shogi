@@ -3,9 +3,13 @@ import {Container} from "react-bootstrap";
 import {AppContextInterface} from "../App";
 import {AppContext} from "../context/AppContext";
 import {WaitingGamesList} from "./WaitingGamesList/WaitingGamesList";
-import {YourGamesInProgressList} from "./YourGamesInProgressList/YourGamesInProgress";
+import {GamesInProgressList} from "./GamesInProgressList/GamesInProgress";
 import {CompletedGamesList} from "./CompletedGamesList/CompletedGamesList";
 import {
+    hasCompletedGames,
+    hasInProgressGames,
+    shouldShowPanda,
+    hasWaitingGames,
     listenToCompletedGamesWhereLoggedInPlayerIsCreator,
     listenToCompletedGamesWhereLoggedInPlayerIsOpponent,
     listenToInProgressGamesWhereLoggedInPlayerIsCreator,
@@ -32,7 +36,7 @@ export const LaunchScreen: React.FC = () => {
     const [tieOpponentGames, setTieOpponentGames] = useState<ReturnedGameInterface[]>([]);
 
     const [gamesLoaded, setGamesLoaded] = useState(false);
-    const allGamesCount = waitingGames.length + inProgressCreatorGames.length + inProgressOpponentGames.length + completedCreatorGames.length + completedOpponentGames.length + tieCreatorGames.length + tieOpponentGames.length;
+    const allGamesCount: number = waitingGames.length + inProgressCreatorGames.length + inProgressOpponentGames.length + completedCreatorGames.length + completedOpponentGames.length + tieCreatorGames.length + tieOpponentGames.length;
 
     useEffect(() => {
         listenToWaitingGames({updateState: setWaitingGames});
@@ -65,14 +69,16 @@ export const LaunchScreen: React.FC = () => {
 
     }, [loggedInUserUserId]);
 
+
     return (
         <Container className="pb-5">
-            {gamesLoaded && allGamesCount === 0 && <SadPanda/>}
-            <WaitingGamesList games={waitingGames}/>
-            <YourGamesInProgressList
-                games={[...inProgressCreatorGames, ...inProgressOpponentGames]}/>
-            <CompletedGamesList
-                games={[...completedCreatorGames, ...completedOpponentGames, ...tieCreatorGames, ...tieOpponentGames]}/>
+            {shouldShowPanda(gamesLoaded, allGamesCount) && <SadPanda/>}
+            {hasWaitingGames(waitingGames) && <WaitingGamesList games={waitingGames}/>}
+            {hasInProgressGames(inProgressCreatorGames, inProgressOpponentGames) && <GamesInProgressList
+                games={[...inProgressCreatorGames, ...inProgressOpponentGames]}/>}
+            {hasCompletedGames(completedCreatorGames, completedOpponentGames, tieCreatorGames, tieOpponentGames) &&
+                <CompletedGamesList
+                    games={[...completedCreatorGames, ...completedOpponentGames, ...tieCreatorGames, ...tieOpponentGames]}/>}
         </Container>
     );
 };

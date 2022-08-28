@@ -101,3 +101,22 @@ export const listenToTieGamesWhereLoggedInPlayerIsOpponent = ({
     });
 };
 
+export const shouldShowPanda = (gamesLoaded: boolean, allGamesCount: number) => {
+    if (!gamesLoaded) {
+        return false;
+    }
+    if (gamesLoaded && allGamesCount === 0) {
+        return true;
+    }
+    if (gamesLoaded && allGamesCount > 0)
+        return false;
+};
+export const hasWaitingGames = (waitingGames: ReturnedGameInterface[]) => {
+    return waitingGames.length > 0;
+};
+export const hasInProgressGames = (inProgressCreatorGames: ReturnedGameInterface[], inProgressOpponentGames: ReturnedGameInterface[]) => {
+    return [...inProgressCreatorGames, ...inProgressOpponentGames].length > 0;
+};
+export const hasCompletedGames = (completedCreatorGames: ReturnedGameInterface[], completedOpponentGames: ReturnedGameInterface[], tieCreatorGames: ReturnedGameInterface[], tieOpponentGames: ReturnedGameInterface[]) => {
+    return [...completedCreatorGames, ...completedOpponentGames, ...tieCreatorGames, ...tieOpponentGames].length > 0;
+};

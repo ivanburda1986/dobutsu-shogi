@@ -3,18 +3,19 @@ import {Container, Row} from "react-bootstrap";
 
 import {Game, ReturnedGameInterface} from "../Game/Game";
 
-interface WaitingGamesListInterface {
+interface GamesInProgressListInterface {
     games: ReturnedGameInterface[];
 }
 
-export const WaitingGamesList: FC<WaitingGamesListInterface> = ({games}) => {
+export const GamesInProgressList: FC<GamesInProgressListInterface> = ({games}) => {
     return (
-        <Container className="mb-4">
-            <h2 className="text-success">Games waiting for an opponent</h2>
+        <Container>
+            <h2 className="text-success">Your Games In Progress</h2>
             <Container fluid>
                 <Row>
                     {games.map((game) => (
-                        <Game key={game.gameId} gameData={game}/>))}
+                        <Game key={game.gameId} gameData={game}/>
+                    ))}
                 </Row>
             </Container>
         </Container>

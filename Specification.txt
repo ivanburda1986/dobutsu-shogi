@@ -1,7 +1,6 @@
 =================================================================
 Refactoring and testing:
 refactor the whole game. Remaining:
--launchscreen
 -api
 -session
 

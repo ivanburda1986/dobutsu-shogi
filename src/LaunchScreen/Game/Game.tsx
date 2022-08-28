@@ -38,23 +38,30 @@ export interface ReturnedGameInterface {
     winner?: string;
 }
 
-export const Game: FC<ReturnedGameInterface> = ({
-                                                    gameId,
-                                                    creatorId,
-                                                    creatorName,
-                                                    creatorPhotoURL,
-                                                    opponentId,
-                                                    opponentName,
-                                                    opponentPhotoURL,
-                                                    currentPlayerTurn,
-                                                    name,
-                                                    status,
-                                                }) => {
+export interface GameInt {
+    gameData: ReturnedGameInterface;
+}
+
+
+export const Game: FC<GameInt> = ({gameData}) => {
     const {
         loggedInUserUserId,
         loggedInUserPhotoURL,
         loggedInUserDisplayName
     }: AppContextInterface = useContext(AppContext);
+
+    const {
+        gameId,
+        creatorId,
+        creatorName,
+        creatorPhotoURL,
+        opponentId,
+        opponentName,
+        opponentPhotoURL,
+        currentPlayerTurn,
+        name,
+        status,
+    } = gameData;
 
     const acceptGameHandler = (gameId: string, loggedInUserUserId: string, loggedInUserDisplayName: string | null, loggedInUserPhotoURL: string | null) => {
         getSingleGameDetails({gameId: gameId}).then((doc) => {
