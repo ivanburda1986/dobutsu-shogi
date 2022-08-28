@@ -1,53 +1,116 @@
+import {Dispatch, SetStateAction} from "react";
+import {collection, onSnapshot, query, where} from "firebase/firestore";
+import {db} from "../api/firestore";
 import {ReturnedGameInterface} from "./WaitingGamesList/WaitingGamesList";
 
+interface GameListenerInterface {
+    updateState: Dispatch<SetStateAction<ReturnedGameInterface[]>>;
+    setGamesLoaded: Dispatch<SetStateAction<boolean>>;
+    loggedInUserUserId?: string;
+}
 
-export const filterPlayerRelevantGames = (games: ReturnedGameInterface[], loggedInPlayerId: string): ReturnedGameInterface[] => {
-    return games
-        .filter((game) => {
-            if (game.status === "WAITING") {
-                return true;
-            }
-            if (game.status === "COMPLETED" && (game.creatorId === loggedInPlayerId || game.opponentId === loggedInPlayerId)) {
-                return true;
-            }
-            if (game.status === "TIE" && (game.creatorId === loggedInPlayerId || game.opponentId === loggedInPlayerId)) {
-                return true;
-            }
-            if (game.status === "INPROGRESS" && (game.creatorId === loggedInPlayerId || game.opponentId === loggedInPlayerId)) {
-                if (game.creatorId === loggedInPlayerId || game.opponentId === loggedInPlayerId) {
-                    return true;
-                }
-                return false;
-            }
-            return false;
+export const listenToWaitingGames = (updateState: Dispatch<SetStateAction<ReturnedGameInterface[]>>, setGamesLoaded: Dispatch<SetStateAction<boolean>>) => {
+    const QUERY_WAITING = query(collection(db, "games"), where('status', '==', 'WAITING'));
+    onSnapshot(QUERY_WAITING, (querySnapshot) => {
+        const returnedGames = querySnapshot.docs.map((game) => {
+            return {...game.data() as unknown as ReturnedGameInterface};
         });
-};
-
-const filterWaitingGames = (games: ReturnedGameInterface[], loggedInPlayerId: string): ReturnedGameInterface[] => {
-    return games.filter((game) => game.status === "WAITING");
-};
-
-const filterPlayerRelevantCompletedGames = (games: ReturnedGameInterface[], loggedInPlayerId: string): ReturnedGameInterface[] => {
-    return games.filter((game) => game.status === "COMPLETED" && (game.creatorId === loggedInPlayerId || game.opponentId === loggedInPlayerId));
-};
-
-const filterPlayerRelevantTiedGames = (games: ReturnedGameInterface[], loggedInPlayerId: string): ReturnedGameInterface[] => {
-    return games.filter((game) => game.status === "TIE" && (game.creatorId === loggedInPlayerId || game.opponentId === loggedInPlayerId));
-};
-
-const filterPlayerRelevantInProgressGames = (games: ReturnedGameInterface[], loggedInPlayerId: string): ReturnedGameInterface[] => {
-    return games.filter((game) => {
-        if (game.status === "INPROGRESS" && (game.creatorId === loggedInPlayerId || game.opponentId === loggedInPlayerId)) {
-            return true;
-        }
-        return false;
+        updateState(returnedGames);
+        setGamesLoaded(true);
     });
 };
 
-
-export const shouldShowPanda = (games: ReturnedGameInterface[], loggedInUserUserId: string): boolean => {
-    const someWaitingGames = games.filter((game) => game.status === "WAITING");
-    const someOwnInProgressGames = games.filter((game) => game.status === "INPROGRESS").filter((inProgressGame) => inProgressGame.creatorId === loggedInUserUserId || inProgressGame.opponentId === loggedInUserUserId);
-    const someOwnCompletedGames = games.filter((game) => game.status === "COMPLETED").filter((someOwnCompletedGames) => someOwnCompletedGames.creatorId === loggedInUserUserId || someOwnCompletedGames.opponentId === loggedInUserUserId);
-    return !((someWaitingGames.length > 0) || (someOwnInProgressGames.length > 0) || (someOwnCompletedGames.length > 0));
+export const listenToInProgressGamesWhereLoggedInPlayerIsCreator = ({
+                                                                        updateState,
+                                                                        setGamesLoaded,
+                                                                        loggedInUserUserId
+                                                                    }: GameListenerInterface) => {
+    const QUERY_INPROGRESS_LOGGED_IN_IS_CREATOR = query(collection(db, "games"), where('status', '==', 'INPROGRESS'), where('creatorId', '==', `${loggedInUserUserId}`));
+    onSnapshot(QUERY_INPROGRESS_LOGGED_IN_IS_CREATOR, (querySnapshot) => {
+        const returnedGames = querySnapshot.docs.map((game) => {
+            return {...game.data() as unknown as ReturnedGameInterface};
+        });
+        updateState(returnedGames);
+        setGamesLoaded(true);
+    });
 };
+
+export const listenToInProgressGamesWhereLoggedInPlayerIsOpponent = ({
+                                                                         updateState,
+                                                                         setGamesLoaded,
+                                                                         loggedInUserUserId
+                                                                     }: GameListenerInterface) => {
+    const QUERY_INPROGRESS_LOGGED_IN_IS_OPPONENT = query(collection(db, "games"), where('status', '==', 'INPROGRESS'), where('opponentId', '==', `${loggedInUserUserId}`));
+    onSnapshot(QUERY_INPROGRESS_LOGGED_IN_IS_OPPONENT, (querySnapshot) => {
+        const returnedGames = querySnapshot.docs.map((game) => {
+            return {...game.data() as unknown as ReturnedGameInterface};
+        });
+        updateState(returnedGames);
+        setGamesLoaded(true);
+    });
+};
+
+export const listenToCompletedGamesWhereLoggedInPlayerIsCreator = ({
+                                                                       updateState,
+                                                                       setGamesLoaded,
+                                                                       loggedInUserUserId
+                                                                   }: GameListenerInterface) => {
+    const QUERY_COMPLETED_LOGGED_IN_IS_CREATOR = query(collection(db, "games"), where('status', '==', 'COMPLETED'), where('creatorId', '==', `${loggedInUserUserId}`));
+    onSnapshot(QUERY_COMPLETED_LOGGED_IN_IS_CREATOR, (querySnapshot) => {
+        const returnedGames = querySnapshot.docs.map((game) => {
+            return {...game.data() as unknown as ReturnedGameInterface};
+        });
+        updateState(returnedGames);
+        setGamesLoaded(true);
+    });
+};
+
+export const listenToCompletedGamesWhereLoggedInPlayerIsOpponent = ({
+                                                                        updateState,
+                                                                        setGamesLoaded,
+                                                                        loggedInUserUserId
+                                                                    }: GameListenerInterface) => {
+    const QUERY_COMPLETED_LOGGED_IN_IS_OPPONENT = query(collection(db, "games"), where('status', '==', 'COMPLETED'), where('opponentId', '==', `${loggedInUserUserId}`));
+    onSnapshot(QUERY_COMPLETED_LOGGED_IN_IS_OPPONENT, (querySnapshot) => {
+        const returnedGames = querySnapshot.docs.map((game) => {
+            return {...game.data() as unknown as ReturnedGameInterface};
+        });
+        updateState(returnedGames);
+        setGamesLoaded(true);
+    });
+
+};
+
+export const listenToTieGamesWhereLoggedInPlayerIsCreator = ({
+                                                                 updateState,
+                                                                 setGamesLoaded,
+                                                                 loggedInUserUserId
+                                                             }: GameListenerInterface) => {
+    const QUERY_TIE_LOGGED_IN_IS_CREATOR = query(collection(db, "games"), where('status', '==', 'TIE'), where('creatorId', '==', `${loggedInUserUserId}`));
+
+    onSnapshot(QUERY_TIE_LOGGED_IN_IS_CREATOR, (querySnapshot) => {
+        const returnedGames = querySnapshot.docs.map((game) => {
+            return {...game.data() as unknown as ReturnedGameInterface};
+        });
+        updateState(returnedGames);
+        setGamesLoaded(true);
+    });
+};
+
+export const listenToTieGamesWhereLoggedInPlayerIsOpponent = ({
+                                                                  updateState,
+                                                                  setGamesLoaded,
+                                                                  loggedInUserUserId
+                                                              }: GameListenerInterface) => {
+    const QUERY_TIE_LOGGED_IN_IS_OPPONENT = query(collection(db, "games"), where('status', '==', 'TIE'), where('opponentId', '==', `${loggedInUserUserId}`));
+
+    onSnapshot(QUERY_TIE_LOGGED_IN_IS_OPPONENT, (querySnapshot) => {
+        const returnedGames = querySnapshot.docs.map((game) => {
+            return {...game.data() as unknown as ReturnedGameInterface};
+        });
+        updateState(returnedGames);
+        setGamesLoaded(true);
+    });
+
+};
+

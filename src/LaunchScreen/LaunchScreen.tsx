@@ -1,13 +1,19 @@
 import React, {useContext, useEffect, useState} from "react";
 import {Container} from "react-bootstrap";
-import {collection, onSnapshot, query, where} from "firebase/firestore";
-import {db} from "../api/firestore";
 import {AppContextInterface} from "../App";
 import {AppContext} from "../context/AppContext";
-import {filterPlayerRelevantGames, shouldShowPanda} from "./LaunchScreenService";
 import {ReturnedGameInterface, WaitingGamesList} from "./WaitingGamesList/WaitingGamesList";
 import {YourGamesInProgressList} from "./YourGamesInProgressList/YourGamesInProgress";
 import {CompletedGamesList} from "./CompletedGamesList/CompletedGamesList";
+import {
+    listenToCompletedGamesWhereLoggedInPlayerIsCreator,
+    listenToCompletedGamesWhereLoggedInPlayerIsOpponent,
+    listenToInProgressGamesWhereLoggedInPlayerIsCreator,
+    listenToInProgressGamesWhereLoggedInPlayerIsOpponent,
+    listenToTieGamesWhereLoggedInPlayerIsCreator,
+    listenToTieGamesWhereLoggedInPlayerIsOpponent,
+    listenToWaitingGames
+} from "./LaunchScreenService";
 import {SadPanda} from "./SadPanda/SadPanda";
 
 export const LaunchScreen: React.FC = () => {
@@ -20,88 +26,47 @@ export const LaunchScreen: React.FC = () => {
     const [tieCreatorGames, setTieCreatorGames] = useState<ReturnedGameInterface[]>([]);
     const [tieOpponentGames, setTieOpponentGames] = useState<ReturnedGameInterface[]>([]);
     const [gamesLoaded, setGamesLoaded] = useState(false);
+    const allGamesCount = waitingGames.length + inProgressCreatorGames.length + inProgressOpponentGames.length + completedCreatorGames.length + completedOpponentGames.length + tieCreatorGames.length + tieOpponentGames.length;
 
-    // useEffect(() => {
-    //     onSnapshot(collection(db, "games"), (snapshot) => {
-    //         const allGames = snapshot.docs.map((game) => {
-    //             return {...game.data()};
-    //         }) as unknown as ReturnedGameInterface[];
-    //         setGames(filterPlayerRelevantGames(allGames, loggedInUserUserId) as ReturnedGameInterface[]);
-    //         setGamesLoaded(true);
-    //     });
-    // }, [loggedInUserUserId]);
-
-    //testing
     useEffect(() => {
-        const QUERY_WAITING = query(collection(db, "games"), where('status', '==', 'WAITING'));
-        const QUERY_INPROGRESS_LOGGED_IN_IS_CREATOR = query(collection(db, "games"), where('status', '==', 'INPROGRESS'), where('creatorId', '==', `${loggedInUserUserId}`));
-        const QUERY_INPROGRESS_LOGGED_IN_IS_OPPONENT = query(collection(db, "games"), where('status', '==', 'INPROGRESS'), where('opponentId', '==', `${loggedInUserUserId}`));
-        const QUERY_COMPLETED_LOGGED_IN_IS_CREATOR = query(collection(db, "games"), where('status', '==', 'COMPLETED'), where('creatorId', '==', `${loggedInUserUserId}`));
-        const QUERY_COMPLETED_LOGGED_IN_IS_OPPONENT = query(collection(db, "games"), where('status', '==', 'COMPLETED'), where('opponentId', '==', `${loggedInUserUserId}`));
-        const QUERY_TIE_LOGGED_IN_IS_CREATOR = query(collection(db, "games"), where('status', '==', 'TIE'), where('creatorId', '==', `${loggedInUserUserId}`));
-        const QUERY_TIE_LOGGED_IN_IS_OPPONENT = query(collection(db, "games"), where('status', '==', 'TIE'), where('opponentId', '==', `${loggedInUserUserId}`));
+        listenToWaitingGames(setWaitingGames, setGamesLoaded);
 
-        onSnapshot(QUERY_WAITING, (querySnapshot) => {
-            const returnedGames = querySnapshot.docs.map((game) => {
-                return {...game.data() as unknown as ReturnedGameInterface};
-            });
-            setWaitingGames(returnedGames);
-            setGamesLoaded(true);
+        listenToInProgressGamesWhereLoggedInPlayerIsCreator({
+            updateState: setInProgressCreatorGames,
+            setGamesLoaded,
+            loggedInUserUserId
         });
-
-        onSnapshot(QUERY_INPROGRESS_LOGGED_IN_IS_CREATOR, (querySnapshot) => {
-            const returnedGames = querySnapshot.docs.map((game) => {
-                return {...game.data() as unknown as ReturnedGameInterface};
-            });
-            setInProgressCreatorGames(returnedGames);
-            setGamesLoaded(true);
+        listenToInProgressGamesWhereLoggedInPlayerIsOpponent({
+            updateState: setInProgressOpponentGames,
+            setGamesLoaded,
+            loggedInUserUserId
         });
-
-        onSnapshot(QUERY_INPROGRESS_LOGGED_IN_IS_OPPONENT, (querySnapshot) => {
-            const returnedGames = querySnapshot.docs.map((game) => {
-                return {...game.data() as unknown as ReturnedGameInterface};
-            });
-            setInProgressOpponentGames(returnedGames);
-            setGamesLoaded(true);
+        listenToCompletedGamesWhereLoggedInPlayerIsCreator({
+            updateState: setCompletedCreatorGames,
+            setGamesLoaded,
+            loggedInUserUserId
         });
-
-        onSnapshot(QUERY_COMPLETED_LOGGED_IN_IS_CREATOR, (querySnapshot) => {
-            const returnedGames = querySnapshot.docs.map((game) => {
-                return {...game.data() as unknown as ReturnedGameInterface};
-            });
-            setCompletedCreatorGames(returnedGames);
-            setGamesLoaded(true);
+        listenToCompletedGamesWhereLoggedInPlayerIsOpponent({
+            updateState: setCompletedOpponentGames,
+            setGamesLoaded,
+            loggedInUserUserId
         });
-
-        onSnapshot(QUERY_COMPLETED_LOGGED_IN_IS_OPPONENT, (querySnapshot) => {
-            const returnedGames = querySnapshot.docs.map((game) => {
-                return {...game.data() as unknown as ReturnedGameInterface};
-            });
-            setCompletedOpponentGames(returnedGames);
-            setGamesLoaded(true);
+        listenToTieGamesWhereLoggedInPlayerIsCreator({
+            updateState: setTieCreatorGames,
+            setGamesLoaded,
+            loggedInUserUserId
         });
-
-        onSnapshot(QUERY_TIE_LOGGED_IN_IS_CREATOR, (querySnapshot) => {
-            const returnedGames = querySnapshot.docs.map((game) => {
-                return {...game.data() as unknown as ReturnedGameInterface};
-            });
-            setTieCreatorGames(returnedGames);
-            setGamesLoaded(true);
-        });
-
-        onSnapshot(QUERY_TIE_LOGGED_IN_IS_OPPONENT, (querySnapshot) => {
-            const returnedGames = querySnapshot.docs.map((game) => {
-                return {...game.data() as unknown as ReturnedGameInterface};
-            });
-            setTieOpponentGames(returnedGames);
-            setGamesLoaded(true);
+        listenToTieGamesWhereLoggedInPlayerIsOpponent({
+            updateState: setTieOpponentGames,
+            setGamesLoaded,
+            loggedInUserUserId
         });
 
     }, [loggedInUserUserId]);
 
     return (
         <Container className="pb-5">
-            {/*{gamesLoaded && shouldShowPanda(games, loggedInUserUserId) && <SadPanda/>}*/}
+            {gamesLoaded && allGamesCount === 0 && <SadPanda/>}
             <WaitingGamesList games={waitingGames}/>
             <YourGamesInProgressList
                 games={[...inProgressCreatorGames, ...inProgressOpponentGames]}/>
