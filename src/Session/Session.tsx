@@ -21,10 +21,10 @@ import {GameFinishedMessage} from "./GameFinishedMessage/GameFinishedMessage";
 import {RecentMoves} from "./RecentMoves/RecentMoves";
 
 export const Session = () => {
-    const [amIOpponent, setAmIOpponent] = useState(false);
     const {gameId} = useParams();
-    const appContext: AppContextInterface = useContext(AppContext);
     const [gameData, setGameData] = useState<DocumentData | undefined>();
+    const [amIOpponent, setAmIOpponent] = useState(false);
+    const appContext: AppContextInterface = useContext(AppContext);
     const [isTie, setIsTie] = useState(false);
     const updateGame = useUpdateGame;
     const updateStats = useUpdateUserStats;
