@@ -5,7 +5,6 @@ import styles from "./SadPanda.module.css";
 export const SadPanda: FunctionComponent = () => {
     return (
         <div className="d-flex justify-content-center align-items-center">
-
             <img src={sadpanda}
                  className={`${styles.sadPanda} me-3`}
                  alt="this is car image"/>

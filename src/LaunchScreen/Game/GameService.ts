@@ -1,24 +1,29 @@
 import {statusType} from "../../api/firestore";
-import {AppContextInterface} from "../../App";
 
-export const displayDeleteOption = ({
-                                        creatorId,
-                                        appContext,
-                                        gameStatus
-                                    }: { creatorId: string; appContext: AppContextInterface, gameStatus: statusType }) => {
-    if (creatorId === appContext.loggedInUserUserId && gameStatus !== "INPROGRESS") {
-        return true;
-    }
-    return false;
+export const isLoggedInPlayerTurn = (loggedInUserUserId: string, currentPlayerTurn: string | undefined, gameStatus: statusType) => {
+    return loggedInUserUserId === currentPlayerTurn && gameStatus !== 'COMPLETED' && gameStatus !== 'TIE';
 };
 
-interface shouldShowButtonInterface {
+export const shouldDisplayGameDeleteOption = ({
+                                                  creatorId,
+                                                  loggedInUserUserId,
+                                                  gameStatus
+                                              }: { creatorId: string; loggedInUserUserId: string, gameStatus: statusType }) => {
+    return creatorId === loggedInUserUserId && gameStatus !== 'INPROGRESS';
+
+};
+
+interface shouldDisplayOptionInterface {
     loggedInUserUserId: string;
     creatorId: string;
     opponentId: string | null;
 }
 
-export const shouldShowAcceptButton = ({loggedInUserUserId, creatorId, opponentId}: shouldShowButtonInterface) => {
+export const shouldDisplayAcceptGameOption = ({
+                                                  loggedInUserUserId,
+                                                  creatorId,
+                                                  opponentId
+                                              }: shouldDisplayOptionInterface) => {
     if (opponentId === null && loggedInUserUserId !== creatorId) {
         return true;
     } else {
@@ -26,7 +31,11 @@ export const shouldShowAcceptButton = ({loggedInUserUserId, creatorId, opponentI
     }
 };
 
-export const shouldShowGoToGameButton = ({loggedInUserUserId, creatorId, opponentId}: shouldShowButtonInterface) => {
+export const shouldDisplayGoToGameOption = ({
+                                                loggedInUserUserId,
+                                                creatorId,
+                                                opponentId
+                                            }: shouldDisplayOptionInterface) => {
     if (loggedInUserUserId === creatorId || loggedInUserUserId === opponentId) {
         return true;
     } else {

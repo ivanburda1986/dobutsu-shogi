@@ -1,6 +1,6 @@
 import {FC, useContext, useRef, useState} from "react";
 import {useNavigate} from "react-router";
-import {useCreateGame, useJoinGame} from "../api/firestore";
+import {useCreateGame, joinGame} from "../api/firestore";
 import {Button, Container, Form, Row} from "react-bootstrap";
 import {v4 as uuidv4} from "uuid";
 
@@ -10,7 +10,6 @@ import {AppContextInterface} from "../App";
 export const CreateGame: FC = () => {
     const navigate = useNavigate();
     const createGame = useCreateGame;
-    const joinGame = useJoinGame;
 
     const {
         loggedInUserUserId,

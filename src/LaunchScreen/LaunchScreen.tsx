@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {Container} from "react-bootstrap";
 import {AppContextInterface} from "../App";
 import {AppContext} from "../context/AppContext";
-import {ReturnedGameInterface, WaitingGamesList} from "./WaitingGamesList/WaitingGamesList";
+import {WaitingGamesList} from "./WaitingGamesList/WaitingGamesList";
 import {YourGamesInProgressList} from "./YourGamesInProgressList/YourGamesInProgress";
 import {CompletedGamesList} from "./CompletedGamesList/CompletedGamesList";
 import {
@@ -15,45 +15,46 @@ import {
     listenToWaitingGames
 } from "./LaunchScreenService";
 import {SadPanda} from "./SadPanda/SadPanda";
+import {ReturnedGameInterface} from "./Game/Game";
 
 export const LaunchScreen: React.FC = () => {
     const {loggedInUserUserId}: AppContextInterface = useContext(AppContext);
+
     const [waitingGames, setWaitingGames] = useState<ReturnedGameInterface[]>([]);
+
     const [inProgressCreatorGames, setInProgressCreatorGames] = useState<ReturnedGameInterface[]>([]);
     const [inProgressOpponentGames, setInProgressOpponentGames] = useState<ReturnedGameInterface[]>([]);
+
     const [completedCreatorGames, setCompletedCreatorGames] = useState<ReturnedGameInterface[]>([]);
     const [completedOpponentGames, setCompletedOpponentGames] = useState<ReturnedGameInterface[]>([]);
+
     const [tieCreatorGames, setTieCreatorGames] = useState<ReturnedGameInterface[]>([]);
     const [tieOpponentGames, setTieOpponentGames] = useState<ReturnedGameInterface[]>([]);
+
     const [gamesLoaded, setGamesLoaded] = useState(false);
     const allGamesCount = waitingGames.length + inProgressCreatorGames.length + inProgressOpponentGames.length + completedCreatorGames.length + completedOpponentGames.length + tieCreatorGames.length + tieOpponentGames.length;
 
     useEffect(() => {
-        listenToWaitingGames(setWaitingGames, setGamesLoaded);
+        listenToWaitingGames({updateState: setWaitingGames});
 
         listenToInProgressGamesWhereLoggedInPlayerIsCreator({
             updateState: setInProgressCreatorGames,
-            setGamesLoaded,
             loggedInUserUserId
         });
         listenToInProgressGamesWhereLoggedInPlayerIsOpponent({
             updateState: setInProgressOpponentGames,
-            setGamesLoaded,
             loggedInUserUserId
         });
         listenToCompletedGamesWhereLoggedInPlayerIsCreator({
             updateState: setCompletedCreatorGames,
-            setGamesLoaded,
             loggedInUserUserId
         });
         listenToCompletedGamesWhereLoggedInPlayerIsOpponent({
             updateState: setCompletedOpponentGames,
-            setGamesLoaded,
             loggedInUserUserId
         });
         listenToTieGamesWhereLoggedInPlayerIsCreator({
             updateState: setTieCreatorGames,
-            setGamesLoaded,
             loggedInUserUserId
         });
         listenToTieGamesWhereLoggedInPlayerIsOpponent({

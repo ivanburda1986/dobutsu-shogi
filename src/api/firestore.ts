@@ -253,13 +253,13 @@ interface JoinGame {
     joiningPlayerPhotoURL: string | null;
 }
 
-export const useJoinGame = ({
-                                gameId,
-                                joiningPlayerType,
-                                joiningPlayerId,
-                                joiningPlayerName,
-                                joiningPlayerPhotoURL,
-                            }: JoinGame) => {
+export const joinGame = ({
+                             gameId,
+                             joiningPlayerType,
+                             joiningPlayerId,
+                             joiningPlayerName,
+                             joiningPlayerPhotoURL,
+                         }: JoinGame) => {
     if (joiningPlayerType === "CREATOR") {
         //Update game details
         updateDoc(doc(db, "games", gameId), {creatorJoined: true, creatorPhotoURL: joiningPlayerPhotoURL})
@@ -297,7 +297,7 @@ export const useJoinGame = ({
     }
 };
 
-export const useDeleteGame = (id: string) => {
+export const deleteGame = (id: string) => {
     const deleteGameRef = doc(db, "games", id);
     deleteDoc(deleteGameRef).then(() => {
         console.log("Game deleted");

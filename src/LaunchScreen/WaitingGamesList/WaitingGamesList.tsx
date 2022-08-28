@@ -1,39 +1,13 @@
 import {FC} from "react";
 import {Container, Row} from "react-bootstrap";
-import {MoveInterface, statusType} from "../../api/firestore";
 
-import {Game} from "../Game/Game";
-import {VictoryType} from "../../Session/Board/Board";
-
-export interface ReturnedGameInterface {
-    createdOn?: number;
-    creatorId: string;
-    creatorJoined?: boolean;
-    creatorName?: string;
-    creatorPhotoURL: string;
-    currentPlayerTurn?: string;
-    finishedTimeStamp?: number;
-    gameId: string;
-    moveRepresentations?: string[];
-    moves?: MoveInterface[];
-    name: string;
-    opponentId: string | null;
-    opponentJoined?: boolean;
-    opponentName?: string;
-    opponentPhotoURL: string;
-    startingPlayer?: string;
-    status: statusType;
-    victoryType?: VictoryType;
-    winner?: string;
-}
+import {Game, ReturnedGameInterface} from "../Game/Game";
 
 interface WaitingGamesListInterface {
     games: ReturnedGameInterface[];
 }
 
 export const WaitingGamesList: FC<WaitingGamesListInterface> = ({games}) => {
-
-
     return (
         <Container className="mb-4">
             {games.length > 0 && <h2 className="text-success">Games waiting for an opponent</h2>}

@@ -1,28 +1,26 @@
 import {Dispatch, SetStateAction} from "react";
 import {collection, onSnapshot, query, where} from "firebase/firestore";
 import {db} from "../api/firestore";
-import {ReturnedGameInterface} from "./WaitingGamesList/WaitingGamesList";
+import {ReturnedGameInterface} from "./Game/Game";
 
 interface GameListenerInterface {
     updateState: Dispatch<SetStateAction<ReturnedGameInterface[]>>;
-    setGamesLoaded: Dispatch<SetStateAction<boolean>>;
+    setGamesLoaded?: Dispatch<SetStateAction<boolean>>;
     loggedInUserUserId?: string;
 }
 
-export const listenToWaitingGames = (updateState: Dispatch<SetStateAction<ReturnedGameInterface[]>>, setGamesLoaded: Dispatch<SetStateAction<boolean>>) => {
+export const listenToWaitingGames = ({updateState}: GameListenerInterface) => {
     const QUERY_WAITING = query(collection(db, "games"), where('status', '==', 'WAITING'));
     onSnapshot(QUERY_WAITING, (querySnapshot) => {
         const returnedGames = querySnapshot.docs.map((game) => {
             return {...game.data() as unknown as ReturnedGameInterface};
         });
         updateState(returnedGames);
-        setGamesLoaded(true);
     });
 };
 
 export const listenToInProgressGamesWhereLoggedInPlayerIsCreator = ({
                                                                         updateState,
-                                                                        setGamesLoaded,
                                                                         loggedInUserUserId
                                                                     }: GameListenerInterface) => {
     const QUERY_INPROGRESS_LOGGED_IN_IS_CREATOR = query(collection(db, "games"), where('status', '==', 'INPROGRESS'), where('creatorId', '==', `${loggedInUserUserId}`));
@@ -31,13 +29,11 @@ export const listenToInProgressGamesWhereLoggedInPlayerIsCreator = ({
             return {...game.data() as unknown as ReturnedGameInterface};
         });
         updateState(returnedGames);
-        setGamesLoaded(true);
     });
 };
 
 export const listenToInProgressGamesWhereLoggedInPlayerIsOpponent = ({
                                                                          updateState,
-                                                                         setGamesLoaded,
                                                                          loggedInUserUserId
                                                                      }: GameListenerInterface) => {
     const QUERY_INPROGRESS_LOGGED_IN_IS_OPPONENT = query(collection(db, "games"), where('status', '==', 'INPROGRESS'), where('opponentId', '==', `${loggedInUserUserId}`));
@@ -46,13 +42,11 @@ export const listenToInProgressGamesWhereLoggedInPlayerIsOpponent = ({
             return {...game.data() as unknown as ReturnedGameInterface};
         });
         updateState(returnedGames);
-        setGamesLoaded(true);
     });
 };
 
 export const listenToCompletedGamesWhereLoggedInPlayerIsCreator = ({
                                                                        updateState,
-                                                                       setGamesLoaded,
                                                                        loggedInUserUserId
                                                                    }: GameListenerInterface) => {
     const QUERY_COMPLETED_LOGGED_IN_IS_CREATOR = query(collection(db, "games"), where('status', '==', 'COMPLETED'), where('creatorId', '==', `${loggedInUserUserId}`));
@@ -61,13 +55,11 @@ export const listenToCompletedGamesWhereLoggedInPlayerIsCreator = ({
             return {...game.data() as unknown as ReturnedGameInterface};
         });
         updateState(returnedGames);
-        setGamesLoaded(true);
     });
 };
 
 export const listenToCompletedGamesWhereLoggedInPlayerIsOpponent = ({
                                                                         updateState,
-                                                                        setGamesLoaded,
                                                                         loggedInUserUserId
                                                                     }: GameListenerInterface) => {
     const QUERY_COMPLETED_LOGGED_IN_IS_OPPONENT = query(collection(db, "games"), where('status', '==', 'COMPLETED'), where('opponentId', '==', `${loggedInUserUserId}`));
@@ -76,14 +68,11 @@ export const listenToCompletedGamesWhereLoggedInPlayerIsOpponent = ({
             return {...game.data() as unknown as ReturnedGameInterface};
         });
         updateState(returnedGames);
-        setGamesLoaded(true);
     });
-
 };
 
 export const listenToTieGamesWhereLoggedInPlayerIsCreator = ({
                                                                  updateState,
-                                                                 setGamesLoaded,
                                                                  loggedInUserUserId
                                                              }: GameListenerInterface) => {
     const QUERY_TIE_LOGGED_IN_IS_CREATOR = query(collection(db, "games"), where('status', '==', 'TIE'), where('creatorId', '==', `${loggedInUserUserId}`));
@@ -93,7 +82,6 @@ export const listenToTieGamesWhereLoggedInPlayerIsCreator = ({
             return {...game.data() as unknown as ReturnedGameInterface};
         });
         updateState(returnedGames);
-        setGamesLoaded(true);
     });
 };
 
@@ -109,8 +97,7 @@ export const listenToTieGamesWhereLoggedInPlayerIsOpponent = ({
             return {...game.data() as unknown as ReturnedGameInterface};
         });
         updateState(returnedGames);
-        setGamesLoaded(true);
+        setGamesLoaded && setGamesLoaded(true);
     });
-
 };
 

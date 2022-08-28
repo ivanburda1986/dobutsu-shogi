@@ -1,17 +1,13 @@
 import {FC} from "react";
 import {Container, Row} from "react-bootstrap";
 
-import {Game} from "../Game/Game";
-import {ReturnedGameInterface} from "../WaitingGamesList/WaitingGamesList";
-
+import {Game, ReturnedGameInterface} from "../Game/Game";
 
 interface CompletedGamesListInterface {
     games: ReturnedGameInterface[];
 }
 
 export const CompletedGamesList: FC<CompletedGamesListInterface> = ({games}) => {
-
-
     return (
         <Container>
             {games.length > 0 && <h2 className="text-success">Your Completed Games</h2>}

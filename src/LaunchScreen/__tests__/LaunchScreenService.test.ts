@@ -1,5 +1,5 @@
 import {shouldShowPanda} from "../LaunchScreenService";
-import {ReturnedGameInterface} from "../WaitingGamesList/WaitingGamesList";
+import {ReturnedGameInterface} from "../Game/Game";
 
 describe('LaunchScreenService', () => {
     describe('shouldShowPanda', () => {
