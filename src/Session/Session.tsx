@@ -47,7 +47,7 @@ export const Session = () => {
             }
 
             //Evaluate whether I am an opponent
-            amIOpponent(creatorId, loggedInUserUserId) && setIAmOpponent(true);
+            setIAmOpponent(amIOpponent(creatorId, loggedInUserUserId));
 
         }
     }, [gameId, gameData]);
