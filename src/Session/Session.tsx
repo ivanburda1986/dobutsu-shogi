@@ -5,15 +5,20 @@ import {
     gamesCollectionRef,
     getSingleGameDetails,
     getSingleUserStats,
-    useUpdateGame,
+    updateGame,
     useUpdateUserStats
 } from "../api/firestore";
 import {AppContext} from "../context/AppContext";
-
-import {AppContextInterface} from "../App";
 import {Board} from "./Board/Board";
 
-import {evaluateBeingOpponent, evaluateBeingWinner} from "./SessionService";
+import {
+    amIOpponent,
+    decideStartingPlayer,
+    evaluateBeingWinner,
+    haveBothPlayersJoined,
+    isGameLoaded,
+    isStartingPlayerSet
+} from "./SessionService";
 
 import styles from "./Session.module.css";
 import {DocumentData, onSnapshot} from "firebase/firestore";
@@ -23,12 +28,29 @@ import {RecentMoves} from "./RecentMoves/RecentMoves";
 export const Session = () => {
     const {gameId} = useParams();
     const [gameData, setGameData] = useState<DocumentData | undefined>();
-    const [amIOpponent, setAmIOpponent] = useState(false);
-    const appContext: AppContextInterface = useContext(AppContext);
+    const [iAmOpponent, setIAmOpponent] = useState(false);
+    const {loggedInUserUserId} = useContext(AppContext);
     const [isTie, setIsTie] = useState(false);
-    const updateGame = useUpdateGame;
     const updateStats = useUpdateUserStats;
     const isComponentMountedRef = useRef(true);
+
+    useEffect(() => {
+        if (isGameLoaded(gameId, gameData)) {
+            const {creatorId, opponentId, creatorJoined, opponentJoined, currentPlayerTurn} = gameData!;
+
+            //Decide starting player
+            if (haveBothPlayersJoined(creatorJoined, opponentJoined) && !isStartingPlayerSet(currentPlayerTurn)) {
+                updateGame({
+                    id: gameId!,
+                    updatedDetails: {currentPlayerTurn: decideStartingPlayer(creatorId, opponentId)}
+                });
+            }
+
+            //Evaluate whether I am an opponent
+            amIOpponent(creatorId, loggedInUserUserId) && setIAmOpponent(true);
+
+        }
+    }, [gameId, gameData]);
 
     //Make sure move representations for the whole game are available even after reload/return
     useEffect(() => {
@@ -106,33 +128,6 @@ export const Session = () => {
         });
     }, [gameId]);
 
-    // Evaluate whether I am an opponent or creator and make sure my interface is turned
-    useEffect(() => {
-        if (!gameData) {
-            return;
-        }
-        if (evaluateBeingOpponent({
-            creatorId: gameData!.creatorId,
-            loggedInUserUserId: appContext.loggedInUserUserId
-        })) {
-            setAmIOpponent(true);
-        }
-    }, [appContext.loggedInUserUserId, gameData]);
-
-
-    const decideStartingPlayer = () => {
-        
-    }
-
-    // Randomly decide who should start
-    useEffect(() => {
-        if (gameId && gameData?.creatorJoined && gameData?.opponentJoined && !gameData?.currentPlayerTurn) {
-            const randomNumber = Math.random();
-            const whoShouldStart = randomNumber < 0.5 ? gameData?.creatorId : gameData?.opponentId;
-            updateGame({id: gameId!, updatedDetails: {currentPlayerTurn: whoShouldStart}});
-        }
-    }, [gameId, gameData, updateGame]);
-
     return (
         <Container className="d-flex justify-content-start align-items-center flex-column pb-5">
             <Container fluid
@@ -144,7 +139,7 @@ export const Session = () => {
             <Container fluid
                        className={`d-flex flex-column justify-content-start align-items-center ${styles.Session}`}>
                 {
-                    <Board amIOpponent={amIOpponent} gameData={gameData}
+                    <Board amIOpponent={iAmOpponent} gameData={gameData}
                     />
                 }
             </Container>
@@ -155,11 +150,11 @@ export const Session = () => {
                     gameData?.winner && evaluateBeingWinner({
                         winnerId: gameData.winner,
                         victoryType: gameData.victoryType,
-                        loggedInUserUserId: appContext.loggedInUserUserId
+                        loggedInUserUserId: loggedInUserUserId
                     }) && <GameFinishedMessage messageType={evaluateBeingWinner({
                         winnerId: gameData.winner,
                         victoryType: gameData.victoryType,
-                        loggedInUserUserId: appContext.loggedInUserUserId
+                        loggedInUserUserId: loggedInUserUserId
                     })}/>
                 }
                 {
