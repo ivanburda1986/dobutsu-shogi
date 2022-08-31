@@ -6,7 +6,7 @@ import {
     useHighlightStone,
     updateGame,
     useUpdateStonePosition,
-    useUpdateUserStats
+    updateUserStats
 } from "../../../api/firestore";
 import {
     evaluateStoneMove,
@@ -47,7 +47,7 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
         let placedStoneId = event.dataTransfer!.getData("placedStoneId");
         let movedFromLetter = event.dataTransfer!.getData("movedFromLetter");
         let movedFromNumber = event.dataTransfer!.getData("movedFromNumber");
-        const updateStats = useUpdateUserStats;
+        const updateStats = updateUserStats;
 
         const callbackFc = (stoneMoveAllowed: boolean, shouldChickenTransformToHen: boolean, lionConquerAttempt: lionConquerAttemptInterface) => {
             // console.log('shouldChickenTransformToHen', shouldChickenTransformToHen);

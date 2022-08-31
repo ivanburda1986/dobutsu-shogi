@@ -19,8 +19,8 @@ export const isStartingPlayerSet = (currentPlayerTurn: string | undefined): bool
     return !!currentPlayerTurn;
 };
 
-export const amIOpponent = (creatorId: string,
-                            loggedInUserUserId: string) => {
+export const isLoggedInUserOpponent = (creatorId: string,
+                                       loggedInUserUserId: string) => {
     if (!creatorId || !loggedInUserUserId) {
         return false;
     }

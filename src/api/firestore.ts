@@ -460,7 +460,7 @@ interface useUpdateUserStatsInterface {
     updatedDetails: Partial<UserStats>;
 }
 
-export const useUpdateUserStats = ({userId, updatedDetails}: useUpdateUserStatsInterface) => {
+export const updateUserStats = ({userId, updatedDetails}: useUpdateUserStatsInterface) => {
     const updateUserStatsRef = doc(db, "stats", userId);
     updateDoc(updateUserStatsRef, {...updatedDetails})
         .then(() => console.log("User stats updated"))
