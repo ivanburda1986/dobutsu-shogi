@@ -309,7 +309,7 @@ interface useUpdateGameInterface {
     updatedDetails: Partial<Game>;
 }
 
-export const updateGame = ({id, updatedDetails}: useUpdateGameInterface) => {
+export const useUpdateGame = ({id, updatedDetails}: useUpdateGameInterface) => {
     const updateGameRef = doc(db, "games", id);
     updateDoc(updateGameRef, {...updatedDetails})
         .then(() => console.log("Game updated"))
@@ -343,10 +343,10 @@ export const updatePlayerAvatarInGames = async ({playerId, updatedAvatar}: Updat
     let gamesWherePlayerIsOpponent = returnedGames.filter((game: Game) => game.opponentId === playerId).map((gameWithPlayerOpponent: Game) => gameWithPlayerOpponent.gameId);
     let gamesWherePlayerIsCreator = returnedGames.filter((game: Game) => game.creatorId === playerId).map((gameWithPlayerCreator: Game) => gameWithPlayerCreator.gameId);
     gamesWherePlayerIsCreator.forEach((gameId) => {
-        updateGame({id: gameId, updatedDetails: {creatorPhotoURL: updatedAvatar}});
+        useUpdateGame({id: gameId, updatedDetails: {creatorPhotoURL: updatedAvatar}});
     });
     gamesWherePlayerIsOpponent.forEach((gameId) => {
-        updateGame({id: gameId, updatedDetails: {opponentPhotoURL: updatedAvatar}});
+        useUpdateGame({id: gameId, updatedDetails: {opponentPhotoURL: updatedAvatar}});
     });
 };
 

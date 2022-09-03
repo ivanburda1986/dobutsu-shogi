@@ -4,7 +4,7 @@ import {
     getSingleUserStats,
     useEmpowerStone,
     useHighlightStone,
-    updateGame,
+    useUpdateGame,
     useUpdateStonePosition,
     useUpdateUserStats
 } from "../../../api/firestore";
@@ -36,6 +36,7 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
     const updateStonePosition = useUpdateStonePosition;
     const empowerStone = useEmpowerStone;
     const highlightStone = useHighlightStone;
+    const updateGame = useUpdateGame;
 
     const enableDropping = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();

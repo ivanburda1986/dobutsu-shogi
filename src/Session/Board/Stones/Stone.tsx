@@ -6,7 +6,7 @@ import {
     useUpdateStonePosition,
     useEmpowerStone,
     useHandicapStone,
-    updateGame,
+    useUpdateGame,
     useUpdateUserStats,
     getSingleUserStats,
     getSingleGameDetails,
@@ -254,6 +254,7 @@ export const Stone: FC<StoneInterface> = ({
     const onStoneDropHandler = (event: React.DragEvent<HTMLDivElement>) => {
         const empowerStone = useEmpowerStone;
         const handicapStone = useHandicapStone;
+        const updateGame = useUpdateGame;
         const updateStats = useUpdateUserStats;
 
         setHideStoneStashCount(false);

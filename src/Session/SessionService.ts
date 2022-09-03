@@ -1,41 +1,12 @@
 import {GameFinishedMessageType} from '../Session/GameFinishedMessage/GameFinishedMessage';
 import {VictoryType} from "./Board/Board";
-import {DocumentData} from "firebase/firestore";
 
+interface evaluateBeingOpponentInterface {
+    creatorId: string;
+    loggedInUserUserId: string;
+}
 
-export const decideStartingPlayer = (creatorId: string, opponentId: string): string => {
-    return Math.random() < 0.5 ? creatorId : opponentId;
-};
-
-export const isGameLoaded = (gameId: string | undefined, gameData: DocumentData | undefined): boolean => {
-    return (!!gameId && !!gameData);
-};
-
-export const haveBothPlayersJoined = (creatorJoined: boolean, opponentJoined: boolean): boolean => {
-    return (creatorJoined && opponentJoined);
-};
-
-export const isStartingPlayerSet = (currentPlayerTurn: string | undefined): boolean => {
-    return !!currentPlayerTurn;
-};
-
-export const amIOpponent = (creatorId: string,
-                            loggedInUserUserId: string) => {
-    if (!creatorId || !loggedInUserUserId) {
-        return false;
-    }
-    if (creatorId === loggedInUserUserId) {
-        return false;
-    }
-    if (creatorId !== loggedInUserUserId) {
-        return true;
-    }
-
-    return false;
-};
-
-
-export const evaluateBeingOpponent = (creatorId: string, loggedInUserUserId: string) => {
+export const evaluateBeingOpponent = ({creatorId, loggedInUserUserId}: evaluateBeingOpponentInterface) => {
     if (!creatorId || !loggedInUserUserId) {
         return 0;
     }

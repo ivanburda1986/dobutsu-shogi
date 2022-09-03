@@ -31,10 +31,10 @@ export const RecentMoves: FunctionComponent<RecentMovesInterface> = ({moves = []
         return (
             <div className={`d-flex justify-content-center align-items-center me-2`}>
                 <h6 className="d-none d-sm-inline-block me-3"><strong>Latest move:</strong></h6>
-                <div className={`${evaluateBeingOpponent(
-                    creatorId,
-                    lastMove.movingPlayerId
-                ) ? styles.OpponentBg : styles.CreatorBg} d-flex justify-content-center align-items-center`}>
+                <div className={`${evaluateBeingOpponent({
+                    creatorId: creatorId,
+                    loggedInUserUserId: lastMove.movingPlayerId
+                }) ? styles.OpponentBg : styles.CreatorBg} d-flex justify-content-center align-items-center`}>
                     {
                         lastMove.isTakeOver && <div className="d-flex justify-content-center align-items-center">
                             {(<RecentMoveStone name={lastButOneMove!.type.toLowerCase()}
