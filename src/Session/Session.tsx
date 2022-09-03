@@ -60,6 +60,9 @@ export const Session = () => {
     useEffect(() => {
         if (gameData && gameData.moveRepresentations.length >= 6) {
             const moveRepresentations = gameData.moveRepresentations;
+            console.log(moveRepresentations[moveRepresentations.length - 1]);
+            console.log(moveRepresentations[moveRepresentations.length - 3]);
+            console.log(moveRepresentations[moveRepresentations.length - 5]);
             if (moveRepresentations[moveRepresentations.length - 1] === moveRepresentations[moveRepresentations.length - 3] && moveRepresentations[moveRepresentations.length - 3] === moveRepresentations[moveRepresentations.length - 5]) {
                 // console.log('TIE');
                 setIsTie(true);
@@ -119,10 +122,6 @@ export const Session = () => {
         }
     }, [appContext.loggedInUserUserId, gameData]);
 
-
-    const decideStartingPlayer = () => {
-        
-    }
 
     // Randomly decide who should start
     useEffect(() => {
