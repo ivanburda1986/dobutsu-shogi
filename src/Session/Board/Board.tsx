@@ -1,4 +1,4 @@
-import {FC, useContext, useEffect, useRef, useState} from "react";
+import {FC, useEffect, useRef, useState} from "react";
 import {useParams} from "react-router";
 import {Container} from "react-bootstrap";
 import {collection, doc, DocumentData, onSnapshot} from "firebase/firestore";
@@ -11,9 +11,11 @@ import {BoardRow} from "./BoardRow/BoardRow";
 import {PlayerInterface} from "../PlayerInterface/PlayerInterface";
 import {Stone, StoneInterface} from "./Stones/Stone";
 import styles from "./Board.module.css";
-import {isLoggedInUserOpponent} from "../SessionService";
-import {AppContext} from "../../context/AppContext";
 
+interface BoardInterface {
+    amIOpponent: boolean;
+    gameData: DocumentData | undefined;
+}
 
 export type VictoryType =
     "LION_CAUGHT_SUCCESS"
@@ -22,10 +24,9 @@ export type VictoryType =
     | undefined
     | null;
 
-export const Board: FC<DocumentData | undefined> = (gameData) => {
-    const {gameId} = useParams();
-    const {loggedInUserUserId} = useContext(AppContext);
-
+export const Board: FC<BoardInterface> = ({amIOpponent, gameData}) => {
+    const params = useParams();
+    const gameId = params.gameId;
     const [stones, setStones] = useState<StoneInterface[]>([]);
     const [rowNumbers, setRowNumbers] = useState<number[]>([1, 2, 3, 4]);
     const [columnLetters, setColumnLetters] = useState<string[]>(["A", "B", "C"]);
@@ -34,7 +35,7 @@ export const Board: FC<DocumentData | undefined> = (gameData) => {
     const [canTakeStone, setCanTakeStone] = useState<boolean>(false);
     const [winner, setWinner] = useState<string>();
     const [victoryType, setVictoryType] = useState<VictoryType>();
-    const amIOpponent = isLoggedInUserOpponent(gameData.creator, loggedInUserUserId);
+
     const isComponentMountedRef = useRef(true);
 
     useEffect(() => {

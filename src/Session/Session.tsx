@@ -6,12 +6,13 @@ import {
     getSingleGameDetails,
     getSingleUserStats,
     updateGame,
-    updateUserStats
+    useUpdateUserStats
 } from "../api/firestore";
 import {AppContext} from "../context/AppContext";
 import {Board} from "./Board/Board";
 
 import {
+    amIOpponent,
     decideStartingPlayer,
     evaluateBeingWinner,
     haveBothPlayersJoined,
@@ -26,13 +27,11 @@ import {RecentMoves} from "./RecentMoves/RecentMoves";
 
 export const Session = () => {
     const {gameId} = useParams();
-    const {loggedInUserUserId} = useContext(AppContext);
-
     const [gameData, setGameData] = useState<DocumentData | undefined>();
-
-
+    const [iAmOpponent, setIAmOpponent] = useState(false);
+    const {loggedInUserUserId} = useContext(AppContext);
     const [isTie, setIsTie] = useState(false);
-
+    const updateStats = useUpdateUserStats;
     const isComponentMountedRef = useRef(true);
 
     useEffect(() => {
@@ -46,6 +45,9 @@ export const Session = () => {
                     updatedDetails: {currentPlayerTurn: decideStartingPlayer(creatorId, opponentId)}
                 });
             }
+
+            //Evaluate whether I am an opponent
+            setIAmOpponent(amIOpponent(creatorId, loggedInUserUserId));
 
         }
     }, [gameId, gameData]);
@@ -99,11 +101,11 @@ export const Session = () => {
                     finishedTimeStamp: Date.now(),
                 }
             });
-            getSingleUserStats({userId: gameData?.creatorId}).then((serverStats) => updateUserStats({
+            getSingleUserStats({userId: gameData?.creatorId}).then((serverStats) => updateStats({
                 userId: gameData?.creatorId,
                 updatedDetails: {tie: serverStats.data()?.tie + 1}
             }));
-            getSingleUserStats({userId: gameData?.opponentId}).then((serverStats) => updateUserStats({
+            getSingleUserStats({userId: gameData?.opponentId}).then((serverStats) => updateStats({
                 userId: gameData?.opponentId,
                 updatedDetails: {tie: serverStats.data()?.tie + 1}
             }));
@@ -137,7 +139,7 @@ export const Session = () => {
             <Container fluid
                        className={`d-flex flex-column justify-content-start align-items-center ${styles.Session}`}>
                 {
-                    <Board gameData={gameData}
+                    <Board amIOpponent={iAmOpponent} gameData={gameData}
                     />
                 }
             </Container>
