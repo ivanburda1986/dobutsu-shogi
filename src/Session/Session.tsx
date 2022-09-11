@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
+import React, {Dispatch, useCallback, useContext, useEffect, useRef, useState} from "react";
 import {Container} from "react-bootstrap";
 import {useParams} from "react-router";
 import {
@@ -6,7 +6,7 @@ import {
     getSingleGameDetails,
     getSingleUserStats,
     updateGame,
-    updateUserStats
+    updateUserStats, useUpdateGameInterface
 } from "../api/firestore";
 import {AppContext} from "../context/AppContext";
 
@@ -120,15 +120,47 @@ export const Session = () => {
         }
     }, [appContext.loggedInUserUserId, gameData]);
 
+    const isGameLoaded = (gameData: DocumentData | undefined, gameId: string | undefined): boolean => {
+        console.log('isGameLoaded');
+        if (!!gameData) {
+            const {creatorId, opponentId, creatorJoined, opponentJoined} = gameData!;
+            console.log(!!creatorId && !!opponentId && !!creatorJoined && !!opponentJoined && !!gameId);
+            return !!creatorId && !!opponentId && !!creatorJoined && !!opponentJoined && !!gameId;
+        }
+        console.log('false');
+        return false;
+    };
+
+    const haveBothPlayersJoined = (creatorJoined: boolean, opponentJoined: boolean): boolean => {
+        console.log('haveBothPlayersJoined', creatorJoined && opponentJoined);
+        return creatorJoined && opponentJoined;
+    };
+
+    const isStartingPlayerDetermined = (startingPlayer: string): boolean => {
+        console.log('isStartingPlayerDetermined', !!startingPlayer);
+        return !!startingPlayer;
+    };
+
+    const determineStartingPlayer = useCallback((gameData: DocumentData, updateGame: Dispatch<useUpdateGameInterface>) => {
+        const {creatorId, opponentId, creatorJoined, opponentJoined, startingPlayer} = gameData;
+        if (haveBothPlayersJoined(creatorJoined, opponentJoined) && !isStartingPlayerDetermined(startingPlayer)) {
+            const randomNumber = Math.random();
+            const whoShouldStart = randomNumber < 0.5 ? creatorId : opponentId;
+            console.log('whoShouldStart', whoShouldStart);
+            updateGame({
+                id: gameId!,
+                updatedDetails: {startingPlayer: whoShouldStart, currentPlayerTurn: whoShouldStart}
+            });
+        }
+    }, [gameId]);
 
     // Randomly decide who should start
     useEffect(() => {
-        if (gameId && gameData?.creatorJoined && gameData?.opponentJoined && !gameData?.currentPlayerTurn) {
-            const randomNumber = Math.random();
-            const whoShouldStart = randomNumber < 0.5 ? gameData?.creatorId : gameData?.opponentId;
-            updateGame({id: gameId!, updatedDetails: {currentPlayerTurn: whoShouldStart}});
+        if (isGameLoaded(gameData, gameId)) {
+            determineStartingPlayer(gameData!, updateGame);
         }
-    }, [gameId, gameData, updateGame]);
+
+    }, [gameId, gameData, determineStartingPlayer]);
 
     return (
         <Container className="d-flex justify-content-start align-items-center flex-column pb-5">

@@ -304,7 +304,7 @@ export const deleteGame = (id: string) => {
     });
 };
 
-interface useUpdateGameInterface {
+export interface useUpdateGameInterface {
     id: string;
     updatedDetails: Partial<Game>;
 }
@@ -316,6 +316,9 @@ export const updateGame = ({id, updatedDetails}: useUpdateGameInterface) => {
         .catch((err) => {
             console.log(err.message);
         });
+    console.log('Game updated');
+    console.log('id');
+    console.log(updatedDetails);
 };
 
 //Get one game details
