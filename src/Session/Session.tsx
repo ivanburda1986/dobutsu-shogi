@@ -5,8 +5,8 @@ import {
     gamesCollectionRef,
     getSingleGameDetails,
     getSingleUserStats,
-    useUpdateGame,
-    useUpdateUserStats
+    updateGame,
+    updateUserStats
 } from "../api/firestore";
 import {AppContext} from "../context/AppContext";
 
@@ -15,10 +15,10 @@ import {Board} from "./Board/Board";
 
 import {evaluateBeingOpponent, evaluateBeingWinner} from "./SessionService";
 
-import styles from "./Session.module.css";
 import {DocumentData, onSnapshot} from "firebase/firestore";
 import {GameFinishedMessage} from "./GameFinishedMessage/GameFinishedMessage";
 import {RecentMoves} from "./RecentMoves/RecentMoves";
+import styles from "./Session.module.css";
 
 export const Session = () => {
     const {gameId} = useParams();
@@ -26,8 +26,6 @@ export const Session = () => {
     const [amIOpponent, setAmIOpponent] = useState(false);
     const appContext: AppContextInterface = useContext(AppContext);
     const [isTie, setIsTie] = useState(false);
-    const updateGame = useUpdateGame;
-    const updateStats = useUpdateUserStats;
     const isComponentMountedRef = useRef(true);
 
     //Make sure move representations for the whole game are available even after reload/return
@@ -82,11 +80,11 @@ export const Session = () => {
                     finishedTimeStamp: Date.now(),
                 }
             });
-            getSingleUserStats({userId: gameData?.creatorId}).then((serverStats) => updateStats({
+            getSingleUserStats({userId: gameData?.creatorId}).then((serverStats) => updateUserStats({
                 userId: gameData?.creatorId,
                 updatedDetails: {tie: serverStats.data()?.tie + 1}
             }));
-            getSingleUserStats({userId: gameData?.opponentId}).then((serverStats) => updateStats({
+            getSingleUserStats({userId: gameData?.opponentId}).then((serverStats) => updateUserStats({
                 userId: gameData?.opponentId,
                 updatedDetails: {tie: serverStats.data()?.tie + 1}
             }));
