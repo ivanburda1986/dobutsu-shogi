@@ -317,7 +317,7 @@ export const updateGame = ({id, updatedDetails}: useUpdateGameInterface) => {
             console.log(err.message);
         });
     console.log('Game updated');
-    console.log('id');
+    console.log(id);
     console.log(updatedDetails);
 };
 

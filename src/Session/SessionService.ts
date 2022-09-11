@@ -1,6 +1,44 @@
 import {GameFinishedMessageType} from '../Session/GameFinishedMessage/GameFinishedMessage';
 import {VictoryType} from "./Board/Board";
+import {DocumentData} from "firebase/firestore";
+import {Dispatch} from "react";
+import {useUpdateGameInterface} from "../api/firestore";
 
+export const isGameLoaded = (gameData: DocumentData | undefined, gameId: string | undefined): boolean => {
+    console.log('isGameLoaded');
+    if (!!gameData) {
+        const {creatorId, opponentId, creatorJoined, opponentJoined} = gameData!;
+        console.log(!!creatorId && !!opponentId && !!creatorJoined && !!opponentJoined && !!gameId);
+        return !!creatorId && !!opponentId && !!creatorJoined && !!opponentJoined && !!gameId;
+    }
+    console.log('false');
+    return false;
+};
+
+const haveBothPlayersJoined = (creatorJoined: boolean, opponentJoined: boolean): boolean => {
+    console.log('haveBothPlayersJoined', creatorJoined && opponentJoined);
+    return creatorJoined && opponentJoined;
+};
+
+const isStartingPlayerDetermined = (startingPlayer: string): boolean => {
+    console.log('isStartingPlayerDetermined', !!startingPlayer);
+    return !!startingPlayer;
+};
+
+export const determineStartingPlayer = (gameData: DocumentData, gameId: string | undefined, updateGame: Dispatch<useUpdateGameInterface>) => {
+    const {creatorId, opponentId, creatorJoined, opponentJoined, startingPlayer} = gameData;
+    if (haveBothPlayersJoined(creatorJoined, opponentJoined) && !isStartingPlayerDetermined(startingPlayer)) {
+        const randomNumber = Math.random();
+        const whoShouldStart = randomNumber < 0.5 ? creatorId : opponentId;
+        console.log('whoShouldStart', whoShouldStart);
+        updateGame({
+            id: gameId!,
+            updatedDetails: {startingPlayer: whoShouldStart, currentPlayerTurn: whoShouldStart}
+        });
+    }
+};
+
+// Not refactored
 interface evaluateBeingOpponentInterface {
     creatorId: string;
     loggedInUserUserId: string;
