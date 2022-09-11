@@ -4,8 +4,8 @@ import {DocumentData} from "firebase/firestore";
 import {Dispatch} from "react";
 import {useUpdateGameInterface} from "../api/firestore";
 
-export const isGameLoaded = (gameData: DocumentData | undefined, gameId: string | undefined): boolean => {
-    console.log('isGameLoaded');
+export const havePlayersJoinedGame = (gameData: DocumentData | undefined, gameId: string | undefined): boolean => {
+    console.log('havePlayersJoinedGame');
     if (!!gameData) {
         const {creatorId, opponentId, creatorJoined, opponentJoined} = gameData!;
         console.log(!!creatorId && !!opponentId && !!creatorJoined && !!opponentJoined && !!gameId);

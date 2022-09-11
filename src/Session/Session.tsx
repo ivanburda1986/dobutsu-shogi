@@ -13,7 +13,12 @@ import {AppContext} from "../context/AppContext";
 import {AppContextInterface} from "../App";
 import {Board} from "./Board/Board";
 
-import {determineStartingPlayer, evaluateBeingOpponent, evaluateBeingWinner, isGameLoaded} from "./SessionService";
+import {
+    determineStartingPlayer,
+    evaluateBeingOpponent,
+    evaluateBeingWinner,
+    havePlayersJoinedGame
+} from "./SessionService";
 
 import {DocumentData, onSnapshot} from "firebase/firestore";
 import {GameFinishedMessage} from "./GameFinishedMessage/GameFinishedMessage";
@@ -123,7 +128,7 @@ export const Session = () => {
 
     // Randomly decide who should start
     useEffect(() => {
-        if (isGameLoaded(gameData, gameId)) {
+        if (havePlayersJoinedGame(gameData, gameId)) {
             determineStartingPlayer(gameData!, gameId, updateGame);
         }
     }, [gameId, gameData]);
