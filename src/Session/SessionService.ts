@@ -1,17 +1,14 @@
-import {GameFinishedMessageType} from '../Session/GameFinishedMessage/GameFinishedMessage';
+import {GameFinishedMessageType} from './GameFinishedMessage/GameFinishedMessage';
 import {VictoryType} from "./Board/Board";
 import {DocumentData} from "firebase/firestore";
 import {Dispatch} from "react";
 import {useUpdateGameInterface} from "../api/firestore";
 
 export const havePlayersJoinedGame = (gameData: DocumentData | undefined, gameId: string | undefined): boolean => {
-    console.log('havePlayersJoinedGame');
     if (!!gameData) {
         const {creatorId, opponentId, creatorJoined, opponentJoined} = gameData!;
-        console.log(!!creatorId && !!opponentId && !!creatorJoined && !!opponentJoined && !!gameId);
         return !!creatorId && !!opponentId && !!creatorJoined && !!opponentJoined && !!gameId;
     }
-    console.log('false');
     return false;
 };
 
