@@ -12,19 +12,14 @@ export const havePlayersJoinedGame = (gameData: DocumentData | undefined, gameId
     return false;
 };
 
-const haveBothPlayersJoined = (creatorJoined: boolean, opponentJoined: boolean): boolean => {
-    console.log('haveBothPlayersJoined', creatorJoined && opponentJoined);
-    return creatorJoined && opponentJoined;
-};
-
-const isStartingPlayerDetermined = (startingPlayer: string): boolean => {
+export const isStartingPlayerDetermined = (startingPlayer: string | undefined): boolean => {
     console.log('isStartingPlayerDetermined', !!startingPlayer);
     return !!startingPlayer;
 };
 
 export const determineStartingPlayer = (gameData: DocumentData, gameId: string | undefined, updateGame: Dispatch<useUpdateGameInterface>) => {
     const {creatorId, opponentId, creatorJoined, opponentJoined, startingPlayer} = gameData;
-    if (haveBothPlayersJoined(creatorJoined, opponentJoined) && !isStartingPlayerDetermined(startingPlayer)) {
+    if (havePlayersJoinedGame(creatorJoined, opponentJoined) && !isStartingPlayerDetermined(startingPlayer)) {
         const randomNumber = Math.random();
         const whoShouldStart = randomNumber < 0.5 ? creatorId : opponentId;
         console.log('whoShouldStart', whoShouldStart);

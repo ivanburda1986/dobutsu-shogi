@@ -1,5 +1,5 @@
 import * as firestoreRequests from "../../api/firestore";
-import {determineStartingPlayer} from "../SessionService";
+import {determineStartingPlayer, havePlayersJoinedGame, isStartingPlayerDetermined} from "../SessionService";
 import {Dispatch} from "react";
 import {useUpdateGameInterface} from "../../api/firestore";
 import {mockRandom, resetMockRandom} from "jest-mock-random";
@@ -9,7 +9,7 @@ const MATH_RANDOM_TO_MAKE_OPPONENT_STARTING_PLAYER = 0.5;
 
 describe('SessionService', () => {
     describe('determineStartingPlayer', () => {
-        it('decides a starting player send decision to database when both players joined and starting player is not determined', () => {
+        it('decides and saves to server a starting player when both players joined and starting player is not determined', () => {
             const updateGameSpy = jest
                 .spyOn(firestoreRequests, 'updateGame') as any as Dispatch<useUpdateGameInterface>;
             const gameData = {
@@ -31,7 +31,7 @@ describe('SessionService', () => {
             resetMockRandom();
         });
 
-        it('randomly decides creator to start and sends the decision to database', () => {
+        it('decides the creator should start and saves decision to server', () => {
             const updateGameSpy = jest
                 .spyOn(firestoreRequests, 'updateGame') as any as Dispatch<useUpdateGameInterface>;
             const gameData = {
@@ -53,7 +53,7 @@ describe('SessionService', () => {
             resetMockRandom();
         });
 
-        it('randomly decides opponent to start and sends the decision to database', () => {
+        it('decides the opponent should start and saves decision to server', () => {
             const updateGameSpy = jest
                 .spyOn(firestoreRequests, 'updateGame') as any as Dispatch<useUpdateGameInterface>;
             const gameData = {
@@ -75,7 +75,7 @@ describe('SessionService', () => {
             resetMockRandom();
         });
 
-        it('does not send decision about starting player to database when starting player is already determined', () => {
+        it('does not send decision about starting player to server when starting player is already known', () => {
             const updateGameSpy = jest
                 .spyOn(firestoreRequests, 'updateGame') as any as Dispatch<useUpdateGameInterface>;
             const gameData = {
@@ -92,7 +92,7 @@ describe('SessionService', () => {
             expect(updateGameSpy).not.toHaveBeenCalled();
         });
 
-        it('does not send decision about starting player to database when game data is not available', () => {
+        it('does not send decision about starting player to server when game data is not available', () => {
             const updateGameSpy = jest
                 .spyOn(firestoreRequests, 'updateGame') as any as Dispatch<useUpdateGameInterface>;
             const gameData = {};
@@ -103,7 +103,7 @@ describe('SessionService', () => {
             expect(updateGameSpy).not.toHaveBeenCalled();
         });
 
-        it('does not send decision about starting player to database when gameId is not available', () => {
+        it('does not send decision about starting player to server when gameId is not available', () => {
             const updateGameSpy = jest
                 .spyOn(firestoreRequests, 'updateGame') as any as Dispatch<useUpdateGameInterface>;
             const gameData = {
@@ -121,17 +121,64 @@ describe('SessionService', () => {
         });
     });
 
-    describe('isGameLoadedForBothPlayers', () => {
-        it('returns false when gameId is unknown', () => {
+    describe('havePlayersJoinedGame', () => {
+        it('returns false when gameId is not available', () => {
+            const gameData = {
+                creatorId: 'creator123',
+                opponentId: 'opponent123',
+                creatorJoined: true,
+                opponentJoined: true,
+                startingPlayer: 'creator123',
+            };
+            const gameId = undefined;
 
+            const result = havePlayersJoinedGame(gameData, gameId);
+
+            expect(result).toBe(false);
         });
 
-        it('returns false when game is loaded only for a single player', () => {
+        it('returns false when game has been joined only by 1 player', () => {
+            const gameData = {
+                creatorId: 'creator123',
+                opponentId: null,
+                creatorJoined: true,
+                opponentJoined: false,
+                startingPlayer: null,
+            };
+            const gameId = 'game123';
 
+            const result = havePlayersJoinedGame(gameData, gameId);
+
+            expect(result).toBe(false);
         });
 
-        it('returns true when game is loaded', () => {
+        it('returns true when game has been joined by both players', () => {
+            const gameData = {
+                creatorId: 'creator123',
+                opponentId: 'opponent123',
+                creatorJoined: true,
+                opponentJoined: true,
+                startingPlayer: 'creator123',
+            };
+            const gameId = 'game123';
 
+            const result = havePlayersJoinedGame(gameData, gameId);
+
+            expect(result).toBe(true);
+        });
+    });
+
+    describe('isStartingPlayerDetermined', () => {
+        it('returns false when starting player is not determined', () => {
+            const startingPlayer = undefined;
+
+            expect(isStartingPlayerDetermined(startingPlayer)).toBe(false);
+        });
+
+        it('returns true when starting player is determined', () => {
+            const startingPlayer = 'creator123';
+
+            expect(isStartingPlayerDetermined(startingPlayer)).toBe(true);
         });
     });
 });
