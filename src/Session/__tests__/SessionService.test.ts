@@ -17,7 +17,7 @@ describe('SessionService', () => {
                 opponentId: 'opponent123',
                 creatorJoined: true,
                 opponentJoined: true,
-                startingPlayer: null,
+                startingPlayer: undefined,
             };
             const gameId = 'game123';
             mockRandom(MATH_RANDOM_TO_MAKE_CREATOR_STARTING_PLAYER);
@@ -39,7 +39,7 @@ describe('SessionService', () => {
                 opponentId: 'opponent123',
                 creatorJoined: true,
                 opponentJoined: true,
-                startingPlayer: null,
+                startingPlayer: undefined,
             };
             const gameId = 'game123';
             mockRandom(MATH_RANDOM_TO_MAKE_CREATOR_STARTING_PLAYER);
@@ -61,7 +61,7 @@ describe('SessionService', () => {
                 opponentId: 'opponent123',
                 creatorJoined: true,
                 opponentJoined: true,
-                startingPlayer: null,
+                startingPlayer: undefined,
             };
             const gameId = 'game123';
             mockRandom(MATH_RANDOM_TO_MAKE_OPPONENT_STARTING_PLAYER);
@@ -140,10 +140,10 @@ describe('SessionService', () => {
         it('returns false when game has been joined only by 1 player', () => {
             const gameData = {
                 creatorId: 'creator123',
-                opponentId: null,
+                opponentId: undefined,
                 creatorJoined: true,
                 opponentJoined: false,
-                startingPlayer: null,
+                startingPlayer: undefined,
             };
             const gameId = 'game123';
 

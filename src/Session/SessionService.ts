@@ -18,8 +18,8 @@ export const isStartingPlayerDetermined = (startingPlayer: string | undefined): 
 };
 
 export const determineStartingPlayer = (gameData: DocumentData, gameId: string | undefined, updateGame: Dispatch<useUpdateGameInterface>) => {
-    const {creatorId, opponentId, creatorJoined, opponentJoined, startingPlayer} = gameData;
-    if (havePlayersJoinedGame(creatorJoined, opponentJoined) && !isStartingPlayerDetermined(startingPlayer)) {
+    const {creatorId, opponentId, startingPlayer} = gameData;
+    if (havePlayersJoinedGame(gameData, gameId) && !isStartingPlayerDetermined(startingPlayer)) {
         const randomNumber = Math.random();
         const whoShouldStart = randomNumber < 0.5 ? creatorId : opponentId;
         console.log('whoShouldStart', whoShouldStart);
