@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
+import React, {Dispatch, SetStateAction, useContext, useEffect, useRef, useState} from "react";
 import {Container} from "react-bootstrap";
 import {useParams} from "react-router";
 import {
@@ -27,6 +27,41 @@ import {RecentMoves} from "./RecentMoves/RecentMoves";
 import styles from "./Session.module.css";
 
 
+//A tie occurs if both players repeat the same row of moves 3 times
+export const isTieEvaluation = (gameData: DocumentData | undefined, setIsTie: Dispatch<SetStateAction<boolean>>): void => {
+    if (!gameData) {
+        return;
+    }
+
+    const moveRepresentations = gameData.moveRepresentations;
+    const isMinimumCountOfMovementsAvailableForTieToOccur = moveRepresentations.length >= 6;
+    if (isMinimumCountOfMovementsAvailableForTieToOccur) {
+        const lastRound = moveRepresentations[moveRepresentations.length - 1];
+        const lastMinusThreeRound = moveRepresentations[moveRepresentations.length - 3];
+        const lastMinusFiveRound = moveRepresentations[moveRepresentations.length - 5];
+        if (lastRound === lastMinusThreeRound && lastMinusThreeRound === lastMinusFiveRound) {
+            setIsTie(true);
+            return;
+        }
+
+        return;
+    }
+};
+
+/*  Player's move   Round hash          Position in array
+    1)              1-gc4c3--p-ga1a2    - length-6;
+    2)              1-gc3c4--p-ga2a1    - length-5;
+    3)              1-gc4c3--p-ga1a2    - length-4;
+    4)              1-gc3c4--p-ga2a1    - length-3;
+    5)              1-gc4c3--p-ga1a2    - length-2;
+    6)              1-gc3c4--p-ga2a1    - length-1;
+
+    Identical hashes:
+    1, 3, 5 -> both players have repeated 3 movements
+    2, 4, 6 -> both players have repeated 3 movements
+ */
+
+
 export const Session = () => {
     const {gameId} = useParams();
     const [gameData, setGameData] = useState<DocumentData | undefined>();
@@ -37,26 +72,9 @@ export const Session = () => {
 
     useEffect(() => {
         createAndStoreLastRoundMoveHash(gameId, gameData, updateGame);
-
+        isTieEvaluation(gameData, setIsTie);
     }, [gameData, gameId]);
-
-    // Evalute the movement repetition that might lead to a tie
-    useEffect(() => {
-        if (gameData && gameData.moveRepresentations.length >= 6) {
-            const moveRepresentations = gameData.moveRepresentations;
-            console.log(moveRepresentations[moveRepresentations.length - 1]);
-            console.log(moveRepresentations[moveRepresentations.length - 3]);
-            console.log(moveRepresentations[moveRepresentations.length - 5]);
-            if (moveRepresentations[moveRepresentations.length - 1] === moveRepresentations[moveRepresentations.length - 3] && moveRepresentations[moveRepresentations.length - 3] === moveRepresentations[moveRepresentations.length - 5]) {
-                // console.log('TIE');
-                setIsTie(true);
-                return;
-            }
-            // console.log('not tie');
-            return;
-        }
-    }, [gameData, gameData?.moveRepresentations, gameId, updateGame]);
-
+    
     useEffect(() => {
         if (isTie) {
             updateGame({
