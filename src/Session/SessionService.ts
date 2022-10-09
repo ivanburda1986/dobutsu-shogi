@@ -32,6 +32,61 @@ export const determineStartingPlayer = (gameData: DocumentData, gameId: string |
     }
 };
 
+interface PlayerMoveHashInput {
+    id: string;
+    type: string;
+    fromCoordinates: string;
+    targetCoordinates: string;
+}
+
+interface BothPlayerHashInput {
+    player1: PlayerMoveHashInput;
+    player2: PlayerMoveHashInput;
+}
+
+const shouldSaveLatestRoundMovementHash = (moveRepresentations: string[], latestRoundMoveHash: string | undefined): boolean => {
+    return !!latestRoundMoveHash && moveRepresentations[moveRepresentations.length - 1] !== latestRoundMoveHash;
+};
+
+const isMoveHashRelatedToStash = (moveHash: string): boolean => {
+    return moveHash.length > 12;
+};
+
+const createLatestRoundMoveHash = (hashInput: BothPlayerHashInput): string | undefined => {
+    const {player1, player2} = hashInput;
+    const latestRoundMoveHash = (player1.id.charAt(0) + player1.type.charAt(0) + player1.fromCoordinates + player1.targetCoordinates + player2.id.charAt(0) + player2.type.charAt(0) + player2.fromCoordinates + player2.targetCoordinates).toLowerCase();
+    if (isMoveHashRelatedToStash(latestRoundMoveHash)) {
+        return;
+    } else return latestRoundMoveHash;
+};
+const areSufficientMoveRecordsAvailable = (gameData: DocumentData | undefined): boolean => {
+    return !!(gameData && gameData.moves.length >= 2 && gameData.moves.length % 2 === 0);
+};
+export const createAndStoreLastRoundMoveHash = (gameId: string | undefined, gameData: DocumentData | undefined, updateGame: Dispatch<useUpdateGameInterface>) => {
+    if (!isGameDataAvailable(gameData, gameId)) {
+        return;
+    }
+
+    if (!areSufficientMoveRecordsAvailable(gameData)) {
+        return;
+    }
+
+    const recordedMoves = gameData!.moves;
+    const numberOfRecordedMoves = gameData!.moves.length;
+    const player1LatestMove = recordedMoves[numberOfRecordedMoves - 1];
+    const player2LatestMove = recordedMoves[numberOfRecordedMoves - 2];
+    const latestRoundMoveHash = createLatestRoundMoveHash({player1: player1LatestMove, player2: player2LatestMove});
+
+    const moveRepresentations = gameData?.moveRepresentations;
+    if (shouldSaveLatestRoundMovementHash(moveRepresentations, latestRoundMoveHash)) {
+        let updatedMoveRepresentations = [...moveRepresentations, latestRoundMoveHash];
+        updateGame({
+            id: gameId!,
+            updatedDetails: {moveRepresentations: updatedMoveRepresentations}
+        });
+    }
+};
+
 // Not refactored
 interface evaluateBeingOpponentInterface {
     creatorId: string;
@@ -109,7 +164,5 @@ export const evaluateBeingWinner = ({
 export function isTouchEnabled(): boolean {
     return 'ontouchstart' in window;
 }
-
-
 
 

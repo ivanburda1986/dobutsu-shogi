@@ -1,4 +1,4 @@
-import React, {Dispatch, useCallback, useContext, useEffect, useRef, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import {Container} from "react-bootstrap";
 import {useParams} from "react-router";
 import {
@@ -6,7 +6,7 @@ import {
     getSingleGameDetails,
     getSingleUserStats,
     updateGame,
-    updateUserStats, useUpdateGameInterface
+    updateUserStats
 } from "../api/firestore";
 import {AppContext} from "../context/AppContext";
 
@@ -14,6 +14,7 @@ import {AppContextInterface} from "../App";
 import {Board} from "./Board/Board";
 
 import {
+    createAndStoreLastRoundMoveHash,
     determineStartingPlayer,
     evaluateBeingOpponent,
     evaluateBeingWinner,
@@ -26,58 +27,6 @@ import {RecentMoves} from "./RecentMoves/RecentMoves";
 import styles from "./Session.module.css";
 
 
-interface PlayerMoveHashInput {
-    playerId: string;
-    playerType: string;
-    fromCoordinates: string;
-    targetCoordinates: string;
-}
-
-interface BothPlayerHashInput {
-    player1: PlayerMoveHashInput;
-    player2: PlayerMoveHashInput;
-}
-
-const isLatestRoundMovementHashAlreadySaved = (moveRepresentations: string[], latestRoundMoveHash: string | undefined): boolean => {
-    return moveRepresentations[moveRepresentations.length - 1] !== latestRoundMoveHash
-}
-const isMoveHashRelatedToStash = (moveHash: string): boolean => {
-    return moveHash.length > 12;
-};
-
-const createLatestRoundMoveHash = (hashInput: BothPlayerHashInput): string | undefined => {
-    const {player1, player2} = hashInput;
-    const latestMovePairRepresentation = (player1.playerId.charAt(0) + player1.playerType.charAt(0) + player1.fromCoordinates + player1.targetCoordinates + player2.playerId.charAt(0) + player2.playerType.charAt(0) + player2.fromCoordinates + player2.targetCoordinates).toLowerCase();
-
-    if (isMoveHashRelatedToStash(latestMovePairRepresentation)) {
-        return;
-    } else return latestMovePairRepresentation;
-};
-
-const areLastRoundMoveRecordsAvailable = (gameData: DocumentData | undefined): boolean => {
-    return !!(gameData && gameData.moves.length >= 2 && gameData.moves.length % 2 === 0);
-};
-
-const lastRoundMovementHash = (gameId: string, gameData: DocumentData | undefined) => {
-    if (areLastRoundMoveRecordsAvailable(gameData)) {
-        const recordedMoves = gameData!.moves;
-        const numberOfRecordedMoves = gameData!.moves.length;
-        const moveRepresentations = gameData?.moveRepresentations
-        const player1LatestMove = recordedMoves[numberOfRecordedMoves - 1];
-        const player2LatestMove = recordedMoves[numberOfRecordedMoves - 2];
-
-        const latestRoundMoveHash = createLatestRoundMoveHash({player1: player1LatestMove, player2: player2LatestMove});
-
-        if (isLatestRoundMovementHashAlreadySaved(moveRepresentations, latestRoundMoveHash)) {
-            let updatedMoveRepresentations = [...moveRepresentations, latestRoundMoveHash];
-            updateGame({
-                id: gameId!,
-                updatedDetails: {moveRepresentations: updatedMoveRepresentations}
-            });
-        }
-    }
-};
-
 export const Session = () => {
     const {gameId} = useParams();
     const [gameData, setGameData] = useState<DocumentData | undefined>();
@@ -86,40 +35,10 @@ export const Session = () => {
     const [isTie, setIsTie] = useState(false);
     const isComponentMountedRef = useRef(true);
 
-    //Make sure move representations for the whole game are available even after reload/return
     useEffect(() => {
-        // Track move representation
+        createAndStoreLastRoundMoveHash(gameId, gameData, updateGame);
 
-        //If there is an even count of moves
-        if (gameData && gameData.moves.length >= 2 && gameData.moves.length % 2 === 0) {
-
-            //Get latest moves for both players
-            const player1 = gameData.moves[gameData.moves.length - 1];
-            const player2 = gameData.moves[gameData.moves.length - 2];
-
-
-            const moveRepresentations = gameData.moveRepresentations;
-            // console.log('moveRepresentations', moveRepresentations);
-            //Create latest move hash
-            let latestMovePairRepresentation: string = (player1.movingPlayerId.charAt(0) + player1.type.charAt(0) + player1.fromCoordinates + player1.targetCoordinates + player2.movingPlayerId.charAt(0) + player2.type.charAt(0) + player2.fromCoordinates + player2.targetCoordinates).toLowerCase();
-
-            //If a move representation is related to out-of-field movements, ignore it
-            if (latestMovePairRepresentation.length > 12) {
-                return;
-            }
-
-            //Make sure the latest recorded move hash is different that the next-update attempt (avoiding duplicate updates with the same value)
-            if (moveRepresentations[moveRepresentations.length - 1] !== latestMovePairRepresentation) {
-                // console.log('latestMovePairRepresentation', latestMovePairRepresentation);
-                //Then update the moves
-                let updatedMoveRepresentations = [...moveRepresentations, latestMovePairRepresentation];
-                updateGame({
-                    id: gameId!,
-                    updatedDetails: {moveRepresentations: updatedMoveRepresentations}
-                });
-            }
-        }
-    }, [gameData, gameData?.moves, gameId, updateGame]);
+    }, [gameData, gameId]);
 
     // Evalute the movement repetition that might lead to a tie
     useEffect(() => {
