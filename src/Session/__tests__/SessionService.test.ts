@@ -1,5 +1,5 @@
 import * as firestoreRequests from "../../api/firestore";
-import {determineStartingPlayer, havePlayersJoinedGame, isStartingPlayerDetermined} from "../SessionService";
+import {determineStartingPlayer, isGameDataAvailable, isStartingPlayerDetermined} from "../SessionService";
 import {Dispatch} from "react";
 import {useUpdateGameInterface} from "../../api/firestore";
 import {mockRandom, resetMockRandom} from "jest-mock-random";
@@ -9,7 +9,7 @@ const MATH_RANDOM_TO_MAKE_OPPONENT_STARTING_PLAYER = 0.5;
 
 describe('SessionService', () => {
     describe('determineStartingPlayer', () => {
-        it('decides and saves to server a starting player when both players joined and starting player is not determined', () => {
+        it('decides and saves to server a starting player when both players joined and starting player is not determined', async () => {
             const updateGameSpy = jest
                 .spyOn(firestoreRequests, 'updateGame') as any as Dispatch<useUpdateGameInterface>;
             const gameData = {
@@ -24,7 +24,7 @@ describe('SessionService', () => {
 
             determineStartingPlayer(gameData, gameId, updateGameSpy);
 
-            expect(updateGameSpy).toHaveBeenCalledWith({
+            await expect(updateGameSpy).toHaveBeenCalledWith({
                 id: gameId,
                 updatedDetails: {startingPlayer: 'creator123', currentPlayerTurn: 'creator123'}
             });
@@ -75,7 +75,7 @@ describe('SessionService', () => {
             resetMockRandom();
         });
 
-        it('does not send decision about starting player to server when starting player is already known', () => {
+        it('does not send decision about starting player to server when starting player is already known', async () => {
             const updateGameSpy = jest
                 .spyOn(firestoreRequests, 'updateGame') as any as Dispatch<useUpdateGameInterface>;
             const gameData = {
@@ -87,9 +87,11 @@ describe('SessionService', () => {
             };
             const gameId = 'game123';
 
+
             determineStartingPlayer(gameData, gameId, updateGameSpy);
 
-            expect(updateGameSpy).not.toHaveBeenCalled();
+            await expect(updateGameSpy).not.toHaveBeenCalled();
+
         });
 
         it('does not send decision about starting player to server when game data is not available', () => {
@@ -132,7 +134,7 @@ describe('SessionService', () => {
             };
             const gameId = undefined;
 
-            const result = havePlayersJoinedGame(gameData, gameId);
+            const result = isGameDataAvailable(gameData, gameId);
 
             expect(result).toBe(false);
         });
@@ -147,7 +149,7 @@ describe('SessionService', () => {
             };
             const gameId = 'game123';
 
-            const result = havePlayersJoinedGame(gameData, gameId);
+            const result = isGameDataAvailable(gameData, gameId);
 
             expect(result).toBe(false);
         });
@@ -162,7 +164,7 @@ describe('SessionService', () => {
             };
             const gameId = 'game123';
 
-            const result = havePlayersJoinedGame(gameData, gameId);
+            const result = isGameDataAvailable(gameData, gameId);
 
             expect(result).toBe(true);
         });

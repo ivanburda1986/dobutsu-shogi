@@ -316,9 +316,6 @@ export const updateGame = ({id, updatedDetails}: useUpdateGameInterface) => {
         .catch((err) => {
             console.log(err.message);
         });
-    console.log('Game updated');
-    console.log(id);
-    console.log(updatedDetails);
 };
 
 //Get one game details

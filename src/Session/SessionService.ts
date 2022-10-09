@@ -4,7 +4,7 @@ import {DocumentData} from "firebase/firestore";
 import {Dispatch} from "react";
 import {useUpdateGameInterface} from "../api/firestore";
 
-export const havePlayersJoinedGame = (gameData: DocumentData | undefined, gameId: string | undefined): boolean => {
+export const isGameDataAvailable = (gameData: DocumentData | undefined, gameId: string | undefined): boolean => {
     if (!!gameData) {
         const {creatorId, opponentId, creatorJoined, opponentJoined} = gameData!;
         return !!creatorId && !!opponentId && !!creatorJoined && !!opponentJoined && !!gameId;
@@ -13,16 +13,18 @@ export const havePlayersJoinedGame = (gameData: DocumentData | undefined, gameId
 };
 
 export const isStartingPlayerDetermined = (startingPlayer: string | undefined): boolean => {
-    console.log('isStartingPlayerDetermined', !!startingPlayer);
     return !!startingPlayer;
+};
+
+export const haveBothPlayersJoined = (creatorId: string | undefined, opponentId: string | undefined): boolean => {
+    return !!creatorId && !!opponentId;
 };
 
 export const determineStartingPlayer = (gameData: DocumentData, gameId: string | undefined, updateGame: Dispatch<useUpdateGameInterface>) => {
     const {creatorId, opponentId, startingPlayer} = gameData;
-    if (havePlayersJoinedGame(gameData, gameId) && !isStartingPlayerDetermined(startingPlayer)) {
+    if (haveBothPlayersJoined(creatorId, opponentId) && !isStartingPlayerDetermined(startingPlayer)) {
         const randomNumber = Math.random();
         const whoShouldStart = randomNumber < 0.5 ? creatorId : opponentId;
-        console.log('whoShouldStart', whoShouldStart);
         updateGame({
             id: gameId!,
             updatedDetails: {startingPlayer: whoShouldStart, currentPlayerTurn: whoShouldStart}

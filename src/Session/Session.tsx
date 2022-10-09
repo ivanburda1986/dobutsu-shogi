@@ -17,7 +17,7 @@ import {
     determineStartingPlayer,
     evaluateBeingOpponent,
     evaluateBeingWinner,
-    havePlayersJoinedGame
+    isGameDataAvailable
 } from "./SessionService";
 
 import {DocumentData, onSnapshot} from "firebase/firestore";
@@ -128,7 +128,7 @@ export const Session = () => {
 
     // Randomly decide who should start
     useEffect(() => {
-        if (havePlayersJoinedGame(gameData, gameId)) {
+        if (isGameDataAvailable(gameData, gameId)) {
             determineStartingPlayer(gameData!, gameId, updateGame);
         }
     }, [gameId, gameData]);
