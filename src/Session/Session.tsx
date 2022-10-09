@@ -28,41 +28,54 @@ import {RecentMoves} from "./RecentMoves/RecentMoves";
 import styles from "./Session.module.css";
 
 
+const increaseTieStatsCountForBothPlayers = (player1Id: string, player2Id: string): void => {
+    [player1Id, player2Id].forEach((playerId) => {
+        getSingleUserStats({userId: playerId}).then((serverStats) => updateUserStats({
+            userId: playerId,
+            updatedDetails: {tie: serverStats.data()?.tie + 1}
+        }));
+    });
+};
+
+const updateGameToBeTie = (gameId: string | undefined): void => {
+    if (!gameId) {
+        return;
+    }
+    updateGame({
+        id: gameId,
+        updatedDetails: {
+            status: "TIE",
+            finishedTimeStamp: Date.now(),
+        }
+    });
+};
+
 export const Session = () => {
     const {gameId} = useParams();
     const [gameData, setGameData] = useState<DocumentData | undefined>();
     const [amIOpponent, setAmIOpponent] = useState(false);
-    const appContext: AppContextInterface = useContext(AppContext);
     const [isTie, setIsTie] = useState(false);
+    const appContext: AppContextInterface = useContext(AppContext);
     const isComponentMountedRef = useRef(true);
 
     useEffect(() => {
-        if (!gameData) {
+        if (!isGameDataAvailable(gameData, gameId)) {
             return;
         }
+        determineStartingPlayer(gameData, gameId, updateGame);
         createAndStoreLastRoundMoveHash(gameId, gameData, updateGame);
         setIsTie(isTieEvaluation(gameData));
     }, [gameData, gameId]);
 
     useEffect(() => {
-        if (isTie) {
-            updateGame({
-                id: gameId!,
-                updatedDetails: {
-                    status: "TIE",
-                    finishedTimeStamp: Date.now(),
-                }
-            });
-            getSingleUserStats({userId: gameData?.creatorId}).then((serverStats) => updateUserStats({
-                userId: gameData?.creatorId,
-                updatedDetails: {tie: serverStats.data()?.tie + 1}
-            }));
-            getSingleUserStats({userId: gameData?.opponentId}).then((serverStats) => updateUserStats({
-                userId: gameData?.opponentId,
-                updatedDetails: {tie: serverStats.data()?.tie + 1}
-            }));
+        if (!isGameDataAvailable(gameData, gameId)) {
+            return;
         }
-    }, [gameId, updateGame, isTie]);
+        if (isTie) {
+            updateGameToBeTie(gameId);
+            increaseTieStatsCountForBothPlayers(gameData?.creatorId, gameData?.opponentId);
+        }
+    }, [isTie]);
 
 
     useEffect(() => {
@@ -93,13 +106,6 @@ export const Session = () => {
         }
     }, [appContext.loggedInUserUserId, gameData]);
 
-
-    // Randomly decide who should start
-    useEffect(() => {
-        if (isGameDataAvailable(gameData, gameId)) {
-            determineStartingPlayer(gameData!, gameId, updateGame);
-        }
-    }, [gameId, gameData]);
 
     return (
         <Container className="d-flex justify-content-start align-items-center flex-column pb-5">

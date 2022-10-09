@@ -1,7 +1,7 @@
 import {GameFinishedMessageType} from './GameFinishedMessage/GameFinishedMessage';
 import {VictoryType} from "./Board/Board";
 import {DocumentData} from "firebase/firestore";
-import {Dispatch, SetStateAction} from "react";
+import {Dispatch} from "react";
 import {useUpdateGameInterface} from "../api/firestore";
 
 export const isGameDataAvailable = (gameData: DocumentData | undefined, gameId: string | undefined): boolean => {
@@ -20,7 +20,10 @@ export const haveBothPlayersJoined = (creatorId: string | undefined, opponentId:
     return !!creatorId && !!opponentId;
 };
 
-export const determineStartingPlayer = (gameData: DocumentData, gameId: string | undefined, updateGame: Dispatch<useUpdateGameInterface>) => {
+export const determineStartingPlayer = (gameData: DocumentData | undefined, gameId: string | undefined, updateGame: Dispatch<useUpdateGameInterface>) => {
+    if (!gameData) {
+        return;
+    }
     const {creatorId, opponentId, startingPlayer} = gameData;
     if (haveBothPlayersJoined(creatorId, opponentId) && !isStartingPlayerDetermined(startingPlayer)) {
         const randomNumber = Math.random();
@@ -65,10 +68,6 @@ export const areSufficientMoveRecordsAvailable = (gameData: DocumentData | undef
 };
 
 export const createAndStoreLastRoundMoveHash = (gameId: string | undefined, gameData: DocumentData | undefined, updateGame: Dispatch<useUpdateGameInterface>) => {
-    if (!isGameDataAvailable(gameData, gameId)) {
-        return;
-    }
-
     if (!areSufficientMoveRecordsAvailable(gameData)) {
         return;
     }
@@ -103,7 +102,10 @@ export const createAndStoreLastRoundMoveHash = (gameId: string | undefined, game
     2, 4, 6 -> both players have repeated 3 movements
  */
 export const isTieEvaluation = (gameData: DocumentData | undefined): boolean => {
-    const moveRepresentations = gameData!.moveRepresentations;
+    if (!gameData?.moveRepresentations) {
+        return false;
+    }
+    const moveRepresentations = gameData?.moveRepresentations;
     const isMinimumCountOfMovementsAvailableForTieToOccur = moveRepresentations.length >= 6;
 
     if (!isMinimumCountOfMovementsAvailableForTieToOccur) {
