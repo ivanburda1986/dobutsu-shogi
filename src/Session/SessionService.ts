@@ -1,7 +1,7 @@
 import {GameFinishedMessageType} from './GameFinishedMessage/GameFinishedMessage';
 import {VictoryType} from "./Board/Board";
 import {DocumentData} from "firebase/firestore";
-import {Dispatch} from "react";
+import {Dispatch, SetStateAction} from "react";
 import {useUpdateGameInterface} from "../api/firestore";
 
 export const isGameDataAvailable = (gameData: DocumentData | undefined, gameId: string | undefined): boolean => {
@@ -87,6 +87,34 @@ export const createAndStoreLastRoundMoveHash = (gameId: string | undefined, game
             updatedDetails: {moveRepresentations: updatedMoveRepresentations}
         });
     }
+};
+
+//A tie occurs if both players repeat the same row of moves 3 times
+/*  Player's move   Round hash          Position in array
+    1)              1-gc4c3--p-ga1a2    - length-6;
+    2)              1-gc3c4--p-ga2a1    - length-5;
+    3)              1-gc4c3--p-ga1a2    - length-4;
+    4)              1-gc3c4--p-ga2a1    - length-3;
+    5)              1-gc4c3--p-ga1a2    - length-2;
+    6)              1-gc3c4--p-ga2a1    - length-1;
+
+    Identical hashes:
+    1, 3, 5 -> both players have repeated 3 movements
+    2, 4, 6 -> both players have repeated 3 movements
+ */
+export const isTieEvaluation = (gameData: DocumentData | undefined): boolean => {
+    const moveRepresentations = gameData!.moveRepresentations;
+    const isMinimumCountOfMovementsAvailableForTieToOccur = moveRepresentations.length >= 6;
+
+    if (!isMinimumCountOfMovementsAvailableForTieToOccur) {
+        return false;
+    }
+
+    const lastRound = moveRepresentations[moveRepresentations.length - 1];
+    const lastMinusThreeRound = moveRepresentations[moveRepresentations.length - 3];
+    const lastMinusFiveRound = moveRepresentations[moveRepresentations.length - 5];
+
+    return lastRound === lastMinusThreeRound && lastMinusThreeRound === lastMinusFiveRound;
 };
 
 // Not refactored

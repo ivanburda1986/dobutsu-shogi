@@ -1,5 +1,6 @@
 import * as firestoreRequests from "../../api/firestore";
 import {useUpdateGameInterface} from "../../api/firestore";
+
 import {
     areSufficientMoveRecordsAvailable,
     createAndStoreLastRoundMoveHash,
@@ -7,11 +8,13 @@ import {
     isGameDataAvailable,
     isMoveHashRelatedToStash,
     isStartingPlayerDetermined,
+    isTieEvaluation,
     shouldSaveLatestRoundMovementHash
 } from "../SessionService";
 
 import {Dispatch} from "react";
 import {mockRandom, resetMockRandom} from "jest-mock-random";
+
 
 const MATH_RANDOM_TO_MAKE_CREATOR_STARTING_PLAYER = 0.49;
 const MATH_RANDOM_TO_MAKE_OPPONENT_STARTING_PLAYER = 0.5;
@@ -316,4 +319,30 @@ describe('SessionService', () => {
             expect(shouldSaveLatestRoundMovementHash(moveRepresentations, latestRoundMoveHash)).toBe(true);
         });
     });
+
+    describe('isTieEvaluation', () => {
+        it('returns false when not enough movements happened to possibly cause a tie', () => {
+            const gameData = {
+                moveRepresentations: ['aaaa', 'bbbb', 'aaaa', 'bbbb', 'aaaa']
+            };
+
+            expect(isTieEvaluation(gameData)).toBe(false);
+        });
+
+        it('returns false when both players have not taken 3 repeating movements', () => {
+            const gameData = {
+                moveRepresentations: ['aaaa', 'bbbb', 'aaaa', 'bbbb', 'aaaa', 'ccc']
+            };
+
+            expect(isTieEvaluation(gameData)).toBe(false);
+        });
+
+        it('returns true when both players have taken 3 repeating movements', () => {
+            const gameData = {
+                moveRepresentations: ['aaaa', 'bbbb', 'aaaa', 'bbbb', 'aaaa', 'bbbb']
+            };
+            expect(isTieEvaluation(gameData)).toBe(true);
+        });
+    });
 });
+
