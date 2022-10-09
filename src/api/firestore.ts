@@ -304,12 +304,12 @@ export const deleteGame = (id: string) => {
     });
 };
 
-interface useUpdateGameInterface {
+export interface useUpdateGameInterface {
     id: string;
     updatedDetails: Partial<Game>;
 }
 
-export const useUpdateGame = ({id, updatedDetails}: useUpdateGameInterface) => {
+export const updateGame = ({id, updatedDetails}: useUpdateGameInterface) => {
     const updateGameRef = doc(db, "games", id);
     updateDoc(updateGameRef, {...updatedDetails})
         .then(() => console.log("Game updated"))
@@ -343,10 +343,10 @@ export const updatePlayerAvatarInGames = async ({playerId, updatedAvatar}: Updat
     let gamesWherePlayerIsOpponent = returnedGames.filter((game: Game) => game.opponentId === playerId).map((gameWithPlayerOpponent: Game) => gameWithPlayerOpponent.gameId);
     let gamesWherePlayerIsCreator = returnedGames.filter((game: Game) => game.creatorId === playerId).map((gameWithPlayerCreator: Game) => gameWithPlayerCreator.gameId);
     gamesWherePlayerIsCreator.forEach((gameId) => {
-        useUpdateGame({id: gameId, updatedDetails: {creatorPhotoURL: updatedAvatar}});
+        updateGame({id: gameId, updatedDetails: {creatorPhotoURL: updatedAvatar}});
     });
     gamesWherePlayerIsOpponent.forEach((gameId) => {
-        useUpdateGame({id: gameId, updatedDetails: {opponentPhotoURL: updatedAvatar}});
+        updateGame({id: gameId, updatedDetails: {opponentPhotoURL: updatedAvatar}});
     });
 };
 
@@ -460,7 +460,7 @@ interface useUpdateUserStatsInterface {
     updatedDetails: Partial<UserStats>;
 }
 
-export const useUpdateUserStats = ({userId, updatedDetails}: useUpdateUserStatsInterface) => {
+export const updateUserStats = ({userId, updatedDetails}: useUpdateUserStatsInterface) => {
     const updateUserStatsRef = doc(db, "stats", userId);
     updateDoc(updateUserStatsRef, {...updatedDetails})
         .then(() => console.log("User stats updated"))

@@ -4,9 +4,9 @@ import {
     getSingleUserStats,
     useEmpowerStone,
     useHighlightStone,
-    useUpdateGame,
+    updateGame,
     useUpdateStonePosition,
-    useUpdateUserStats
+    updateUserStats
 } from "../../../api/firestore";
 import {
     evaluateStoneMove,
@@ -36,7 +36,6 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
     const updateStonePosition = useUpdateStonePosition;
     const empowerStone = useEmpowerStone;
     const highlightStone = useHighlightStone;
-    const updateGame = useUpdateGame;
 
     const enableDropping = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
@@ -48,7 +47,7 @@ export const Field: FC<FieldInterface> = ({rowNumber, columnLetter, amIOpponent,
         let placedStoneId = event.dataTransfer!.getData("placedStoneId");
         let movedFromLetter = event.dataTransfer!.getData("movedFromLetter");
         let movedFromNumber = event.dataTransfer!.getData("movedFromNumber");
-        const updateStats = useUpdateUserStats;
+        const updateStats = updateUserStats;
 
         const callbackFc = (stoneMoveAllowed: boolean, shouldChickenTransformToHen: boolean, lionConquerAttempt: lionConquerAttemptInterface) => {
             // console.log('shouldChickenTransformToHen', shouldChickenTransformToHen);

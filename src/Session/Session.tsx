@@ -1,24 +1,29 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
+import React, {Dispatch, useCallback, useContext, useEffect, useRef, useState} from "react";
 import {Container} from "react-bootstrap";
 import {useParams} from "react-router";
 import {
     gamesCollectionRef,
     getSingleGameDetails,
     getSingleUserStats,
-    useUpdateGame,
-    useUpdateUserStats
+    updateGame,
+    updateUserStats, useUpdateGameInterface
 } from "../api/firestore";
 import {AppContext} from "../context/AppContext";
 
 import {AppContextInterface} from "../App";
 import {Board} from "./Board/Board";
 
-import {evaluateBeingOpponent, evaluateBeingWinner} from "./SessionService";
+import {
+    determineStartingPlayer,
+    evaluateBeingOpponent,
+    evaluateBeingWinner,
+    isGameDataAvailable
+} from "./SessionService";
 
-import styles from "./Session.module.css";
 import {DocumentData, onSnapshot} from "firebase/firestore";
 import {GameFinishedMessage} from "./GameFinishedMessage/GameFinishedMessage";
 import {RecentMoves} from "./RecentMoves/RecentMoves";
+import styles from "./Session.module.css";
 
 export const Session = () => {
     const {gameId} = useParams();
@@ -26,8 +31,6 @@ export const Session = () => {
     const [amIOpponent, setAmIOpponent] = useState(false);
     const appContext: AppContextInterface = useContext(AppContext);
     const [isTie, setIsTie] = useState(false);
-    const updateGame = useUpdateGame;
-    const updateStats = useUpdateUserStats;
     const isComponentMountedRef = useRef(true);
 
     //Make sure move representations for the whole game are available even after reload/return
@@ -82,11 +85,11 @@ export const Session = () => {
                     finishedTimeStamp: Date.now(),
                 }
             });
-            getSingleUserStats({userId: gameData?.creatorId}).then((serverStats) => updateStats({
+            getSingleUserStats({userId: gameData?.creatorId}).then((serverStats) => updateUserStats({
                 userId: gameData?.creatorId,
                 updatedDetails: {tie: serverStats.data()?.tie + 1}
             }));
-            getSingleUserStats({userId: gameData?.opponentId}).then((serverStats) => updateStats({
+            getSingleUserStats({userId: gameData?.opponentId}).then((serverStats) => updateUserStats({
                 userId: gameData?.opponentId,
                 updatedDetails: {tie: serverStats.data()?.tie + 1}
             }));
@@ -125,12 +128,10 @@ export const Session = () => {
 
     // Randomly decide who should start
     useEffect(() => {
-        if (gameId && gameData?.creatorJoined && gameData?.opponentJoined && !gameData?.currentPlayerTurn) {
-            const randomNumber = Math.random();
-            const whoShouldStart = randomNumber < 0.5 ? gameData?.creatorId : gameData?.opponentId;
-            updateGame({id: gameId!, updatedDetails: {currentPlayerTurn: whoShouldStart}});
+        if (isGameDataAvailable(gameData, gameId)) {
+            determineStartingPlayer(gameData!, gameId, updateGame);
         }
-    }, [gameId, gameData, updateGame]);
+    }, [gameId, gameData]);
 
     return (
         <Container className="d-flex justify-content-start align-items-center flex-column pb-5">
