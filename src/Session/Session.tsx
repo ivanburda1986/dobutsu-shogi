@@ -17,7 +17,7 @@ import {
     createAndStoreLastRoundMoveHash,
     determineStartingPlayer,
     evaluateBeingOpponent,
-    evaluateBeingWinner,
+    evaluateBeingWinner, haveBothPlayersJoined,
     isGameDataAvailable,
     isTieEvaluation
 } from "./SessionService";
@@ -37,54 +37,65 @@ const increaseTieStatsCountForBothPlayers = (player1Id: string, player2Id: strin
     });
 };
 
-const updateGameToBeTie = (gameId: string | undefined): void => {
-    if (!gameId) {
-        return;
-    }
-    updateGame({
-        id: gameId,
-        updatedDetails: {
-            status: "TIE",
-            finishedTimeStamp: Date.now(),
+export const currentGameSession = () => {
+    function updateGameToBeTie(gameId: string | undefined): void {
+        if (!gameId) {
+            return;
         }
-    });
+        updateGame({
+            id: gameId,
+            updatedDetails: {
+                status: "TIE",
+                finishedTimeStamp: Date.now(),
+            }
+        });
+
+    }
+
+    return {updateGameToBeTie, increaseTieStatsCountForBothPlayers};
 };
+
 
 export const Session = () => {
     const {gameId} = useParams();
     const [gameData, setGameData] = useState<DocumentData | undefined>();
+    const [creatorId, setCreatorId] = useState<string | undefined>();
+    const [opponentId, setOpponentId] = useState<string | undefined>();
     const [amIOpponent, setAmIOpponent] = useState(false);
     const [isTie, setIsTie] = useState(false);
-    const appContext: AppContextInterface = useContext(AppContext);
+
+    const {loggedInUserUserId}: AppContextInterface = useContext(AppContext);
     const isComponentMountedRef = useRef(true);
 
     useEffect(() => {
         if (!isGameDataAvailable(gameData, gameId)) {
             return;
         }
-        determineStartingPlayer(gameData, gameId, updateGame);
-        createAndStoreLastRoundMoveHash(gameId, gameData, updateGame);
+        if (haveBothPlayersJoined(gameData?.creatorId, gameData?.opponentId)) {
+            setCreatorId(gameData!.creatorId);
+            setOpponentId(gameData!.opponentId);
+            determineStartingPlayer(gameData, gameId, updateGame);
+        }
+
+        
+        if (evaluateBeingOpponent({
+            creatorId: gameData?.creatorId,
+            loggedInUserUserId
+        })) {
+            setAmIOpponent(true);
+        }
+        createAndStoreLastRoundMoveHash(gameData, gameId, updateGame);
         setIsTie(isTieEvaluation(gameData));
-    }, [gameData, gameId]);
+
+    }, [creatorId, gameData, gameId, opponentId]);
 
     useEffect(() => {
-        if (!isGameDataAvailable(gameData, gameId)) {
-            return;
-        }
         if (isTie) {
-            updateGameToBeTie(gameId);
-            increaseTieStatsCountForBothPlayers(gameData?.creatorId, gameData?.opponentId);
+            currentGameSession().updateGameToBeTie(gameId);
+            increaseTieStatsCountForBothPlayers(creatorId!, opponentId!);
         }
-    }, [isTie]);
+    }, [creatorId, gameId, isTie, opponentId]);
 
-
-    useEffect(() => {
-        return () => {
-            isComponentMountedRef.current = false;
-        };
-    }, []);
-
-    // Make sure any game-related updates are reflected immediately
     useEffect(() => {
         onSnapshot(gamesCollectionRef, (snapshot) => {
             if (isComponentMountedRef.current && gameId) {
@@ -98,13 +109,13 @@ export const Session = () => {
         if (!gameData) {
             return;
         }
-        if (evaluateBeingOpponent({
-            creatorId: gameData!.creatorId,
-            loggedInUserUserId: appContext.loggedInUserUserId
-        })) {
-            setAmIOpponent(true);
-        }
-    }, [appContext.loggedInUserUserId, gameData]);
+        // if (evaluateBeingOpponent({
+        //     creatorId: gameData!.creatorId,
+        //     loggedInUserUserId
+        // })) {
+        //     setAmIOpponent(true);
+        // }
+    }, [loggedInUserUserId, gameData]);
 
 
     return (
@@ -129,11 +140,11 @@ export const Session = () => {
                     gameData?.winner && evaluateBeingWinner({
                         winnerId: gameData.winner,
                         victoryType: gameData.victoryType,
-                        loggedInUserUserId: appContext.loggedInUserUserId
+                        loggedInUserUserId
                     }) && <GameFinishedMessage messageType={evaluateBeingWinner({
                         winnerId: gameData.winner,
                         victoryType: gameData.victoryType,
-                        loggedInUserUserId: appContext.loggedInUserUserId
+                        loggedInUserUserId
                     })}/>
                 }
                 {

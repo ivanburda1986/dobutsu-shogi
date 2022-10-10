@@ -67,7 +67,7 @@ export const areSufficientMoveRecordsAvailable = (gameData: DocumentData | undef
     return !!(gameData && gameData.moves.length >= 2 && gameData.moves.length % 2 === 0);
 };
 
-export const createAndStoreLastRoundMoveHash = (gameId: string | undefined, gameData: DocumentData | undefined, updateGame: Dispatch<useUpdateGameInterface>) => {
+export const createAndStoreLastRoundMoveHash = (gameData: DocumentData | undefined, gameId: string | undefined, updateGame: Dispatch<useUpdateGameInterface>) => {
     if (!areSufficientMoveRecordsAvailable(gameData)) {
         return;
     }
