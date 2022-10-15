@@ -28,7 +28,7 @@ import {RecentMoves} from "./RecentMoves/RecentMoves";
 import styles from "./Session.module.css";
 
 
-const increaseTieStatsCountForBothPlayers = (player1Id: string, player2Id: string): void => {
+export const increaseTieStatsCountForBothPlayers = (player1Id: string, player2Id: string): void => {
     [player1Id, player2Id].forEach((playerId) => {
         getSingleUserStats({userId: playerId}).then((serverStats) => updateUserStats({
             userId: playerId,
@@ -37,23 +37,19 @@ const increaseTieStatsCountForBothPlayers = (player1Id: string, player2Id: strin
     });
 };
 
-export const currentGameSession = () => {
-    function updateGameToBeTie(gameId: string | undefined): void {
-        if (!gameId) {
-            return;
-        }
-        updateGame({
-            id: gameId,
-            updatedDetails: {
-                status: "TIE",
-                finishedTimeStamp: Date.now(),
-            }
-        });
-
+export function updateGameToBeTie(gameId: string | undefined): void {
+    if (!gameId) {
+        return;
     }
+    updateGame({
+        id: gameId,
+        updatedDetails: {
+            status: "TIE",
+            finishedTimeStamp: Date.now(),
+        }
+    });
 
-    return {updateGameToBeTie, increaseTieStatsCountForBothPlayers};
-};
+}
 
 
 export const Session = () => {
@@ -77,7 +73,7 @@ export const Session = () => {
             determineStartingPlayer(gameData, gameId, updateGame);
         }
 
-        
+
         if (evaluateBeingOpponent({
             creatorId: gameData?.creatorId,
             loggedInUserUserId
@@ -91,7 +87,7 @@ export const Session = () => {
 
     useEffect(() => {
         if (isTie) {
-            currentGameSession().updateGameToBeTie(gameId);
+            updateGameToBeTie(gameId);
             increaseTieStatsCountForBothPlayers(creatorId!, opponentId!);
         }
     }, [creatorId, gameId, isTie, opponentId]);
@@ -104,20 +100,6 @@ export const Session = () => {
         });
     }, [gameId]);
 
-    // Evaluate whether I am an opponent or creator and make sure my interface is turned
-    useEffect(() => {
-        if (!gameData) {
-            return;
-        }
-        // if (evaluateBeingOpponent({
-        //     creatorId: gameData!.creatorId,
-        //     loggedInUserUserId
-        // })) {
-        //     setAmIOpponent(true);
-        // }
-    }, [loggedInUserUserId, gameData]);
-
-
     return (
         <Container className="d-flex justify-content-start align-items-center flex-column pb-5">
             <Container fluid
@@ -125,7 +107,6 @@ export const Session = () => {
                 <h6 className="mt-1 me-2"><strong>Game:</strong> {gameData?.name}</h6>
                 <RecentMoves moves={gameData?.moves} creatorId={gameData?.creatorId}/>
             </Container>
-
             <Container fluid
                        className={`d-flex flex-column justify-content-start align-items-center ${styles.Session}`}>
                 {
@@ -133,7 +114,6 @@ export const Session = () => {
                     />
                 }
             </Container>
-
             <Container fluid
                        className={`d-flex flex-column justify-content-start align-items-center ${styles.EndMessage}`}>
                 {
