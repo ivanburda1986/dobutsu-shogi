@@ -231,7 +231,7 @@ describe('SessionService', () => {
             };
             const gameId = 'game123';
 
-            createAndStoreLastRoundMoveHash(gameId, gameData, updateGameSpy);
+            createAndStoreLastRoundMoveHash(gameData, gameId, updateGameSpy);
 
             await expect(updateGameSpy).toHaveBeenCalledWith({
                 id: gameId,

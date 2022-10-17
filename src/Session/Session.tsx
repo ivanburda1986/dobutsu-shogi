@@ -17,7 +17,7 @@ import {
     createAndStoreLastRoundMoveHash,
     determineStartingPlayer,
     evaluateBeingOpponent,
-    evaluateBeingWinner, haveBothPlayersJoined,
+    getPlayerFinishedGameMessage, haveBothPlayersJoined,
     isGameDataAvailable,
     isTieEvaluation
 } from "./SessionService";
@@ -74,16 +74,17 @@ export const Session = () => {
         }
 
 
-        if (evaluateBeingOpponent({
-            creatorId: gameData?.creatorId,
+        if (evaluateBeingOpponent(
+            gameData?.creatorId,
             loggedInUserUserId
-        })) {
+        )) {
             setAmIOpponent(true);
         }
+
         createAndStoreLastRoundMoveHash(gameData, gameId, updateGame);
         setIsTie(isTieEvaluation(gameData));
 
-    }, [creatorId, gameData, gameId, opponentId]);
+    }, [creatorId, gameData, gameId, loggedInUserUserId, opponentId]);
 
     useEffect(() => {
         if (isTie) {
@@ -117,15 +118,11 @@ export const Session = () => {
             <Container fluid
                        className={`d-flex flex-column justify-content-start align-items-center ${styles.EndMessage}`}>
                 {
-                    gameData?.winner && evaluateBeingWinner({
-                        winnerId: gameData.winner,
-                        victoryType: gameData.victoryType,
+                    gameData?.winner && <GameFinishedMessage messageType={getPlayerFinishedGameMessage(
+                        gameData.winner,
+                        gameData.victoryType,
                         loggedInUserUserId
-                    }) && <GameFinishedMessage messageType={evaluateBeingWinner({
-                        winnerId: gameData.winner,
-                        victoryType: gameData.victoryType,
-                        loggedInUserUserId
-                    })}/>
+                    )}/>
                 }
                 {
                     gameData?.status === "TIE" && <GameFinishedMessage messageType={"TIE"}/>

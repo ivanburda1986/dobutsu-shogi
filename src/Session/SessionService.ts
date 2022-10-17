@@ -119,37 +119,23 @@ export const isTieEvaluation = (gameData: DocumentData | undefined): boolean => 
     return lastRound === lastMinusThreeRound && lastMinusThreeRound === lastMinusFiveRound;
 };
 
-// Not refactored
-interface evaluateBeingOpponentInterface {
-    creatorId: string;
-    loggedInUserUserId: string;
-}
-
-export const evaluateBeingOpponent = ({creatorId, loggedInUserUserId}: evaluateBeingOpponentInterface) => {
+export const evaluateBeingOpponent = (creatorId: string, loggedInUserUserId: string) => {
     if (!creatorId || !loggedInUserUserId) {
-        return 0;
+        return false;
     }
     if (creatorId === loggedInUserUserId) {
-        return 0;
+        return false;
     }
-    if (creatorId !== loggedInUserUserId) {
-        return 180;
-    }
-
-    return 0;
+    return creatorId !== loggedInUserUserId;
 };
 
-interface evaluateBeingWinnerInterface {
-    winnerId: string;
-    victoryType: VictoryType;
-    loggedInUserUserId: string;
-}
+// Not refactored
 
-export const evaluateBeingWinner = ({
-                                        winnerId,
-                                        victoryType,
-                                        loggedInUserUserId
-                                    }: evaluateBeingWinnerInterface): GameFinishedMessageType => {
+export const getPlayerFinishedGameMessage = (
+    winnerId: string,
+    victoryType: VictoryType,
+    loggedInUserUserId: string
+): GameFinishedMessageType => {
     // console.log("victoryType", victoryType);
     if (winnerId === loggedInUserUserId && victoryType === "LION_CAUGHT_SUCCESS") {
         // console.log('step1');

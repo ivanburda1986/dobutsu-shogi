@@ -3,7 +3,6 @@ import {canStoneMoveThisWay, shouldChickenTurnIntoHen} from "../Stones/StoneServ
 import {lionConquerFields, stoneMovements} from "../Stones/StoneMovements";
 import {StoneInterface} from "../Stones/Stone";
 import {DocumentData} from "firebase/firestore";
-import {evaluateBeingWinner} from "../../SessionService";
 
 
 const rowNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -55,7 +54,6 @@ export const evaluateStoneMove = ({
                                       movingToNumber,
                                       amIOpponent,
                                       stones,
-                                      gameData,
                                       cb
                                   }: EvaluateStoneMoveInterface): void => {
     const stone = getSingleStoneDetails({gameId, stoneId: placedStoneId});
