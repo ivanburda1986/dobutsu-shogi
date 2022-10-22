@@ -1,8 +1,20 @@
 import * as firestoreRequests from "../../api/firestore";
-import {determineStartingPlayer, isGameDataAvailable, isStartingPlayerDetermined} from "../SessionService";
-import {Dispatch} from "react";
 import {useUpdateGameInterface} from "../../api/firestore";
+
+import {
+    areSufficientMoveRecordsAvailable,
+    createAndStoreLastRoundMoveHash,
+    determineStartingPlayer,
+    isGameDataAvailable,
+    isMoveHashRelatedToStash,
+    isStartingPlayerDetermined,
+    isTieEvaluation,
+    shouldSaveLatestRoundMovementHash
+} from "../SessionService";
+
+import {Dispatch} from "react";
 import {mockRandom, resetMockRandom} from "jest-mock-random";
+
 
 const MATH_RANDOM_TO_MAKE_CREATOR_STARTING_PLAYER = 0.49;
 const MATH_RANDOM_TO_MAKE_OPPONENT_STARTING_PLAYER = 0.5;
@@ -183,4 +195,154 @@ describe('SessionService', () => {
             expect(isStartingPlayerDetermined(startingPlayer)).toBe(true);
         });
     });
+
+    describe('createAndStoreLastRoundMoveHash', () => {
+        it('saves to server a hash representing the latest move round', async () => {
+            const updateGameSpy = jest
+                .spyOn(firestoreRequests, 'updateGame') as any as Dispatch<useUpdateGameInterface>;
+
+            const gameData = {
+                creatorId: 'creator123',
+                opponentId: 'opponent123',
+                creatorJoined: true,
+                opponentJoined: true,
+                startingPlayer: 'opponent123',
+                moveRepresentations: [],
+                moves: [{
+                    fromCoordinates: 'A1',
+                    id: 'stoneId123',
+                    isTakeOver: false,
+                    isVictory: false,
+                    moveNumber: 0,
+                    movingPlayerId: 'opponent123',
+                    targetCoordinates: 'A2',
+                    type: 'GIRAFFE'
+                },
+                    {
+                        fromCoordinates: 'B4',
+                        id: 'stoneId456',
+                        isTakeOver: false,
+                        isVictory: false,
+                        moveNumber: 1,
+                        movingPlayerId: 'creator123',
+                        targetCoordinates: 'C3',
+                        type: 'LION'
+                    }]
+            };
+            const gameId = 'game123';
+
+            createAndStoreLastRoundMoveHash(gameData, gameId, updateGameSpy);
+
+            await expect(updateGameSpy).toHaveBeenCalledWith({
+                id: gameId,
+                updatedDetails: {moveRepresentations: ['oga1a2clb4c3']}
+            });
+        });
+    });
+
+    describe('areSufficientMoveRecordsAvailable', () => {
+        it('returns false when 0 move records are available', () => {
+            const gameData = {
+                moves: []
+            };
+
+            expect(areSufficientMoveRecordsAvailable(gameData)).toBe(false);
+        });
+
+        it('returns false when an odd number of move records is available', () => {
+            const gameData = {
+                moves: [{
+                    fromCoordinates: 'A1',
+                    id: 'stoneId123',
+                    isTakeOver: false,
+                    isVictory: false,
+                    moveNumber: 0,
+                    movingPlayerId: 'opponent123',
+                    targetCoordinates: 'A2',
+                    type: 'GIRAFFE'
+                }]
+            };
+
+            expect(areSufficientMoveRecordsAvailable(gameData)).toBe(false);
+        });
+
+        it('returns true when an even number of move records is available', () => {
+            const gameData = {
+                moves: [{
+                    fromCoordinates: 'A1',
+                    id: 'stoneId123',
+                    isTakeOver: false,
+                    isVictory: false,
+                    moveNumber: 0,
+                    movingPlayerId: 'opponent123',
+                    targetCoordinates: 'A2',
+                    type: 'GIRAFFE'
+                },
+                    {
+                        fromCoordinates: 'B4',
+                        id: 'stoneId456',
+                        isTakeOver: false,
+                        isVictory: false,
+                        moveNumber: 1,
+                        movingPlayerId: 'creator123',
+                        targetCoordinates: 'C3',
+                        type: 'LION'
+                    }]
+            };
+
+            expect(areSufficientMoveRecordsAvailable(gameData)).toBe(true);
+        });
+    });
+
+    describe('isMoveHashRelatedToStash', () => {
+        it('returns false when the move hash represents a stash-related movement', () => {
+            expect(isMoveHashRelatedToStash('pga2a31lc3c2')).toBe(false);
+        });
+
+        it('returns true when the move hash represents a non-stash related movement', () => {
+            expect(isMoveHashRelatedToStash('pcb2b3pcb3opponent-chicken3')).toBe(true);
+        });
+    });
+
+    describe('shouldSaveLatestRoundMovementHash', () => {
+        it('returns false when latest round move hash has already been stored', () => {
+            const moveRepresentations = ['1gc4c3plb1a1', 'pga2a31lc3c2'];
+            const latestRoundMoveHash = 'pga2a31lc3c2';
+
+            expect(shouldSaveLatestRoundMovementHash(moveRepresentations, latestRoundMoveHash)).toBe(false);
+        });
+
+        it('returns true when latest round move hash has not been stored yet', () => {
+            const moveRepresentations = ['1gc4c3plb1a1'];
+            const latestRoundMoveHash = 'pga2a31lc3c2';
+
+            expect(shouldSaveLatestRoundMovementHash(moveRepresentations, latestRoundMoveHash)).toBe(true);
+        });
+    });
+
+    describe('isTieEvaluation', () => {
+        it('returns false when not enough movements happened to possibly cause a tie', () => {
+            const gameData = {
+                moveRepresentations: ['aaaa', 'bbbb', 'aaaa', 'bbbb', 'aaaa']
+            };
+
+            expect(isTieEvaluation(gameData)).toBe(false);
+        });
+
+        it('returns false when both players have not taken 3 repeating movements', () => {
+            const gameData = {
+                moveRepresentations: ['aaaa', 'bbbb', 'aaaa', 'bbbb', 'aaaa', 'ccc']
+            };
+
+            expect(isTieEvaluation(gameData)).toBe(false);
+        });
+
+        it('returns true when both players have taken 3 repeating movements', () => {
+            const gameData = {
+                moveRepresentations: ['aaaa', 'bbbb', 'aaaa', 'bbbb', 'aaaa', 'bbbb']
+            };
+            expect(isTieEvaluation(gameData)).toBe(true);
+        });
+    });
 });
+

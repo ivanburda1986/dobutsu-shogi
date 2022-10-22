@@ -20,7 +20,10 @@ export const haveBothPlayersJoined = (creatorId: string | undefined, opponentId:
     return !!creatorId && !!opponentId;
 };
 
-export const determineStartingPlayer = (gameData: DocumentData, gameId: string | undefined, updateGame: Dispatch<useUpdateGameInterface>) => {
+export const determineStartingPlayer = (gameData: DocumentData | undefined, gameId: string | undefined, updateGame: Dispatch<useUpdateGameInterface>) => {
+    if (!gameData) {
+        return;
+    }
     const {creatorId, opponentId, startingPlayer} = gameData;
     if (haveBothPlayersJoined(creatorId, opponentId) && !isStartingPlayerDetermined(startingPlayer)) {
         const randomNumber = Math.random();
@@ -32,37 +35,107 @@ export const determineStartingPlayer = (gameData: DocumentData, gameId: string |
     }
 };
 
-// Not refactored
-interface evaluateBeingOpponentInterface {
-    creatorId: string;
-    loggedInUserUserId: string;
+interface PlayerMoveHashInput {
+    movingPlayerId: string;
+    type: string;
+    fromCoordinates: string;
+    targetCoordinates: string;
 }
 
-export const evaluateBeingOpponent = ({creatorId, loggedInUserUserId}: evaluateBeingOpponentInterface) => {
-    if (!creatorId || !loggedInUserUserId) {
-        return 0;
-    }
-    if (creatorId === loggedInUserUserId) {
-        return 0;
-    }
-    if (creatorId !== loggedInUserUserId) {
-        return 180;
-    }
+interface BothPlayerHashInput {
+    player1: PlayerMoveHashInput;
+    player2: PlayerMoveHashInput;
+}
 
-    return 0;
+export const shouldSaveLatestRoundMovementHash = (moveRepresentations: string[], latestRoundMoveHash: string | undefined): boolean => {
+    return !!latestRoundMoveHash && moveRepresentations[moveRepresentations.length - 1] !== latestRoundMoveHash;
 };
 
-interface evaluateBeingWinnerInterface {
-    winnerId: string;
-    victoryType: VictoryType;
-    loggedInUserUserId: string;
-}
+export const isMoveHashRelatedToStash = (moveHash: string): boolean => {
+    return moveHash.length > 12;
+};
 
-export const evaluateBeingWinner = ({
-                                        winnerId,
-                                        victoryType,
-                                        loggedInUserUserId
-                                    }: evaluateBeingWinnerInterface): GameFinishedMessageType => {
+export const createLatestRoundMoveHash = (hashInput: BothPlayerHashInput): string | undefined => {
+    const {player1, player2} = hashInput;
+    const latestRoundMoveHash = (player1.movingPlayerId.charAt(0) + player1.type.charAt(0) + player1.fromCoordinates + player1.targetCoordinates + player2.movingPlayerId.charAt(0) + player2.type.charAt(0) + player2.fromCoordinates + player2.targetCoordinates).toLowerCase();
+    if (isMoveHashRelatedToStash(latestRoundMoveHash)) {
+        return;
+    } else return latestRoundMoveHash;
+};
+
+export const areSufficientMoveRecordsAvailable = (gameData: DocumentData | undefined): boolean => {
+    return !!(gameData && gameData.moves.length >= 2 && gameData.moves.length % 2 === 0);
+};
+
+export const createAndStoreLastRoundMoveHash = (gameData: DocumentData | undefined, gameId: string | undefined, updateGame: Dispatch<useUpdateGameInterface>) => {
+    if (!areSufficientMoveRecordsAvailable(gameData)) {
+        return;
+    }
+
+    const recordedMoves = gameData!.moves;
+    const numberOfRecordedMoves = gameData!.moves.length;
+    const player2LatestMove = recordedMoves[numberOfRecordedMoves - 1];
+    const player1LatestMove = recordedMoves[numberOfRecordedMoves - 2];
+    const latestRoundMoveHash = createLatestRoundMoveHash({player1: player1LatestMove, player2: player2LatestMove});
+
+    const moveRepresentations = gameData?.moveRepresentations;
+    if (shouldSaveLatestRoundMovementHash(moveRepresentations, latestRoundMoveHash)) {
+        let updatedMoveRepresentations = [...moveRepresentations, latestRoundMoveHash];
+        updateGame({
+            id: gameId!,
+            updatedDetails: {moveRepresentations: updatedMoveRepresentations}
+        });
+    }
+};
+
+//A tie occurs if both players repeat the same row of moves 3 times
+/*  Player's move   Round hash          Position in array
+    1)              1-gc4c3--p-ga1a2    - length-6;
+    2)              1-gc3c4--p-ga2a1    - length-5;
+    3)              1-gc4c3--p-ga1a2    - length-4;
+    4)              1-gc3c4--p-ga2a1    - length-3;
+    5)              1-gc4c3--p-ga1a2    - length-2;
+    6)              1-gc3c4--p-ga2a1    - length-1;
+
+    Identical hashes:
+    1, 3, 5 -> both players have repeated 3 movements
+    2, 4, 6 -> both players have repeated 3 movements
+ */
+export const isTieEvaluation = (gameData: DocumentData | undefined): boolean => {
+    if (!gameData?.moveRepresentations) {
+        return false;
+    }
+    const moveRepresentations = gameData?.moveRepresentations;
+    const isMinimumCountOfMovementsAvailableForTieToOccur = moveRepresentations.length >= 6;
+
+    if (!isMinimumCountOfMovementsAvailableForTieToOccur) {
+        return false;
+    }
+
+    const lastRound = moveRepresentations[moveRepresentations.length - 1];
+    const lastMinusThreeRound = moveRepresentations[moveRepresentations.length - 3];
+    const lastMinusFiveRound = moveRepresentations[moveRepresentations.length - 5];
+
+    return lastRound === lastMinusThreeRound && lastMinusThreeRound === lastMinusFiveRound;
+};
+
+export const evaluateBeingOpponent = (creatorId: string, loggedInUserUserId: string) => {
+    if (!creatorId || !loggedInUserUserId) {
+        return false;
+    }
+    if (creatorId === loggedInUserUserId) {
+        return false;
+    }
+    return creatorId !== loggedInUserUserId;
+};
+
+// Not refactored
+
+export const getPlayerFinishedGameMessage = (
+    winnerId: string,
+    victoryType: VictoryType,
+    loggedInUserUserId: string
+): GameFinishedMessageType => {
     // console.log("victoryType", victoryType);
     if (winnerId === loggedInUserUserId && victoryType === "LION_CAUGHT_SUCCESS") {
         // console.log('step1');
@@ -109,7 +182,5 @@ export const evaluateBeingWinner = ({
 export function isTouchEnabled(): boolean {
     return 'ontouchstart' in window;
 }
-
-
 
 

@@ -1,5 +1,4 @@
 import {FunctionComponent} from "react";
-import {VictoryType} from "../Board/Board";
 
 export type GameFinishedMessageType =
     "VICTORY_LION_CAPTURE"

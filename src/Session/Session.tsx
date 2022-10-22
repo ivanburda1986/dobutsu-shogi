@@ -1,4 +1,4 @@
-import React, {Dispatch, useCallback, useContext, useEffect, useRef, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import {Container} from "react-bootstrap";
 import {useParams} from "react-router";
 import {
@@ -6,7 +6,7 @@ import {
     getSingleGameDetails,
     getSingleUserStats,
     updateGame,
-    updateUserStats, useUpdateGameInterface
+    updateUserStats
 } from "../api/firestore";
 import {AppContext} from "../context/AppContext";
 
@@ -14,10 +14,12 @@ import {AppContextInterface} from "../App";
 import {Board} from "./Board/Board";
 
 import {
+    createAndStoreLastRoundMoveHash,
     determineStartingPlayer,
     evaluateBeingOpponent,
-    evaluateBeingWinner,
-    isGameDataAvailable
+    getPlayerFinishedGameMessage, haveBothPlayersJoined,
+    isGameDataAvailable,
+    isTieEvaluation
 } from "./SessionService";
 
 import {DocumentData, onSnapshot} from "firebase/firestore";
@@ -25,85 +27,72 @@ import {GameFinishedMessage} from "./GameFinishedMessage/GameFinishedMessage";
 import {RecentMoves} from "./RecentMoves/RecentMoves";
 import styles from "./Session.module.css";
 
+
+export const increaseTieStatsCountForBothPlayers = (player1Id: string, player2Id: string): void => {
+    [player1Id, player2Id].forEach((playerId) => {
+        getSingleUserStats({userId: playerId}).then((serverStats) => updateUserStats({
+            userId: playerId,
+            updatedDetails: {tie: serverStats.data()?.tie + 1}
+        }));
+    });
+};
+
+export function updateGameToBeTie(gameId: string | undefined): void {
+    if (!gameId) {
+        return;
+    }
+    updateGame({
+        id: gameId,
+        updatedDetails: {
+            status: "TIE",
+            finishedTimeStamp: Date.now(),
+        }
+    });
+
+}
+
+
 export const Session = () => {
     const {gameId} = useParams();
     const [gameData, setGameData] = useState<DocumentData | undefined>();
+    const [creatorId, setCreatorId] = useState<string | undefined>();
+    const [opponentId, setOpponentId] = useState<string | undefined>();
     const [amIOpponent, setAmIOpponent] = useState(false);
-    const appContext: AppContextInterface = useContext(AppContext);
     const [isTie, setIsTie] = useState(false);
+
+    const {loggedInUserUserId}: AppContextInterface = useContext(AppContext);
     const isComponentMountedRef = useRef(true);
 
-    //Make sure move representations for the whole game are available even after reload/return
     useEffect(() => {
-        if (gameData && gameData.moves.length >= 2 && gameData.moves.length % 2 === 0) {
-            const player1 = gameData.moves[gameData.moves.length - 1];
-            const player2 = gameData.moves[gameData.moves.length - 2];
-
-
-            const moveRepresentations = gameData.moveRepresentations;
-            // console.log('moveRepresentations', moveRepresentations);
-            let latestMovePairRepresentation: string = (player1.movingPlayerId.charAt(0) + player1.type.charAt(0) + player1.fromCoordinates + player1.targetCoordinates + player2.movingPlayerId.charAt(0) + player2.type.charAt(0) + player2.fromCoordinates + player2.targetCoordinates).toLowerCase();
-
-            if (latestMovePairRepresentation.length > 12) {
-                return;
-            }
-
-            if (moveRepresentations[moveRepresentations.length - 1] !== latestMovePairRepresentation) {
-                // console.log('latestMovePairRepresentation', latestMovePairRepresentation);
-                let updatedMoveRepresentations = [...moveRepresentations, latestMovePairRepresentation];
-                updateGame({
-                    id: gameId!,
-                    updatedDetails: {moveRepresentations: updatedMoveRepresentations}
-                });
-            }
-        }
-    }, [gameData, gameData?.moves, gameId, updateGame]);
-
-    // Evalute the movement repetition that might lead to a tie
-    useEffect(() => {
-        if (gameData && gameData.moveRepresentations.length >= 6) {
-            const moveRepresentations = gameData.moveRepresentations;
-            console.log(moveRepresentations[moveRepresentations.length - 1]);
-            console.log(moveRepresentations[moveRepresentations.length - 3]);
-            console.log(moveRepresentations[moveRepresentations.length - 5]);
-            if (moveRepresentations[moveRepresentations.length - 1] === moveRepresentations[moveRepresentations.length - 3] && moveRepresentations[moveRepresentations.length - 3] === moveRepresentations[moveRepresentations.length - 5]) {
-                // console.log('TIE');
-                setIsTie(true);
-                return;
-            }
-            // console.log('not tie');
+        if (!isGameDataAvailable(gameData, gameId)) {
             return;
         }
-    }, [gameData, gameData?.moveRepresentations, gameId, updateGame]);
+        if (haveBothPlayersJoined(gameData?.creatorId, gameData?.opponentId)) {
+            setCreatorId(gameData!.creatorId);
+            setOpponentId(gameData!.opponentId);
+            determineStartingPlayer(gameData, gameId, updateGame);
+        }
+
+
+        if (evaluateBeingOpponent(
+            gameData?.creatorId,
+            loggedInUserUserId
+        )) {
+            setAmIOpponent(true);
+        }
+
+        createAndStoreLastRoundMoveHash(gameData, gameId, updateGame);
+        setIsTie(isTieEvaluation(gameData));
+
+    }, [creatorId, gameData, gameId, loggedInUserUserId, opponentId]);
 
     useEffect(() => {
         if (isTie) {
-            updateGame({
-                id: gameId!,
-                updatedDetails: {
-                    status: "TIE",
-                    finishedTimeStamp: Date.now(),
-                }
-            });
-            getSingleUserStats({userId: gameData?.creatorId}).then((serverStats) => updateUserStats({
-                userId: gameData?.creatorId,
-                updatedDetails: {tie: serverStats.data()?.tie + 1}
-            }));
-            getSingleUserStats({userId: gameData?.opponentId}).then((serverStats) => updateUserStats({
-                userId: gameData?.opponentId,
-                updatedDetails: {tie: serverStats.data()?.tie + 1}
-            }));
+            updateGameToBeTie(gameId);
+            increaseTieStatsCountForBothPlayers(creatorId!, opponentId!);
         }
-    }, [gameId, updateGame, isTie]);
+    }, [creatorId, gameId, isTie, opponentId]);
 
-
-    useEffect(() => {
-        return () => {
-            isComponentMountedRef.current = false;
-        };
-    }, []);
-
-    // Make sure any game-related updates are reflected immediately
     useEffect(() => {
         onSnapshot(gamesCollectionRef, (snapshot) => {
             if (isComponentMountedRef.current && gameId) {
@@ -112,27 +101,6 @@ export const Session = () => {
         });
     }, [gameId]);
 
-    // Evaluate whether I am an opponent or creator and make sure my interface is turned
-    useEffect(() => {
-        if (!gameData) {
-            return;
-        }
-        if (evaluateBeingOpponent({
-            creatorId: gameData!.creatorId,
-            loggedInUserUserId: appContext.loggedInUserUserId
-        })) {
-            setAmIOpponent(true);
-        }
-    }, [appContext.loggedInUserUserId, gameData]);
-
-
-    // Randomly decide who should start
-    useEffect(() => {
-        if (isGameDataAvailable(gameData, gameId)) {
-            determineStartingPlayer(gameData!, gameId, updateGame);
-        }
-    }, [gameId, gameData]);
-
     return (
         <Container className="d-flex justify-content-start align-items-center flex-column pb-5">
             <Container fluid
@@ -140,7 +108,6 @@ export const Session = () => {
                 <h6 className="mt-1 me-2"><strong>Game:</strong> {gameData?.name}</h6>
                 <RecentMoves moves={gameData?.moves} creatorId={gameData?.creatorId}/>
             </Container>
-
             <Container fluid
                        className={`d-flex flex-column justify-content-start align-items-center ${styles.Session}`}>
                 {
@@ -148,19 +115,14 @@ export const Session = () => {
                     />
                 }
             </Container>
-
             <Container fluid
                        className={`d-flex flex-column justify-content-start align-items-center ${styles.EndMessage}`}>
                 {
-                    gameData?.winner && evaluateBeingWinner({
-                        winnerId: gameData.winner,
-                        victoryType: gameData.victoryType,
-                        loggedInUserUserId: appContext.loggedInUserUserId
-                    }) && <GameFinishedMessage messageType={evaluateBeingWinner({
-                        winnerId: gameData.winner,
-                        victoryType: gameData.victoryType,
-                        loggedInUserUserId: appContext.loggedInUserUserId
-                    })}/>
+                    gameData?.winner && <GameFinishedMessage messageType={getPlayerFinishedGameMessage(
+                        gameData.winner,
+                        gameData.victoryType,
+                        loggedInUserUserId
+                    )}/>
                 }
                 {
                     gameData?.status === "TIE" && <GameFinishedMessage messageType={"TIE"}/>
