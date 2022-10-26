@@ -1,50 +1,14 @@
 import {FunctionComponent} from "react";
-
-export type GameFinishedMessageType =
-    "VICTORY_LION_CAPTURE"
-    | "LOSS_LION_CAPTURE"
-    | "VICTORY_HOME_BASE_CONQUER"
-    | "VICTORY_HOME_BASE_CONQUER_FAILED"
-    | "LOSS_HOME_BASE_CONQUER"
-    | "LOSS_HOME_BASE_CONQUER_FAILED"
-    | "TIE"
+import {evaluateGameResult, GameFinishedMessageType, getMessageContent} from "./GameFinishedMessageService";
 
 export interface GameFinishedMessageInterface {
     messageType: GameFinishedMessageType;
 }
 
-const getMessageContent = (messageType: GameFinishedMessageType) => {
-    let headline;
-    let textBody;
-    if (messageType === "VICTORY_LION_CAPTURE") {
-        headline = ("You have won!");
-        textBody = ("You have captured the opponent's lion.");
-    } else if (messageType === "LOSS_LION_CAPTURE") {
-        headline = ("You have lost!");
-        textBody = ("Your lion got captured.");
-    } else if (messageType === "VICTORY_HOME_BASE_CONQUER") {
-        headline = ("You have won!");
-        textBody = ("You have conquered the opponent's homebase!");
-    } else if (messageType === "LOSS_HOME_BASE_CONQUER") {
-        headline = ("You have lost!");
-        textBody = ("Your homebase has got conquered.");
-    } else if (messageType === "VICTORY_HOME_BASE_CONQUER_FAILED") {
-        headline = ("You have won!");
-        textBody = ("The opponent's lion has tried to conquer your homebase, but failed because your animals protected it.");
-    } else if (messageType === "LOSS_HOME_BASE_CONQUER_FAILED") {
-        headline = ("You have lost!");
-        textBody = ("Your lion has tried to conquer the opponent's homebase, but failed because it was protected.");
-    } else if (messageType === "TIE") {
-        headline = ("It's a tie!");
-        textBody = ("A tie happens when you and your opponent keep repeating the same movements.");
-    }
-    return {headline, textBody};
-
-};
-
 export const GameFinishedMessage: FunctionComponent<GameFinishedMessageInterface> = ({messageType}) => {
+    const gameResult = evaluateGameResult(messageType);
 
-    if (messageType === "VICTORY_LION_CAPTURE" || messageType === "VICTORY_HOME_BASE_CONQUER" || messageType === "VICTORY_HOME_BASE_CONQUER_FAILED") {
+    if (gameResult === 'VICTORY') {
         return (
             <div className="alert alert-success" role="alert">
                 <h3 className="alert-heading">
@@ -64,7 +28,7 @@ export const GameFinishedMessage: FunctionComponent<GameFinishedMessageInterface
         );
     }
 
-    if (messageType === "LOSS_LION_CAPTURE" || messageType === "LOSS_HOME_BASE_CONQUER" || messageType === "LOSS_HOME_BASE_CONQUER_FAILED") {
+    if (gameResult === 'LOSS') {
         return (
             <div className="d-block alert alert-danger " role="alert">
                 <h3 className="alert-heading">
@@ -83,9 +47,7 @@ export const GameFinishedMessage: FunctionComponent<GameFinishedMessageInterface
                 </div>
             </div>
         );
-    }
-
-    if (messageType === "TIE") {
+    } else {
         return (
             <div className="d-block alert alert-warning " role="alert">
                 <h3 className="alert-heading">
@@ -103,6 +65,4 @@ export const GameFinishedMessage: FunctionComponent<GameFinishedMessageInterface
             </div>
         );
     }
-
-    return <></>;
 };

@@ -1,8 +1,8 @@
-import {GameFinishedMessageType} from './GameFinishedMessage/GameFinishedMessage';
 import {VictoryType} from "./Board/Board";
 import {DocumentData} from "firebase/firestore";
 import {Dispatch} from "react";
 import {getSingleUserStats, updateGame, updateUserStats, useUpdateGameInterface} from "../api/firestore";
+import {GameFinishedMessageType} from "./GameFinishedMessage/GameFinishedMessageService";
 
 export const isGameDataAvailable = (gameData: DocumentData | undefined, gameId: string | undefined): boolean => {
     if (!!gameData) {
