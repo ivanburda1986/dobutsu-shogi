@@ -23,14 +23,15 @@
     "react-icons": "^4.4.0",
     "react-router": "^6.2.1",
     "react-router-dom": "^6.2.1",
-    "react-scripts": "^2.1.3",
+    "react-scripts": "^5.0.1",
     "typescript": "^4.5.4",
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-scripts --openssl-legacy-provider start",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider npm run build:test-app:testing",
+    "build:test-app:testing": "NODE_OPTIONS=--openssl-legacy-provider ng build test-app --deploy-url  https://test-app.com/ --configuration=test-config",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
