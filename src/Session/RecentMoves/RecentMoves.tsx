@@ -1,4 +1,4 @@
-import React, {FunctionComponent} from "react";
+import React, {FC} from "react";
 import styles from "./RecentMoves.module.css";
 import {MoveInterface} from "../../api/firestore";
 import {RiSwordFill} from 'react-icons/ri';
@@ -11,7 +11,7 @@ interface RecentMovesInterface {
     creatorId: string;
 }
 
-export const RecentMoves: FunctionComponent<RecentMovesInterface> = ({moves = [], creatorId}) => {
+export const RecentMoves: FC<RecentMovesInterface> = ({moves = [], creatorId}) => {
     let lastMove: MoveInterface | undefined;
     let lastButOneMove: MoveInterface | undefined;
 
