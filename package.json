@@ -31,9 +31,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "export TS_JEST_DISABLE_VER_CHECKER=true && jest --runInBand",
-    "eject": "react-scripts eject",
-    "jesttest": "jest"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -52,8 +50,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@types/uuid": "^8.3.4"
   }
 }
