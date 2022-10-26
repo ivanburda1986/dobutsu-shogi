@@ -2,7 +2,7 @@ import {GameFinishedMessageType} from './GameFinishedMessage/GameFinishedMessage
 import {VictoryType} from "./Board/Board";
 import {DocumentData} from "firebase/firestore";
 import {Dispatch} from "react";
-import {useUpdateGameInterface} from "../api/firestore";
+import {getSingleUserStats, updateGame, updateUserStats, useUpdateGameInterface} from "../api/firestore";
 
 export const isGameDataAvailable = (gameData: DocumentData | undefined, gameId: string | undefined): boolean => {
     if (!!gameData) {
@@ -129,56 +129,64 @@ export const evaluateBeingOpponent = (creatorId: string, loggedInUserUserId: str
     return creatorId !== loggedInUserUserId;
 };
 
-// Not refactored
+// Not covered by tests - struggling with mocking the getSingleUserStats()
+export const increaseTieStatsCountForBothPlayers = (player1Id: string, player2Id: string): void => {
+    [player1Id, player2Id].forEach((playerId) => {
+        getSingleUserStats({userId: playerId}).then((serverStats) => {
+            console.log(serverStats);
+            updateUserStats({
+                userId: playerId,
+                updatedDetails: {tie: serverStats.data()?.tie + 1}
+            });
+        });
+    });
+};
 
-export const getPlayerFinishedGameMessage = (
+// Not covered by tests - struggling with mocking the Date.now() value
+export function updateGameToBeTie(gameId: string | undefined): void {
+    if (!gameId) {
+        return;
+    }
+
+    updateGame({
+        id: gameId,
+        updatedDetails: {
+            status: "TIE",
+            finishedTimeStamp: Date.now(),
+        }
+    });
+}
+
+export const getPlayerFinishedGameState = (
     winnerId: string,
     victoryType: VictoryType,
     loggedInUserUserId: string
 ): GameFinishedMessageType => {
-    // console.log("victoryType", victoryType);
+
     if (winnerId === loggedInUserUserId && victoryType === "LION_CAUGHT_SUCCESS") {
-        // console.log('step1');
-        // console.log("winnerId === loggedInUserUserId", winnerId === loggedInUserUserId);
-        // console.log("VICTORY_LION_CAPTURE");
         return "VICTORY_LION_CAPTURE";
     }
 
     if (winnerId !== loggedInUserUserId && victoryType === "LION_CAUGHT_SUCCESS") {
-        // console.log('step2');
-        // console.log("winnerId === loggedInUserUserId", winnerId === loggedInUserUserId);
-        // console.log("LOSS_LION_CAPTURE");
         return "LOSS_LION_CAPTURE";
     }
 
     if (winnerId === loggedInUserUserId && victoryType === "HOMEBASE_CONQUERED_SUCCESS") {
-        // console.log('step3');
-        // console.log("winnerId === loggedInUserUserId", winnerId === loggedInUserUserId);
-        // console.log("VICTORY_HOME_BASE_CONQUER");
         return "VICTORY_HOME_BASE_CONQUER";
     }
 
     if (winnerId !== loggedInUserUserId && victoryType === "HOMEBASE_CONQUERED_SUCCESS") {
-        // console.log('step4');
-        // console.log("winnerId === loggedInUserUserId", winnerId === loggedInUserUserId);
-        // console.log("LOSS_HOME_BASE_CONQUER");
         return "LOSS_HOME_BASE_CONQUER";
     }
 
     if (winnerId === loggedInUserUserId && victoryType === "HOMEBASE_CONQUERED_FAILURE") {
-        // console.log('step5');
-        // console.log("winnerId === loggedInUserUserId", winnerId === loggedInUserUserId);
-        // console.log("VICTORY_HOME_BASE_CONQUER_FAILED");
         return "VICTORY_HOME_BASE_CONQUER_FAILED";
     } else {
-        // console.log('step6');
-        // console.log("winnerId === loggedInUserUserId", winnerId === loggedInUserUserId);
-        // console.log("LOSS_HOME_BASE_CONQUER_FAILED");
         return "LOSS_HOME_BASE_CONQUER_FAILED";
     }
-    // if (winnerId !== loggedInUserUserId && victoryType === "HOMEBASE_CONQUERED_FAILURE")
 };
 
+// Unused
 export function isTouchEnabled(): boolean {
     return 'ontouchstart' in window;
 }

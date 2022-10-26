@@ -4,7 +4,7 @@ import {useUpdateGameInterface} from "../../api/firestore";
 import {
     areSufficientMoveRecordsAvailable,
     createAndStoreLastRoundMoveHash,
-    determineStartingPlayer,
+    determineStartingPlayer, getPlayerFinishedGameState,
     isGameDataAvailable,
     isMoveHashRelatedToStash,
     isStartingPlayerDetermined,
@@ -14,6 +14,7 @@ import {
 
 import {Dispatch} from "react";
 import {mockRandom, resetMockRandom} from "jest-mock-random";
+import {VictoryType} from "../Board/Board";
 
 
 const MATH_RANDOM_TO_MAKE_CREATOR_STARTING_PLAYER = 0.49;
@@ -344,5 +345,68 @@ describe('SessionService', () => {
             expect(isTieEvaluation(gameData)).toBe(true);
         });
     });
+
+    describe('getPlayerFinishedGameState', () => {
+        it('returns that player has won by capturing opponents lion', () => {
+            const winnerId = 'creator123';
+            const victoryType = 'LION_CAUGHT_SUCCESS';
+            const loggedInUserUserId = 'creator123';
+
+            const finishedGameState = getPlayerFinishedGameState(winnerId, victoryType, loggedInUserUserId);
+
+            expect(finishedGameState).toBe('VICTORY_LION_CAPTURE');
+        });
+
+        it('returns that player has lost because their lion got captured', () => {
+            const winnerId = 'creator123';
+            const victoryType = 'LION_CAUGHT_SUCCESS';
+            const loggedInUserUserId = 'opponent123';
+
+            const finishedGameState = getPlayerFinishedGameState(winnerId, victoryType, loggedInUserUserId);
+
+            expect(finishedGameState).toBe('LOSS_LION_CAPTURE');
+        });
+
+        it('returns that player has won by conquering opponents homebase', () => {
+            const winnerId = 'creator123';
+            const victoryType = 'HOMEBASE_CONQUERED_SUCCESS';
+            const loggedInUserUserId = 'creator123';
+
+            const finishedGameState = getPlayerFinishedGameState(winnerId, victoryType, loggedInUserUserId);
+
+            expect(finishedGameState).toBe('VICTORY_HOME_BASE_CONQUER');
+        });
+
+        it('returns that player has lost because their homebase got conquered', () => {
+            const winnerId = 'creator123';
+            const victoryType = 'HOMEBASE_CONQUERED_SUCCESS';
+            const loggedInUserUserId = 'opponent123';
+
+            const finishedGameState = getPlayerFinishedGameState(winnerId, victoryType, loggedInUserUserId);
+
+            expect(finishedGameState).toBe('LOSS_HOME_BASE_CONQUER');
+        });
+
+        it('returns that player has won because they have defended their homebase against opponents conquer attempt', () => {
+            const winnerId = 'creator123';
+            const victoryType = 'HOMEBASE_CONQUERED_FAILURE';
+            const loggedInUserUserId = 'creator123';
+
+            const finishedGameState = getPlayerFinishedGameState(winnerId, victoryType, loggedInUserUserId);
+
+            expect(finishedGameState).toBe('VICTORY_HOME_BASE_CONQUER_FAILED');
+        });
+
+        it('returns that player has lost because they unsuccessfully attempted conquering opponents homebase', () => {
+            const winnerId = 'creator123';
+            const victoryType = 'HOMEBASE_CONQUERED_FAILURE';
+            const loggedInUserUserId = 'opponent123';
+
+            const finishedGameState = getPlayerFinishedGameState(winnerId, victoryType, loggedInUserUserId);
+
+            expect(finishedGameState).toBe('LOSS_HOME_BASE_CONQUER_FAILED');
+        });
+    });
+
 });
 

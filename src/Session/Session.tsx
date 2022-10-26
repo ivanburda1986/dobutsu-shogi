@@ -1,13 +1,7 @@
 import React, {useContext, useEffect, useRef, useState} from "react";
 import {Container} from "react-bootstrap";
 import {useParams} from "react-router";
-import {
-    gamesCollectionRef,
-    getSingleGameDetails,
-    getSingleUserStats,
-    updateGame,
-    updateUserStats
-} from "../api/firestore";
+import {gamesCollectionRef, getSingleGameDetails, updateGame} from "../api/firestore";
 import {AppContext} from "../context/AppContext";
 
 import {AppContextInterface} from "../App";
@@ -17,39 +11,18 @@ import {
     createAndStoreLastRoundMoveHash,
     determineStartingPlayer,
     evaluateBeingOpponent,
-    getPlayerFinishedGameMessage, haveBothPlayersJoined,
+    getPlayerFinishedGameState,
+    haveBothPlayersJoined,
+    increaseTieStatsCountForBothPlayers,
     isGameDataAvailable,
-    isTieEvaluation
+    isTieEvaluation,
+    updateGameToBeTie
 } from "./SessionService";
 
 import {DocumentData, onSnapshot} from "firebase/firestore";
 import {GameFinishedMessage} from "./GameFinishedMessage/GameFinishedMessage";
 import {RecentMoves} from "./RecentMoves/RecentMoves";
 import styles from "./Session.module.css";
-
-
-export const increaseTieStatsCountForBothPlayers = (player1Id: string, player2Id: string): void => {
-    [player1Id, player2Id].forEach((playerId) => {
-        getSingleUserStats({userId: playerId}).then((serverStats) => updateUserStats({
-            userId: playerId,
-            updatedDetails: {tie: serverStats.data()?.tie + 1}
-        }));
-    });
-};
-
-export function updateGameToBeTie(gameId: string | undefined): void {
-    if (!gameId) {
-        return;
-    }
-    updateGame({
-        id: gameId,
-        updatedDetails: {
-            status: "TIE",
-            finishedTimeStamp: Date.now(),
-        }
-    });
-
-}
 
 
 export const Session = () => {
@@ -67,12 +40,12 @@ export const Session = () => {
         if (!isGameDataAvailable(gameData, gameId)) {
             return;
         }
+
         if (haveBothPlayersJoined(gameData?.creatorId, gameData?.opponentId)) {
             setCreatorId(gameData!.creatorId);
             setOpponentId(gameData!.opponentId);
             determineStartingPlayer(gameData, gameId, updateGame);
         }
-
 
         if (evaluateBeingOpponent(
             gameData?.creatorId,
@@ -118,14 +91,14 @@ export const Session = () => {
             <Container fluid
                        className={`d-flex flex-column justify-content-start align-items-center ${styles.EndMessage}`}>
                 {
-                    gameData?.winner && <GameFinishedMessage messageType={getPlayerFinishedGameMessage(
+                    gameData?.winner && <GameFinishedMessage messageType={getPlayerFinishedGameState(
                         gameData.winner,
                         gameData.victoryType,
                         loggedInUserUserId
                     )}/>
                 }
                 {
-                    gameData?.status === "TIE" && <GameFinishedMessage messageType={"TIE"}/>
+                    isTie && <GameFinishedMessage messageType={"TIE"}/>
                 }
             </Container>
 

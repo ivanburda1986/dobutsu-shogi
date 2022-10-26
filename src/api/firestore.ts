@@ -1,6 +1,16 @@
 import {UserDataInterface} from "../App";
 import {initializeApp} from "firebase/app";
-import {collection, deleteDoc, doc, getDoc, getDocs, getFirestore, setDoc, updateDoc} from "firebase/firestore";
+import {
+    collection,
+    deleteDoc,
+    doc,
+    DocumentData,
+    getDoc,
+    getDocs,
+    getFirestore,
+    setDoc,
+    updateDoc
+} from "firebase/firestore";
 
 import {
     createUserWithEmailAndPassword,
@@ -14,6 +24,7 @@ import {
 import {getCreatorStones, getOpponentStones} from "./firestoreService";
 import {StoneInterface, stoneType} from "../Session/Board/Stones/Stone";
 import {VictoryType} from "../Session/Board/Board";
+import {DocumentSnapshot} from "@firebase/firestore";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCBnawTeOf0cVa7m7aKFQoIqrXbJOorW2c",
@@ -455,7 +466,7 @@ interface UserStats {
     tie: number,
 }
 
-interface useUpdateUserStatsInterface {
+export interface useUpdateUserStatsInterface {
     userId: string;
     updatedDetails: Partial<UserStats>;
 }
@@ -470,11 +481,11 @@ export const updateUserStats = ({userId, updatedDetails}: useUpdateUserStatsInte
 };
 
 // Get user stats
-interface getSingleUserStatsInterface {
+export interface getSingleUserStatsInterface {
     userId: string;
 }
 
-export const getSingleUserStats = ({userId}: getSingleUserStatsInterface) => {
+export const getSingleUserStats = ({userId}: getSingleUserStatsInterface): Promise<DocumentSnapshot> => {
     return getDoc(doc(db, "stats", userId));
 };
 
