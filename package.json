@@ -29,10 +29,10 @@
     "web-vitals": "^2.1.2"
   },
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
-    "build": "NODE_OPTIONS=--openssl-legacy-provider npm run build:test-app:testing",
-    "build:test-app:testing": "NODE_OPTIONS=--openssl-legacy-provider ng build test-app --deploy-url  https://test-app.com/ --configuration=test-config",
-    "eject": "react-scripts eject"
+    "start": "react-scripts start",
+    "build": "npm run build:test-app:testing",
+    "eject": "react-scripts eject",
+    "test": "jest --watchAll"
   },
   "eslintConfig": {
     "extends": [
@@ -51,5 +51,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/uuid": "^8.3.4"
   }
 }
