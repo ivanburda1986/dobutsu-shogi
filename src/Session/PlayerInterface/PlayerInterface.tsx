@@ -3,7 +3,7 @@ import {AppContextInterface} from "../../App";
 import {AppContext} from "../../context/AppContext";
 import {Avatar} from "../../Avatar/Avatar";
 import styles from "./PlayerInterface.module.css";
-import {getStashSize, isOnTurn, whatNameToDisplay} from "./PlayerInterfaceService";
+import {getStashSize, isPlayersTurn, whatNameToDisplay} from "./PlayerInterfaceService";
 import {v4 as uuidv4} from "uuid";
 import {DocumentData} from "firebase/firestore";
 import {StashRow} from "../Board/StashRow/StashRow";
@@ -26,7 +26,7 @@ export const PlayerInterface: FC<PlayerInterfaceInterface> = ({
 
     return (
         <div
-            className={`${styles.PlayerInterface} ${isOnTurn({
+            className={`${styles.PlayerInterface} ${isPlayersTurn({
                 creatorInterface,
                 gameData
             }) ? styles.PlayerInterfaceCurrentTurn : styles.PlayerInterfaceNotOnTurn}  mx-3 my-1`}
