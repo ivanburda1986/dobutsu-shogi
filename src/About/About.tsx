@@ -13,7 +13,7 @@ export const About: FC = () => {
                                 target="_blank" rel="noreferrer">this page</a> to learn more about Shogi.</p></li>
             </ul>
 
-            <h2>About this site</h2>
+            <h2>About this site 222</h2>
             <p>This site has been created for two reasons:</p>
             <ul>
                 <li>a programming exercise</li>
