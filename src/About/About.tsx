@@ -4,7 +4,7 @@ import {Container} from "react-bootstrap";
 export const About: FC = () => {
     return (
         <Container className="text-success">
-            <h2>How to play111</h2>
+            <h2>How to play</h2>
             <ul>
                 <li><p>Watch <a className="link-primary" href="https://www.youtube.com/watch?v=bH05gUTrq3o"
                                 target="_blank" rel="noreferrer">this video</a> to learn rules of Dobutsu Shogi.</p>
