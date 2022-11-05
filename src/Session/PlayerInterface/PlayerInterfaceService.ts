@@ -36,7 +36,7 @@ export const whatNameToDisplay = ({
     }
     return gameData?.opponentName;
 };
-//test
+
 export const isPlayersTurn = ({
                              creatorInterface,
                              gameData
