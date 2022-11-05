@@ -26,7 +26,7 @@ export const getStashSize = (creatorInterface: boolean): BoardInterface => {
     }
     return {rowNumbers: [1], columnLetters: ["OPPONENT-ELEPHANT", "OPPONENT-GIRAFFE", "OPPONENT-CHICKEN"]};
 };
-//test
+
 export const whatNameToDisplay = ({
                                       creatorInterface,
                                       gameData
