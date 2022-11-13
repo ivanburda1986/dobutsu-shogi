@@ -175,8 +175,6 @@ export const getSingleStoneDetails = async ({gameId, stoneId}: useGetSingleStone
     const singleStoneData = await getDoc(stoneRef);
     if (singleStoneData.exists()) {
         return singleStoneData;
-    } else {
-        console.log('The stone does not exist');
     }
 };
 
@@ -320,12 +318,12 @@ export interface useUpdateGameInterface {
     updatedDetails: Partial<Game>;
 }
 
-export const updateGame = ({id, updatedDetails}: useUpdateGameInterface) => {
+export const updateGame = async({id, updatedDetails}: useUpdateGameInterface) => {
     const updateGameRef = doc(db, "games", id);
-    updateDoc(updateGameRef, {...updatedDetails})
+    await updateDoc(updateGameRef, {...updatedDetails})
         .then(() => console.log("Game updated"))
         .catch((err) => {
-            console.log(err.message);
+            return(err.message);
         });
 };
 
@@ -379,7 +377,7 @@ export const useLoginUser = ({email, password, loginUserCb}: LoginUserInterface)
         })
         .catch((err) => {
             loginUserCb.forwardError(err.message);
-            console.log(err.message);
+            return(err.message);
         });
 };
 

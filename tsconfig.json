@@ -27,5 +27,9 @@
   },
   "include": [
     "src"
-  ]
+  ],
+  "paths": {
+    "@App/*": ["src/*"],
+    "lib/*": ["common/*"]
+  }
 }

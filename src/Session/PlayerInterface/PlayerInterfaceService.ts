@@ -1,4 +1,5 @@
 import {DocumentData} from "firebase/firestore";
+import styles from "./PlayerInterface.module.css";
 
 
 export type columnLetterType =
@@ -15,40 +16,43 @@ export type columnLetterType =
     | "OPPONENT-CHICKEN"
     | "OPPONENT-HEN"
 
-interface BoardInterface {
-    rowNumbers: number[];
-    columnLetters: string[];
-}
 
-export const getStashSize = (creatorInterface: boolean): BoardInterface => {
+export const getStashColumnLetters = (creatorInterface: boolean): columnLetterType[] => {
     if (creatorInterface) {
-        return {rowNumbers: [1], columnLetters: ["CREATOR-ELEPHANT", "CREATOR-GIRAFFE", "CREATOR-CHICKEN"]};
+        return ["CREATOR-ELEPHANT", "CREATOR-GIRAFFE", "CREATOR-CHICKEN"]
     }
-    return {rowNumbers: [1], columnLetters: ["OPPONENT-ELEPHANT", "OPPONENT-GIRAFFE", "OPPONENT-CHICKEN"]};
+    return ["OPPONENT-ELEPHANT", "OPPONENT-GIRAFFE", "OPPONENT-CHICKEN"]
 };
 
-export const whatNameToDisplay = ({
-                                      creatorInterface,
-                                      gameData
-                                  }: { creatorInterface: boolean; gameData: DocumentData | undefined }) => {
+export const getInterfacePlayerName = (creatorInterface: boolean, gameData: DocumentData | undefined):string => {
     if (creatorInterface) {
         return gameData?.creatorName;
     }
     return gameData?.opponentName;
 };
 
-export const isPlayersTurn = ({
-                             creatorInterface,
-                             gameData
-                         }: { creatorInterface: boolean; gameData: DocumentData | undefined }) => {
+export const isPlayersTurn = ( creatorInterface: boolean, gameData: DocumentData | undefined ):boolean => {
     if (!gameData?.creatorId || !gameData?.opponentId) {
         return false;
     }
     if (creatorInterface) {
-        return gameData?.currentPlayerTurn === gameData?.creatorId ? true : false;
+        return gameData?.currentPlayerTurn === gameData?.creatorId;
     }
-    return gameData?.currentPlayerTurn === gameData?.opponentId ? true : false;
+    return gameData?.currentPlayerTurn === gameData?.opponentId;
 
 };
 
-//test5
+export const getInterfaceTurnBasedBorderStyle = (creatorInterface: boolean, gameData: DocumentData | undefined) => {
+    const value1 = isPlayersTurn(creatorInterface,
+        gameData) ? styles.PlayerInterfaceCurrentTurn : styles.PlayerInterfaceNotOnTurn
+    return `${styles.PlayerInterface} ${value1}`
+}
+
+export const getInterfaceHeaderColour = (creatorInterface:boolean) => {
+    return creatorInterface ? styles.CreatorHeader : styles.OpponentHeader
+}
+
+export const getInterfaceRotation = (creatorInterface:boolean) => {
+    return `rotate(${creatorInterface ? 0 : 180}deg)`
+}
+export const getInterfaceAvatarPhoto = (creatorInterface: boolean, gameData: DocumentData | undefined) => creatorInterface ? gameData?.creatorPhotoURL : gameData?.opponentPhotoURL;

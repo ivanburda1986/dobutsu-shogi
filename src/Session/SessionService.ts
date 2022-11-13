@@ -20,7 +20,7 @@ export const haveBothPlayersJoined = (creatorId: string | undefined, opponentId:
     return !!creatorId && !!opponentId;
 };
 
-export const determineStartingPlayer = (gameData: DocumentData | undefined, gameId: string | undefined, updateGame: Dispatch<useUpdateGameInterface>) => {
+export const determineStartingPlayer =  (gameData: DocumentData | undefined, gameId: string | undefined, updateGame: Dispatch<useUpdateGameInterface>) => {
     if (!gameData) {
         return;
     }
@@ -28,7 +28,7 @@ export const determineStartingPlayer = (gameData: DocumentData | undefined, game
     if (haveBothPlayersJoined(creatorId, opponentId) && !isStartingPlayerDetermined(startingPlayer)) {
         const randomNumber = Math.random();
         const whoShouldStart = randomNumber < 0.5 ? creatorId : opponentId;
-        updateGame({
+           updateGame({
             id: gameId!,
             updatedDetails: {startingPlayer: whoShouldStart, currentPlayerTurn: whoShouldStart}
         });
