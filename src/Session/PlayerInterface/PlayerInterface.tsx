@@ -12,7 +12,7 @@ import {
 import {StashRow} from "../Board/StashRow/StashRow";
 import styles from "./PlayerInterface.module.css";
 
-interface PlayerInterfaceInterface {
+interface PlayerInterfaceProps {
     amIOpponent: boolean;
     creatorInterface: boolean;
     gameData: DocumentData | undefined;
