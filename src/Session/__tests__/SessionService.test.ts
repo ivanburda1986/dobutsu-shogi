@@ -4,7 +4,8 @@ import {useUpdateGameInterface} from "../../api/firestore";
 import {
     areSufficientMoveRecordsAvailable,
     createAndStoreLastRoundMoveHash,
-    determineStartingPlayer, getPlayerFinishedGameState,
+    determineStartingPlayer,
+    getPlayerFinishedGameState,
     isGameDataAvailable,
     isMoveHashRelatedToStash,
     isStartingPlayerDetermined,
@@ -14,7 +15,8 @@ import {
 
 import {Dispatch} from "react";
 import {mockRandom, resetMockRandom} from "jest-mock-random";
-import {VictoryType} from "../Board/Board";
+
+
 
 
 const MATH_RANDOM_TO_MAKE_CREATOR_STARTING_PLAYER = 0.49;
@@ -88,8 +90,8 @@ describe('SessionService', () => {
             resetMockRandom();
         });
 
-        it('does not send decision about starting player to server when starting player is already known', async () => {
-            const updateGameSpy = jest
+        it('does not send decision about starting player to server when starting player is already known',  () => {
+            const  updateGameSpy = jest
                 .spyOn(firestoreRequests, 'updateGame') as any as Dispatch<useUpdateGameInterface>;
             const gameData = {
                 creatorId: 'creator123',
@@ -103,8 +105,7 @@ describe('SessionService', () => {
 
             determineStartingPlayer(gameData, gameId, updateGameSpy);
 
-            await expect(updateGameSpy).not.toHaveBeenCalled();
-
+            expect(updateGameSpy).not.toHaveBeenCalled();
         });
 
         it('does not send decision about starting player to server when game data is not available', () => {
@@ -167,7 +168,7 @@ describe('SessionService', () => {
             expect(result).toBe(false);
         });
 
-        it('returns true when game has been joined by both players', () => {
+        it('returns true when game has been joined by both players',  () => {
             const gameData = {
                 creatorId: 'creator123',
                 opponentId: 'opponent123',
