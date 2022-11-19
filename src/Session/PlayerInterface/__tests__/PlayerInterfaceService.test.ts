@@ -1,4 +1,4 @@
-import {getInterfacePlayerName, getStashColumnLetters, isPlayersTurn} from "../PlayerInterfaceService";
+import { getInterfaceAvatarImageName, getInterfacePlayerName, getStashColumnLetters, isPlayersTurn } from "../PlayerInterfaceService";
 
 describe('PlayerInterfaceService', () => {
     describe('getStashColumnLetters', () => {
@@ -67,4 +67,20 @@ describe('PlayerInterfaceService', () => {
             expect(isPlayersTurn(creatorInterface,gameData)).toBe(false);
         });
     });
+
+    describe('getInterfaceAvatarImageName',()=>{
+        it('should return creators avatar image name for creators interface', () => {
+            const creatorInterface = true;
+            const gameData = {creatorPhotoURL:"lion", opponentPhotoURL: "elephant"};
+
+            expect(getInterfaceAvatarImageName(creatorInterface,gameData)).toBe('lion');
+        });
+
+        it('should return opponents avatar image name for opponents interface', () => {
+            const creatorInterface = false;
+            const gameData = {creatorPhotoURL:"lion", opponentPhotoURL: "elephant"};
+
+            expect(getInterfaceAvatarImageName(creatorInterface,gameData)).toBe('elephant');
+        });
+    })
 });
