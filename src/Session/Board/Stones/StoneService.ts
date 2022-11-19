@@ -1,14 +1,8 @@
-import CHICKEN from "./images/chicken.png";
-import ELEPHANT from "./images/elephant.png";
-import GIRAFFE from "./images/giraffe.png";
-import LION from "./images/lion.png";
-import HEN from "./images/hen.png";
-
-import {chickenTurningToHenCoordinates, lionConquerFields, stoneMovements} from "./StoneMovements";
-import {StoneInterface, stoneType} from "./Stone";
-import {columnLetterType} from "../../PlayerInterface/PlayerInterfaceService";
-import {DocumentData} from "firebase/firestore";
-import {lionConquerAttemptInterface} from "../BoardField/FieldService";
+import { chickenTurningToHenCoordinates, lionConquerFields, stoneMovements } from "./StoneMovements";
+import { StoneInterface, stoneType } from "./Stone";
+import { columnLetterType } from "../../PlayerInterface/PlayerInterfaceService";
+import { DocumentData } from "firebase/firestore";
+import { lionConquerAttemptInterface } from "../BoardField/FieldService";
 
 interface getStashTargetPositionInterface {
     type: stoneType;

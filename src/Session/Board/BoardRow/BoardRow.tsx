@@ -1,9 +1,9 @@
 import {FC} from "react";
 import {v4 as uuidv4} from "uuid";
 import {Field} from "../BoardField/Field";
-import styles from "./BoardRow.module.css";
 import {DocumentData} from "firebase/firestore";
 import {StoneInterface} from "../Stones/Stone";
+import styles from "./BoardRow.module.css";
 
 
 interface BoardRowInterface {
