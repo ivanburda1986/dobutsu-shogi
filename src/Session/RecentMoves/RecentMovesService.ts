@@ -13,3 +13,7 @@ export const getLastButOneMove = (moves: MoveInterface[]) => {
     }
     return undefined;
 };
+
+export const isTheMoveFromStash = (lastMove: MoveInterface) => lastMove.fromCoordinates.length > 2;
+
+export const isTheMoveToStash = (lastMove: MoveInterface) => lastMove.targetCoordinates.length > 2;
