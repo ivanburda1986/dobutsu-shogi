@@ -3,8 +3,9 @@ import styles from "./RecentMoves.module.css";
 import {MoveInterface} from "../../api/firestore";
 import {RiSwordFill} from 'react-icons/ri';
 import {GiOpenChest} from 'react-icons/gi';
-import {evaluateBeingOpponent} from "../SessionService";
+import {isThisPlayerOpponent} from "../SessionService";
 import {RecentMoveStone} from "./RecentMoveStone";
+import { getLastButOneMove, getLastMove } from "./RecentMovesService";
 
 interface RecentMovesInterface {
     moves: MoveInterface[];
@@ -12,16 +13,8 @@ interface RecentMovesInterface {
 }
 
 export const RecentMoves: FC<RecentMovesInterface> = ({moves = [], creatorId}) => {
-    let lastMove: MoveInterface | undefined;
-    let lastButOneMove: MoveInterface | undefined;
-
-    if (moves.length > 0) {
-        lastMove = moves[moves.length - 1];
-    }
-    if (moves.length > 1) {
-        lastButOneMove = moves[moves.length - 2];
-    }
-
+    const lastMove = getLastMove(moves);
+    const lastButOneMove = getLastButOneMove(moves);
 
     if (!lastMove) {
         return (<div className={`d-flex justify-content-center align-items-center`}>
@@ -31,9 +24,9 @@ export const RecentMoves: FC<RecentMovesInterface> = ({moves = [], creatorId}) =
         return (
             <div className={`d-flex justify-content-center align-items-center me-2`}>
                 <h6 className="d-none d-sm-inline-block me-3"><strong>Latest move:</strong></h6>
-                <div className={`${evaluateBeingOpponent(creatorId,
+                <div className={`${isThisPlayerOpponent(creatorId,
                     lastMove.movingPlayerId
-                ) ? styles.OpponentBg : styles.CreatorBg} d-flex justify-content-center align-items-center`}>
+                ) ? styles.OpponentStyle : styles.CreatorStyle} ${styles.Background} d-flex justify-content-center align-items-center`}>
                     {
                         lastMove.isTakeOver && <div className="d-flex justify-content-center align-items-center">
                             {(<RecentMoveStone name={lastButOneMove!.type.toLowerCase()}

@@ -8,7 +8,7 @@ import {
     getPlayerFinishedGameState,
     isGameDataAvailable,
     isMoveHashRelatedToStash,
-    isStartingPlayerDetermined,
+    isStartingPlayerDetermined, isThisPlayerOpponent,
     isTieEvaluation,
     shouldSaveLatestRoundMovementHash
 } from "../SessionService";
@@ -406,6 +406,20 @@ describe('SessionService', () => {
             const finishedGameState = getPlayerFinishedGameState(winnerId, victoryType, loggedInUserUserId);
 
             expect(finishedGameState).toBe('LOSS_HOME_BASE_CONQUER_FAILED');
+        });
+    });
+
+    describe('isThisPlayerOpponent', () => {
+        it('should return true if the player from whose perspective this gets evaluated is an opponent', () => {
+            const creatorId = 'playerA';
+            const loggedInUserUserId = 'playerB';
+            expect(isThisPlayerOpponent(creatorId, loggedInUserUserId)).toBe(true);
+        });
+
+        it('should return false if the player from whose perspective this gets evaluated is a creator', () => {
+            const creatorId = 'playerA';
+            const loggedInUserUserId = 'playerA';
+            expect(isThisPlayerOpponent(creatorId, loggedInUserUserId)).toBe(false);
         });
     });
 

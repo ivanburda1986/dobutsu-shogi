@@ -1,19 +1,18 @@
-.OpponentBg {
+.OpponentStyle {
     background-color: #ccedf2;
-    padding: 0.25em 0.5em;
-    border-radius: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     border: 1px solid #a0d1d9;
 }
 
-.CreatorBg {
+.CreatorStyle {
     background-color: #d9f1aa;
+    border: 1px solid #b5d18a;
+}
+
+.Background{
     padding: 0.25em 0.5em;
     border-radius: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid #b5d18a;
 }
+

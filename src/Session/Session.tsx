@@ -10,7 +10,7 @@ import {Board} from "./Board/Board";
 import {
     createAndStoreLastRoundMoveHash,
     determineStartingPlayer,
-    evaluateBeingOpponent,
+    isThisPlayerOpponent,
     getPlayerFinishedGameState,
     haveBothPlayersJoined,
     increaseTieStatsCountForBothPlayers,
@@ -47,7 +47,7 @@ export const Session = () => {
             determineStartingPlayer(gameData, gameId, updateGame);
         }
 
-        if (evaluateBeingOpponent(
+        if (isThisPlayerOpponent(
             gameData?.creatorId,
             loggedInUserUserId
         )) {
