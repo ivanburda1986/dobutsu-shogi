@@ -231,14 +231,6 @@ export const rotateOponentStones = ({
     return setRotateDegrees(0);
 };
 
-export const getImgReference = (type: stoneType) => {
-    if (type === "CHICKEN") return CHICKEN;
-    if (type === "ELEPHANT") return ELEPHANT;
-    if (type === "GIRAFFE") return GIRAFFE;
-    if (type === "HEN") return HEN;
-    return LION;
-};
-
 interface getStashedStonePillCountInterface {
     allStones: StoneInterface[];
     currentOwnerId?: string;

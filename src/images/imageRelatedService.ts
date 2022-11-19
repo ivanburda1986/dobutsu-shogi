@@ -10,14 +10,19 @@ import rabbit from "./rabbit.png";
 import placeholder from "./placeholder.png";
 
 export const getImgReference = (name: string | null) => {
-    if (name === "boar") return boar;
-    if (name === "cat") return cat;
-    if (name === "dog") return dog;
-    if (name === "elephant") return elephant;
-    if (name === "giraffe") return giraffe;
-    if (name === "chicken") return chicken;
-    if (name === "hen") return hen;
-    if (name === "lion") return lion;
-    if (name === "rabbit") return rabbit;
-    return placeholder;
+
+    if(!name){
+        return placeholder;
+    }
+
+    const lowerCasedName = name.toLowerCase()
+    if (lowerCasedName.includes( "boar")) return boar;
+    if (lowerCasedName.includes( "cat")) return cat;
+    if (lowerCasedName.includes( "dog")) return dog;
+    if (lowerCasedName.includes( "elephant")) return elephant;
+    if (lowerCasedName.includes( "giraffe")) return giraffe;
+    if (lowerCasedName.includes( "chicken")) return chicken;
+    if (lowerCasedName.includes( "hen")) return hen;
+    if (lowerCasedName.includes( "lion")) return lion;
+    if (lowerCasedName.includes( "rabbit")) return rabbit;
 };
