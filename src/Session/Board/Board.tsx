@@ -1,18 +1,19 @@
-import { FC, useContext, useEffect, useRef, useState } from "react";
-import {useParams} from "react-router";
-import {Container} from "react-bootstrap";
-import {collection, doc, DocumentData, onSnapshot} from "firebase/firestore";
-import {db} from "../../api/firestore";
-import {v4 as uuidv4} from "uuid";
+import { Dispatch, FC, SetStateAction, useContext, useEffect, useState } from "react";
+import { useParams } from "react-router";
+import { Container } from "react-bootstrap";
+import { collection, doc, DocumentData, onSnapshot } from "firebase/firestore";
+import { db } from "../../api/firestore";
+import { v4 as uuidv4 } from "uuid";
 
-import {BoardRow} from "./BoardRow/BoardRow";
-import {PlayerInterface} from "../PlayerInterface/PlayerInterface";
-import {Stone, StoneInterface} from "./Stones/Stone";
-import { getBackground } from "../../images/imageRelatedService";
-import styles from "./Board.module.css";
-import { isThisPlayerOpponent } from "../SessionService";
 import { AppContextInterface } from "../../App";
 import { AppContext } from "../../context/AppContext";
+import { BoardRow } from "./BoardRow/BoardRow";
+import { PlayerInterface } from "../PlayerInterface/PlayerInterface";
+import { Stone, StoneInterface } from "./Stones/Stone";
+import { getBackground } from "../../images/imageRelatedService";
+import { isThisPlayerOpponent } from "../SessionService";
+import styles from "./Board.module.css";
+import { ReturnedGameInterface } from "../../LaunchScreen/Game/Game";
 
 interface BoardInterface {
     gameData: DocumentData | undefined;
@@ -40,23 +41,36 @@ export const Board: FC<BoardInterface> = ({gameData}) => {
     const [,setVictoryType] = useState<VictoryType>();
 
 
+    interface StonePositionChangeListenerInterface {
+        updateState: Dispatch<SetStateAction<StoneInterface[]>>;
+        gameId?: string;
+    }
 
-
-
-    useEffect(() => {
-        //Listening to change of stone positions
-        const stonesCollectionRef = collection(db, `games/${gameId}/stones`);
-        onSnapshot(stonesCollectionRef, (snapshot) => {
+    const listenToStonePositionChange = ({updateState, gameId}:StonePositionChangeListenerInterface) => {
+        onSnapshot(collection(db, `games/${gameId}/stones`), (snapshot) => {
             let returnedStones: StoneInterface[] = [];
             snapshot.docs.forEach((doc) => {
                 returnedStones.push({...doc.data()} as StoneInterface);
             });
-            setTimeout(() => setStones(returnedStones), 100);
+            setTimeout(() => updateState(returnedStones), 100);
         });
+    }
+
+    const listenToGameStateChange = () => {
+        const docRef = doc(db, "games", gameId!);
+        onSnapshot(docRef, (doc) => {
+            setWinner(doc.data()?.winner);
+            setVictoryType(doc.data()?.victoryType);
+        });
+    }
+
+    useEffect(() => {
+        //Listening to change of stone positions
+        listenToStonePositionChange({updateState:setStones, gameId:gameId})
+
         //Listening to change of the game state (victory/defeat)
         const docRef = doc(db, "games", gameId!);
         onSnapshot(docRef, (doc) => {
-            // console.log("Updated data");
             setWinner(doc.data()?.winner);
             setVictoryType(doc.data()?.victoryType);
         });
