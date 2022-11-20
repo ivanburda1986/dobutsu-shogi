@@ -84,7 +84,7 @@ export const Session = () => {
             <Container fluid
                        className={`d-flex flex-column justify-content-start align-items-center ${styles.Session}`}>
                 {
-                    <Board amIOpponent={amIOpponent} gameData={gameData}
+                    <Board  gameData={gameData}
                     />
                 }
             </Container>

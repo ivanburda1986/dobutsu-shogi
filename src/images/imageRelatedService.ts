@@ -9,8 +9,10 @@ import lion from "./lion.png";
 import rabbit from "./rabbit.png";
 import placeholder from "./placeholder.png";
 
-export const getImgReference = (name: string | null) => {
+import bg from "./bg-clean.png";
+import bgRotated from "./bg-clean-rotated.png";
 
+export const getImgReference = (name: string | null) => {
     if(!name){
         return placeholder;
     }
@@ -26,3 +28,10 @@ export const getImgReference = (name: string | null) => {
     if (lowerCasedName.includes( "lion")) return lion;
     if (lowerCasedName.includes( "rabbit")) return rabbit;
 };
+
+export const getBackground = ({rotated}:{rotated?:boolean}) =>{
+    if(rotated){
+        return bgRotated;
+    }
+    return bg;
+}
