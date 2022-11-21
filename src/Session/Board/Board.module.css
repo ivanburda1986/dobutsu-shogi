@@ -4,6 +4,8 @@
     align-items: center;
     grid-template-areas: "board interface1"
                          "board interface2";
+    grid-area: board;
+    width: 32vw;
 }
 
 .CreatorLayout {
@@ -39,14 +41,11 @@
     grid-area: interface2;
 }
 
-.Board {
-    grid-area: board;
-    width: 32vw;
-}
 
 @media screen and (max-width: 768px ) {
     .Board {
         justify-content: center;
+        width: 48vw;
     }
 
     .CreatorLayout {
@@ -60,10 +59,6 @@
         grid-template-areas: "interface2"
                          "board"
                          "interface1";
-    }
-
-    .Board {
-        width: 48vw;
     }
 
     .Interface1 {
