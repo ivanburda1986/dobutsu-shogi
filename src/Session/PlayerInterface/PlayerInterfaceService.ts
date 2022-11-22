@@ -43,9 +43,7 @@ export const isPlayersTurn = ( creatorInterface: boolean, gameData: DocumentData
 };
 
 export const getInterfaceTurnBasedBorderStyle = (creatorInterface: boolean, gameData: DocumentData | undefined) => {
-    const value1 = isPlayersTurn(creatorInterface,
-        gameData) ? styles.PlayerInterfaceCurrentTurn : styles.PlayerInterfaceNotOnTurn
-    return `${styles.PlayerInterface} ${value1}`
+    return `${styles.PlayerInterface} ${isPlayersTurn(creatorInterface, gameData) ? styles.PlayerInterfaceCurrentTurn : styles.PlayerInterfaceNotOnTurn}`
 }
 
 export const getInterfaceHeaderColour = (creatorInterface:boolean) => {
@@ -55,4 +53,4 @@ export const getInterfaceHeaderColour = (creatorInterface:boolean) => {
 export const getInterfaceRotation = (creatorInterface:boolean) => {
     return `rotate(${creatorInterface ? 0 : 180}deg)`
 }
-export const getInterfaceAvatarPhoto = (creatorInterface: boolean, gameData: DocumentData | undefined) => creatorInterface ? gameData?.creatorPhotoURL : gameData?.opponentPhotoURL;
+export const getInterfaceAvatarImageName = (creatorInterface: boolean, gameData: DocumentData | undefined) => creatorInterface ? gameData?.creatorPhotoURL : gameData?.opponentPhotoURL;

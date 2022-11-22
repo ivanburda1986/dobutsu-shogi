@@ -1,9 +1,9 @@
-export const chickenTurningToHenCoordinates: any = {
+export const chickenTurningToHenCoordinates: Record<string, string[]> = {
     'opponent': ['A4', 'B4', 'C4'],
     'creator': ['A1', 'B1', 'C1']
 };
 
-export const lionConquerFields: any = {
+export const lionConquerFields: Record<string, Record<string,string[]>> = {
     'opponent': {
         A4: ['B4', 'B3', 'A3'],
         B4: ['C4', 'A4', 'A3', 'B3', 'C3'],

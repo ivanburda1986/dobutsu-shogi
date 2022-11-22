@@ -4,6 +4,7 @@ import {Dispatch} from "react";
 import {getSingleUserStats, updateGame, updateUserStats, useUpdateGameInterface} from "../api/firestore";
 import {GameFinishedMessageType} from "./GameFinishedMessage/GameFinishedMessageService";
 
+
 export const isGameDataAvailable = (gameData: DocumentData | undefined, gameId: string | undefined): boolean => {
     if (!!gameData) {
         const {creatorId, opponentId, creatorJoined, opponentJoined} = gameData!;
@@ -119,7 +120,7 @@ export const isTieEvaluation = (gameData: DocumentData | undefined): boolean => 
     return lastRound === lastMinusThreeRound && lastMinusThreeRound === lastMinusFiveRound;
 };
 
-export const evaluateBeingOpponent = (creatorId: string, loggedInUserUserId: string) => {
+export const isThisPlayerOpponent = (creatorId: string, loggedInUserUserId: string) => {
     if (!creatorId || !loggedInUserUserId) {
         return false;
     }

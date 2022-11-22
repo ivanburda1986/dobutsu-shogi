@@ -1,36 +1,14 @@
-import React, {FC, useContext, useEffect, useState} from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import styles from "./Stone.module.css";
 
-import {
-    useUpdateStoneOnTakeOver,
-    useUpdateStonePosition,
-    useEmpowerStone,
-    useHandicapStone,
-    updateGame,
-    updateUserStats,
-    getSingleUserStats,
-    getSingleGameDetails,
-    useHighlightStone,
-    useInvisibleStone
-} from "../../../api/firestore";
-import {
-    amIStoneOwner,
-    canStoneMoveThisWay,
-    getImgReference,
-    getStashedStonePillCount,
-    getStashTargetPosition,
-    isItMyTurn,
-    lionConquerAttemptEvaluation,
-    nextTurnPlayerId,
-    rotateOponentStones,
-    shouldChickenTurnIntoHen,
-    useSetStonePosition
-} from "./StoneService";
-import {AppContextInterface} from "../../../App";
-import {AppContext} from "../../../context/AppContext";
-import {useParams} from "react-router";
-import {DocumentData} from "firebase/firestore";
-import {StoneStashCount} from "./StoneStashCount/StoneStashCount";
+import { getSingleUserStats, updateGame, updateUserStats, useEmpowerStone, useHandicapStone, useHighlightStone, useInvisibleStone, useUpdateStoneOnTakeOver, useUpdateStonePosition } from "../../../api/firestore";
+import { amIStoneOwner, canStoneMoveThisWay, getStashedStonePillCount, getStashTargetPosition, isItMyTurn, lionConquerAttemptEvaluation, nextTurnPlayerId, rotateOponentStones, shouldChickenTurnIntoHen, useSetStonePosition } from "./StoneService";
+import { AppContextInterface } from "../../../App";
+import { AppContext } from "../../../context/AppContext";
+import { useParams } from "react-router";
+import { DocumentData } from "firebase/firestore";
+import { StoneStashCount } from "./StoneStashCount/StoneStashCount";
+import { getImgReference } from "../../../images/imageRelatedService";
 
 export type stoneType = "CHICKEN" | "ELEPHANT" | "GIRAFFE" | "LION" | "HEN";
 

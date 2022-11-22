@@ -3,7 +3,7 @@ import {DocumentData} from "firebase/firestore";
 import {v4 as uuidv4} from "uuid";
 import {Avatar} from "../../Avatar/Avatar";
 import {
-    getInterfaceAvatarPhoto,
+    getInterfaceAvatarImageName,
     getInterfaceHeaderColour,
     getInterfacePlayerName,
     getInterfaceRotation,
@@ -18,7 +18,7 @@ interface PlayerInterfaceProps {
     gameData: DocumentData | undefined;
 }
 
-export const PlayerInterface: FC<PlayerInterfaceInterface> = ({
+export const PlayerInterface: FC<PlayerInterfaceProps> = ({
                                                                   amIOpponent,
                                                                   creatorInterface,
                                                                   gameData
@@ -30,7 +30,7 @@ export const PlayerInterface: FC<PlayerInterfaceInterface> = ({
             <div
                 className={`${getInterfaceHeaderColour(creatorInterface)} d-flex justify-content-between align-items-center rounded ps-1 pe-3 mb-1 p-1`}>
                 <Avatar
-                    name={getInterfaceAvatarPhoto(creatorInterface, gameData)}
+                    name={getInterfaceAvatarImageName(creatorInterface, gameData)}
                     playerInterface/>
                 <span className={`${styles.PlayerName} text-primary`}>{getInterfacePlayerName(creatorInterface, gameData)}</span>
             </div>

@@ -1,6 +1,7 @@
 import React, {FC} from "react";
+import { getImgReference } from "../../../images/imageRelatedService";
 import styles from "./StashField.module.css";
-import {getImgReference} from "./StashFieldService";
+
 
 interface FieldInterface {
     columnLetter: string;

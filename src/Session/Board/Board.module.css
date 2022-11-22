@@ -2,18 +2,20 @@
     font-size: 0.9rem;
     display: grid;
     align-items: center;
-    grid-template-areas: "brett interface1"
-                         "brett interface2";
+    grid-template-areas: "board interface1"
+                         "board interface2";
+    grid-area: board;
+    width: 32vw;
 }
 
 .CreatorLayout {
-    grid-template-areas: "brett interface1"
-                         "brett interface2";
+    grid-template-areas: "board interface1"
+                         "board interface2";
 }
 
 .OpponentLayout {
-    grid-template-areas: "brett interface2"
-                         "brett interface1";
+    grid-template-areas: "board interface2"
+                         "board interface1";
 }
 
 .BoardBg {
@@ -23,47 +25,40 @@
     padding: 1.5rem;
     border-radius: 10px;
     border: 12px solid white;
-    -webkit-box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.4);
-    box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.4);
+    -webkit-box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.4);
 }
 
 .Interface1 {
     margin: 0 auto;
-    grid-area: interface1;
     width: 22vw;
+    grid-area: interface1;
 }
 
 .Interface2 {
     margin: 0 auto;
-    grid-area: interface2;
     width: 22vw;
+    grid-area: interface2;
 }
 
-.Brett {
-    grid-area: brett;
-    width: 32vw;
-}
 
 @media screen and (max-width: 768px ) {
     .Board {
         justify-content: center;
+        width: 48vw;
     }
 
     .CreatorLayout {
         grid-template-areas: "interface1"
-                         "brett"
+                         "board"
                          "interface2";
     }
 
 
     .OpponentLayout {
         grid-template-areas: "interface2"
-                         "brett"
+                         "board"
                          "interface1";
-    }
-
-    .Brett {
-        width: 48vw;
     }
 
     .Interface1 {
@@ -76,7 +71,7 @@
 }
 
 @media screen and (max-width: 576px ) {
-    .Brett {
+    .Board {
         width: 60vw;
     }
 
