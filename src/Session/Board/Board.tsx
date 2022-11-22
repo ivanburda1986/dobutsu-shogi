@@ -13,6 +13,7 @@ import { getBackground } from "../../images/imageRelatedService";
 import { isThisPlayerOpponent } from "../SessionService";
 import { getColumnLetters, getRowNumbers, listenToStonePositionChange } from "./BoardService";
 import styles from "./Board.module.css";
+import {Field} from "./BoardField/Field";
 
 interface BoardInterface {
     gameData: DocumentData | undefined;
@@ -51,37 +52,49 @@ export const Board: FC<BoardInterface> = ({gameData}) => {
                 className={`my-3 my-md-0 ${styles.Board}`}>
                 <div style={{backgroundImage: `url(${amIOpponent ? getBackground({rotated:true}) : getBackground({rotated:false})})`}}
                      className={`${styles.BoardBg}`}>
-                    {getRowNumbers(amIOpponent).map((item) => (
-                        <BoardRow key={uuidv4()} rowNumber={item} columnLetters={getColumnLetters(amIOpponent)}
-                                  amIOpponent={amIOpponent}
-                                  gameData={gameData} stones={stones}
-                        />
-                    ))}
-                    {stones.map((stone) => (
-                        <Stone
-                            amIOpponent={amIOpponent}
-                            key={stone.id}
-                            id={stone.id}
-                            type={stone.type}
-                            originalOwner={stone.originalOwner}
-                            currentOwner={stone.currentOwner}
-                            highlighted={stone.highlighted}
-                            stashed={stone.stashed}
-                            invisible={stone.invisible}
-                            positionLetter={stone.positionLetter}
-                            positionNumber={stone.positionNumber}
-                            rowNumbers={getRowNumbers(amIOpponent)}
-                            columnLetters={getColumnLetters(amIOpponent)}
-                            draggedStone={draggedStone}
-                            lyingStone={lyingStone}
-                            setDraggedStone={setDraggedStone}
-                            setLyingStone={setLyingStone}
-                            canTakeStone={canTakeStone}
-                            setCanTakeStone={setCanTakeStone}
-                            gameData={gameData}
-                            allStones={stones}
-                        />
-                    ))}
+                    {getRowNumbers(amIOpponent).map((rowNumber) => {
+                        return (
+                            getColumnLetters(amIOpponent).map((letter) =>
+                                <Field key={uuidv4()}
+                                       rowNumber={rowNumber}
+                                       columnLetter={letter}
+                                       amIOpponent={amIOpponent}
+                                       gameData={gameData}
+                                       stones={stones}
+                                />)
+
+
+                            // <BoardRow key={uuidv4()} rowNumber={item} columnLetters={getColumnLetters(amIOpponent)}
+                            //           amIOpponent={amIOpponent}
+                            //           gameData={gameData} stones={stones}
+                            // />
+                        );
+                    })}
+                    {/*{stones.map((stone) => (*/}
+                    {/*    <Stone*/}
+                    {/*        amIOpponent={amIOpponent}*/}
+                    {/*        key={stone.id}*/}
+                    {/*        id={stone.id}*/}
+                    {/*        type={stone.type}*/}
+                    {/*        originalOwner={stone.originalOwner}*/}
+                    {/*        currentOwner={stone.currentOwner}*/}
+                    {/*        highlighted={stone.highlighted}*/}
+                    {/*        stashed={stone.stashed}*/}
+                    {/*        invisible={stone.invisible}*/}
+                    {/*        positionLetter={stone.positionLetter}*/}
+                    {/*        positionNumber={stone.positionNumber}*/}
+                    {/*        rowNumbers={getRowNumbers(amIOpponent)}*/}
+                    {/*        columnLetters={getColumnLetters(amIOpponent)}*/}
+                    {/*        draggedStone={draggedStone}*/}
+                    {/*        lyingStone={lyingStone}*/}
+                    {/*        setDraggedStone={setDraggedStone}*/}
+                    {/*        setLyingStone={setLyingStone}*/}
+                    {/*        canTakeStone={canTakeStone}*/}
+                    {/*        setCanTakeStone={setCanTakeStone}*/}
+                    {/*        gameData={gameData}*/}
+                    {/*        allStones={stones}*/}
+                    {/*    />*/}
+                    {/*))}*/}
                 </div>
             </div>
 

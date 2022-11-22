@@ -16,13 +16,6 @@ interface BoardRowInterface {
 
 export const BoardRow: FC<BoardRowInterface> = ({rowNumber, columnLetters, amIOpponent, gameData, stones}) => {
     return <div className={`${styles.BoardRow}`}>
-        {columnLetters.map((letter) =>
-            <Field key={uuidv4()}
-                   rowNumber={rowNumber}
-                   columnLetter={letter}
-                   amIOpponent={amIOpponent}
-                   gameData={gameData}
-                   stones={stones}
-            />)}
+
     </div>;
 };
