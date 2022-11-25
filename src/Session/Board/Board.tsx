@@ -70,31 +70,31 @@ export const Board: FC<BoardInterface> = ({gameData}) => {
                             // />
                         );
                     })}
-                    {/*{stones.map((stone) => (*/}
-                    {/*    <Stone*/}
-                    {/*        amIOpponent={amIOpponent}*/}
-                    {/*        key={stone.id}*/}
-                    {/*        id={stone.id}*/}
-                    {/*        type={stone.type}*/}
-                    {/*        originalOwner={stone.originalOwner}*/}
-                    {/*        currentOwner={stone.currentOwner}*/}
-                    {/*        highlighted={stone.highlighted}*/}
-                    {/*        stashed={stone.stashed}*/}
-                    {/*        invisible={stone.invisible}*/}
-                    {/*        positionLetter={stone.positionLetter}*/}
-                    {/*        positionNumber={stone.positionNumber}*/}
-                    {/*        rowNumbers={getRowNumbers(amIOpponent)}*/}
-                    {/*        columnLetters={getColumnLetters(amIOpponent)}*/}
-                    {/*        draggedStone={draggedStone}*/}
-                    {/*        lyingStone={lyingStone}*/}
-                    {/*        setDraggedStone={setDraggedStone}*/}
-                    {/*        setLyingStone={setLyingStone}*/}
-                    {/*        canTakeStone={canTakeStone}*/}
-                    {/*        setCanTakeStone={setCanTakeStone}*/}
-                    {/*        gameData={gameData}*/}
-                    {/*        allStones={stones}*/}
-                    {/*    />*/}
-                    {/*))}*/}
+                    {stones.map((stone) => (
+                        <Stone
+                            amIOpponent={amIOpponent}
+                            key={stone.id}
+                            id={stone.id}
+                            type={stone.type}
+                            originalOwner={stone.originalOwner}
+                            currentOwner={stone.currentOwner}
+                            highlighted={stone.highlighted}
+                            stashed={stone.stashed}
+                            invisible={stone.invisible}
+                            positionLetter={stone.positionLetter}
+                            positionNumber={stone.positionNumber}
+                            rowNumbers={getRowNumbers(amIOpponent)}
+                            columnLetters={getColumnLetters(amIOpponent)}
+                            draggedStone={draggedStone}
+                            lyingStone={lyingStone}
+                            setDraggedStone={setDraggedStone}
+                            setLyingStone={setLyingStone}
+                            canTakeStone={canTakeStone}
+                            setCanTakeStone={setCanTakeStone}
+                            gameData={gameData}
+                            allStones={stones}
+                        />
+                    ))}
                 </div>
             </div>
 

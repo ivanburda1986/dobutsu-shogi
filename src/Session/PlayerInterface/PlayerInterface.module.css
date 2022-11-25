@@ -5,6 +5,8 @@
     -webkit-box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.4);
     box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.4);
     width: 28vw;
+    max-width: 440px;
+    max-height: 180px;
     margin: 0 auto;
 }
 
