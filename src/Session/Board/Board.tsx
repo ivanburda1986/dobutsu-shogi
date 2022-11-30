@@ -1,17 +1,16 @@
-import { FC, useContext, useEffect, useState } from "react";
-import { useParams } from "react-router";
-import { Container } from "react-bootstrap";
-import { DocumentData } from "firebase/firestore";
-import { v4 as uuidv4 } from "uuid";
+import {FC, useContext, useEffect, useState} from "react";
+import {useParams} from "react-router";
+import {Container} from "react-bootstrap";
+import {DocumentData} from "firebase/firestore";
+import {v4 as uuidv4} from "uuid";
 
-import { AppContextInterface } from "../../App";
-import { AppContext } from "../../context/AppContext";
-import { BoardRow } from "./BoardRow/BoardRow";
-import { PlayerInterface } from "../PlayerInterface/PlayerInterface";
-import { Stone, StoneInterface } from "./Stones/Stone";
-import { getBackground } from "../../images/imageRelatedService";
-import { isThisPlayerOpponent } from "../SessionService";
-import { getColumnLetters, getRowNumbers, listenToStonePositionChange } from "./BoardService";
+import {AppContextInterface} from "../../App";
+import {AppContext} from "../../context/AppContext";
+import {PlayerInterface} from "../PlayerInterface/PlayerInterface";
+import {Stone, StoneInterface} from "./Stones/Stone";
+import {getBackground} from "../../images/imageRelatedService";
+import {isThisPlayerOpponent} from "../SessionService";
+import {getColumnLetters, getRowNumbers, listenToStonePositionChange} from "./BoardService";
 import styles from "./Board.module.css";
 import {Field} from "./BoardField/Field";
 
@@ -62,12 +61,6 @@ export const Board: FC<BoardInterface> = ({gameData}) => {
                                        gameData={gameData}
                                        stones={stones}
                                 />)
-
-
-                            // <BoardRow key={uuidv4()} rowNumber={item} columnLetters={getColumnLetters(amIOpponent)}
-                            //           amIOpponent={amIOpponent}
-                            //           gameData={gameData} stones={stones}
-                            // />
                         );
                     })}
                     {stones.map((stone) => (
