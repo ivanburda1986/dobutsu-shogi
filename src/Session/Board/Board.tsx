@@ -57,7 +57,6 @@ export const Board: FC<BoardInterface> = ({gameData}) => {
                                 <Field key={uuidv4()}
                                        rowNumber={rowNumber}
                                        columnLetter={letter}
-                                       amIOpponent={amIOpponent}
                                        gameData={gameData}
                                        stones={stones}
                                 />)
@@ -74,8 +73,8 @@ export const Board: FC<BoardInterface> = ({gameData}) => {
                             highlighted={stone.highlighted}
                             stashed={stone.stashed}
                             invisible={stone.invisible}
-                            positionLetter={stone.positionLetter}
-                            positionNumber={stone.positionNumber}
+                            positionColumnLetter={stone.positionColumnLetter}
+                            positionRowNumber={stone.positionRowNumber}
                             rowNumbers={getRowNumbers(amIOpponent)}
                             columnLetters={getColumnLetters(amIOpponent)}
                             draggedStone={draggedStone}

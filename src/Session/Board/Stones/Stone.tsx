@@ -1,14 +1,35 @@
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, {FC, useContext, useEffect, useState} from "react";
 import styles from "./Stone.module.css";
 
-import { getSingleUserStats, updateGame, updateUserStats, useEmpowerStone, useHandicapStone, useHighlightStone, useInvisibleStone, useUpdateStoneOnTakeOver, useUpdateStonePosition } from "../../../api/firestore";
-import { amIStoneOwner, canStoneMoveThisWay, getStashedStonePillCount, getStashTargetPosition, isItMyTurn, lionConquerAttemptEvaluation, nextTurnPlayerId, rotateOponentStones, shouldChickenTurnIntoHen, useSetStonePosition } from "./StoneService";
-import { AppContextInterface } from "../../../App";
-import { AppContext } from "../../../context/AppContext";
-import { useParams } from "react-router";
-import { DocumentData } from "firebase/firestore";
-import { StoneStashCount } from "./StoneStashCount/StoneStashCount";
-import { getImgReference } from "../../../images/imageRelatedService";
+import {
+    getSingleUserStats,
+    updateGame,
+    updateStonePosition,
+    updateUserStats,
+    empowerStone,
+    useHandicapStone,
+    highlightStone,
+    useInvisibleStone,
+    useUpdateStoneOnTakeOver
+} from "../../../api/firestore";
+import {
+    amIStoneOwner,
+    canStoneMoveThisWay,
+    getStashedStonePillCount,
+    getStashTargetPosition,
+    isItMyTurn,
+    lionConquerAttemptEvaluation,
+    nextTurnPlayerId,
+    rotateOponentStones,
+    shouldChickenTurnIntoHen,
+    useSetStonePosition
+} from "./StoneService";
+import {AppContextInterface} from "../../../App";
+import {AppContext} from "../../../context/AppContext";
+import {useParams} from "react-router";
+import {DocumentData} from "firebase/firestore";
+import {StoneStashCount} from "./StoneStashCount/StoneStashCount";
+import {getImgReference} from "../../../images/imageRelatedService";
 
 export type stoneType = "CHICKEN" | "ELEPHANT" | "GIRAFFE" | "LION" | "HEN";
 
@@ -21,8 +42,8 @@ export interface StoneInterface {
     highlighted: boolean;
     stashed: boolean;
     invisible: boolean;
-    positionLetter: string;
-    positionNumber: number;
+    positionColumnLetter: string;
+    positionRowNumber: number;
     amIOpponent?: boolean;
     rowNumbers?: number[];
     columnLetters?: string[];
@@ -44,8 +65,8 @@ export const Stone: FC<StoneInterface> = ({
                                               currentOwner,
                                               highlighted,
                                               stashed,
-                                              positionLetter,
-                                              positionNumber,
+                                              positionColumnLetter,
+                                              positionRowNumber,
                                               rowNumbers,
                                               columnLetters,
                                               draggedStone,
@@ -70,11 +91,9 @@ export const Stone: FC<StoneInterface> = ({
     const [scroll, setScrollUpdate] = useState(0);
 
     const setStonePosition = useSetStonePosition;
-    const updateStonePosition = useUpdateStonePosition;
     const updateStoneOnTakeOver = useUpdateStoneOnTakeOver;
-    const highlightStone = useHighlightStone;
     const makeStoneInvisible = useInvisibleStone;
-    const updateStoneType = useEmpowerStone;
+    const updateStoneType = empowerStone;
     const stashedPillCount = getStashedStonePillCount({
         allStones: allStones ?? [],
         currentOwnerId: currentOwner,
@@ -107,15 +126,15 @@ export const Stone: FC<StoneInterface> = ({
     useEffect(() => {
         setStonePosition({
             stoneId: id,
-            targetPositionLetter: positionLetter,
-            targetPositionNumber: positionNumber,
+            targetPositionColumnLetter: positionColumnLetter,
+            targetPositionRowNumber: positionRowNumber,
             positionX,
             positionY,
             setPositionX,
             setPositionY
         });
 
-    }, [id, positionLetter, positionNumber, positionX, positionY, screenHeight, screenWidth, setStonePosition]);
+    }, [id, positionColumnLetter, positionRowNumber, positionX, positionY, screenHeight, screenWidth, setStonePosition]);
 
 
     (function refreshPositions() {
@@ -126,8 +145,8 @@ export const Stone: FC<StoneInterface> = ({
     useEffect(() => {
         setStonePosition({
             stoneId: id,
-            targetPositionLetter: positionLetter,
-            targetPositionNumber: positionNumber,
+            targetPositionColumnLetter: positionColumnLetter,
+            targetPositionRowNumber: positionRowNumber,
             positionX,
             positionY,
             setPositionX,
@@ -138,14 +157,14 @@ export const Stone: FC<StoneInterface> = ({
             loggedInUserUserId: appContext.loggedInUserUserId,
             setRotateDegrees
         });
-    }, [id, positionLetter, positionNumber, positionX, positionY, amIOpponent, rowNumbers, columnLetters]);
+    }, [id, positionColumnLetter, positionRowNumber, positionX, positionY, amIOpponent, rowNumbers, columnLetters]);
 
 
     const onDragStartHandler = (event: React.DragEvent<HTMLDivElement>) => {
         event.dataTransfer.setData("placedStoneId", id);
         event.dataTransfer.setData("placedStoneType", type);
-        event.dataTransfer.setData("movedFromLetter", positionLetter);
-        event.dataTransfer.setData("movedFromNumber", String(positionNumber));
+        event.dataTransfer.setData("movedFromColumnLetter", positionColumnLetter);
+        event.dataTransfer.setData("movedFromRowNumber", String(positionRowNumber));
         setDraggedStone && setDraggedStone({
             amIOpponent,
             id,
@@ -153,8 +172,8 @@ export const Stone: FC<StoneInterface> = ({
             originalOwner,
             currentOwner,
             stashed,
-            positionLetter,
-            positionNumber,
+            positionColumnLetter,
+            positionRowNumber,
             rowNumbers,
             columnLetters,
         });
@@ -174,8 +193,8 @@ export const Stone: FC<StoneInterface> = ({
             originalOwner,
             currentOwner,
             stashed,
-            positionLetter,
-            positionNumber,
+            positionColumnLetter,
+            positionRowNumber,
             rowNumbers,
             columnLetters,
         });
@@ -212,10 +231,10 @@ export const Stone: FC<StoneInterface> = ({
         // Can the dragged stone move to the coordinates of the lying stone?
         if (!canStoneMoveThisWay({
             stoneType: draggedStone.type,
-            movedFromLetter: draggedStone.positionLetter,
-            movedFromNumber: draggedStone.positionNumber,
-            movingToLetter: lyingStone.positionLetter,
-            movingToNumber: lyingStone.positionNumber,
+            movedFromColumnLetter: draggedStone.positionColumnLetter,
+            movedFromRowNumber: draggedStone.positionRowNumber,
+            movingToLetter: lyingStone.positionColumnLetter,
+            movingToNumber: lyingStone.positionRowNumber,
             amIOpponent: !!draggedStone.amIOpponent,
             stashed: draggedStone.stashed
         })) {
@@ -230,7 +249,6 @@ export const Stone: FC<StoneInterface> = ({
     };
 
     const onStoneDropHandler = (event: React.DragEvent<HTMLDivElement>) => {
-        const empowerStone = useEmpowerStone;
         const handicapStone = useHandicapStone;
         const updateStats = updateUserStats;
 
@@ -253,8 +271,8 @@ export const Stone: FC<StoneInterface> = ({
         if (canTakeStone) {
             // Prepare data for stone move tracking
             let updatedMoves = gameData?.moves;
-            let draggedStoneCoordinates = `${draggedStone.positionLetter}${draggedStone.positionNumber}`;
-            let targetStoneCoordinates = `${lyingStone.positionLetter}${lyingStone.positionNumber}`;
+            let draggedStoneCoordinates = `${draggedStone.positionColumnLetter}${draggedStone.positionRowNumber}`;
+            let targetStoneCoordinates = `${lyingStone.positionColumnLetter}${lyingStone.positionRowNumber}`;
             updatedMoves.push({
                 moveNumber: updatedMoves.length > 0 ? updatedMoves[updatedMoves.length - 1].moveNumber + 1 : 0,
                 id: draggedStone.id,
@@ -289,8 +307,8 @@ export const Stone: FC<StoneInterface> = ({
                 updateStonePosition({
                     gameId: gameId!,
                     stoneId: draggedStone.id,
-                    positionLetter: lyingStone.positionLetter,
-                    positionNumber: lyingStone.positionNumber,
+                    positionColumnLetter: lyingStone.positionColumnLetter,
+                    positionRowNumber: lyingStone.positionRowNumber,
                 });
                 //Highlight the taking stone to make it clear it has taken the opponents lion
                 highlightStone({gameId: gameId!, stoneId: id, highlighted: true});
@@ -314,8 +332,8 @@ export const Stone: FC<StoneInterface> = ({
             const lionConquerAttempt = lionConquerAttemptEvaluation({
                 stoneData: draggedStone,
                 amIOpponent: amIOpponent!,
-                movingToLetter: lyingStone.positionLetter,
-                movingToNumber: lyingStone.positionNumber,
+                movingToLetter: lyingStone.positionColumnLetter,
+                movingToNumber: lyingStone.positionRowNumber,
                 stones: allStones!
             });
             if (lionConquerAttempt.success !== undefined) {
@@ -380,21 +398,21 @@ export const Stone: FC<StoneInterface> = ({
                     id: lyingStone.id,
                     currentOwner: draggedStone.currentOwner,
                     stashed: true,
-                    positionLetter: getStashTargetPosition({
+                    positionColumnLetter: getStashTargetPosition({
                         type: lyingStone.type,
                         amIOpponent: amIOpponent!
                     }),
-                    positionNumber: 1
+                    positionRowNumber: 1
                 }
             });
 
             // Prepare data for stone move tracking
             updatedMoves = gameData?.moves;
-            draggedStoneCoordinates = `${lyingStone.positionLetter}${lyingStone.positionNumber}`;
+            draggedStoneCoordinates = `${lyingStone.positionColumnLetter}${lyingStone.positionRowNumber}`;
             targetStoneCoordinates = `${getStashTargetPosition({
                 type: lyingStone.type,
                 amIOpponent: amIOpponent!
-            })}${lyingStone.positionNumber}`;
+            })}${lyingStone.positionRowNumber}`;
             updatedMoves.push({
                 moveNumber: updatedMoves.length > 0 ? updatedMoves[updatedMoves.length - 1].moveNumber + 1 : 0,
                 id: lyingStone.id,
@@ -420,8 +438,8 @@ export const Stone: FC<StoneInterface> = ({
                     amIOpponent: amIOpponent!,
                     type: draggedStone!.type,
                     stashed: draggedStone!.stashed,
-                    movingToLetter: lyingStone.positionLetter,
-                    movingToNumber: lyingStone.positionNumber
+                    movingToLetter: lyingStone.positionColumnLetter,
+                    movingToNumber: lyingStone.positionRowNumber
                 });
                 // console.log('turnChickenToHen', turnChickenToHen);
                 if (turnChickenToHen) {
@@ -434,8 +452,8 @@ export const Stone: FC<StoneInterface> = ({
             updateStonePosition({
                 gameId: gameId!,
                 stoneId: draggedStone.id,
-                positionLetter: lyingStone.positionLetter,
-                positionNumber: lyingStone.positionNumber,
+                positionColumnLetter: lyingStone.positionColumnLetter,
+                positionRowNumber: lyingStone.positionRowNumber,
             });
         }
         // console.log('Cannot drop');
@@ -461,8 +479,8 @@ export const Stone: FC<StoneInterface> = ({
             className={`${styles.Stone} ${isHighlighted && styles.Highlighted} ${isInvisible && styles.Invisible} noselect`}
             // onClick={() => setStonePosition({
             //     stoneId: id,
-            //     targetPositionLetter: positionLetter,
-            //     targetPositionNumber: positionNumber,
+            //     targetPositionColumnLetter: positionColumnLetter,
+            //     targetPositionRowNumber: positionRowNumber,
             //     positionX,
             //     positionY,
             //     setPositionX,

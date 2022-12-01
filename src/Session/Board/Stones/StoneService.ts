@@ -76,8 +76,8 @@ export const nextTurnPlayerId = ({myId, gameData}: nextTurnPlayerIdInterface): s
 
 interface canStoneMoveThisWayInterface {
     stoneType: stoneType;
-    movedFromLetter: string;
-    movedFromNumber: number;
+    movedFromColumnLetter: string;
+    movedFromRowNumber: number;
     movingToLetter: string;
     movingToNumber: number;
     amIOpponent: boolean;
@@ -86,8 +86,8 @@ interface canStoneMoveThisWayInterface {
 
 export const canStoneMoveThisWay = ({
                                         stoneType,
-                                        movedFromLetter,
-                                        movedFromNumber,
+                                        movedFromColumnLetter,
+                                        movedFromRowNumber,
                                         movingToLetter,
                                         movingToNumber,
                                         amIOpponent,
@@ -98,7 +98,7 @@ export const canStoneMoveThisWay = ({
         if (stashed) {
             return true;
         }
-        const originatingCoordinate = `${movedFromLetter}${movedFromNumber}`;
+        const originatingCoordinate = `${movedFromColumnLetter}${movedFromRowNumber}`;
         const targetCoordinate = `${movingToLetter}${movingToNumber}`;
         // console.log('amIOpponent', amIOpponent);
         const allowedLetters = stoneMovements.CHICKEN[amIOpponent ? 'opponent' : 'creator'][originatingCoordinate];
@@ -109,7 +109,7 @@ export const canStoneMoveThisWay = ({
         if (stashed) {
             return true;
         }
-        const originatingCoordinate = `${movedFromLetter}${movedFromNumber}`;
+        const originatingCoordinate = `${movedFromColumnLetter}${movedFromRowNumber}`;
         const targetCoordinate = `${movingToLetter}${movingToNumber}`;
         const allowedLetters = stoneMovements.GIRAFFE[originatingCoordinate];
         // console.log(allowedLetters.includes(targetCoordinate));
@@ -119,14 +119,14 @@ export const canStoneMoveThisWay = ({
         if (stashed) {
             return true;
         }
-        const originatingCoordinate = `${movedFromLetter}${movedFromNumber}`;
+        const originatingCoordinate = `${movedFromColumnLetter}${movedFromRowNumber}`;
         const targetCoordinate = `${movingToLetter}${movingToNumber}`;
         const allowedLetters = stoneMovements.ELEPHANT[originatingCoordinate];
         // console.log(allowedLetters.includes(targetCoordinate));
         return allowedLetters.includes(targetCoordinate);
     }
     if (stoneType === "LION") {
-        const originatingCoordinate = `${movedFromLetter}${movedFromNumber}`;
+        const originatingCoordinate = `${movedFromColumnLetter}${movedFromRowNumber}`;
         const targetCoordinate = `${movingToLetter}${movingToNumber}`;
         const allowedLetters = stoneMovements.LION[originatingCoordinate];
         // console.log(allowedLetters.includes(targetCoordinate));
@@ -137,7 +137,7 @@ export const canStoneMoveThisWay = ({
         if (stashed) {
             return true;
         }
-        const originatingCoordinate = `${movedFromLetter}${movedFromNumber}`;
+        const originatingCoordinate = `${movedFromColumnLetter}${movedFromRowNumber}`;
         const targetCoordinate = `${movingToLetter}${movingToNumber}`;
         const allowedLetters = stoneMovements.HEN[amIOpponent ? 'opponent' : 'creator'][originatingCoordinate];
         // console.log(allowedLetters.includes(targetCoordinate));
@@ -158,36 +158,36 @@ export const amIStoneOwner = ({currentOwner, loggedInUserUserId}: amIStoneOwnerI
 
 interface useSetStonePositionInterface {
     stoneId: string;
-    targetPositionLetter: string | columnLetterType;
-    targetPositionNumber: number;
+    targetPositionColumnLetter: string | columnLetterType;
+    targetPositionRowNumber: number;
     positionX: number;
     setPositionX: (position: number) => void;
     positionY: number;
     setPositionY: (position: number) => void;
 }
 
-const translateHenToChickenStashPositioning = (targetPositionLetter: columnLetterType | string) => {
-    if (targetPositionLetter === "OPPONENT-HEN") {
+const translateHenToChickenStashPositioning = (targetPositionColumnLetter: columnLetterType | string) => {
+    if (targetPositionColumnLetter === "OPPONENT-HEN") {
         return "OPPONENT-CHICKEN";
     }
-    if (targetPositionLetter === "CREATOR-HEN") {
+    if (targetPositionColumnLetter === "CREATOR-HEN") {
         return "CREATOR-CHICKEN";
     }
-    return targetPositionLetter;
+    return targetPositionColumnLetter;
 };
 
 export const useSetStonePosition = ({
                                         stoneId,
-                                        targetPositionLetter,
-                                        targetPositionNumber,
+                                        targetPositionColumnLetter,
+                                        targetPositionRowNumber,
                                         positionX,
                                         setPositionX,
                                         positionY,
                                         setPositionY
                                     }: useSetStonePositionInterface) => {
-    // console.log('targetPositionLetter', targetPositionLetter);
-    // console.log('targetPositionNumber', targetPositionNumber);
-    let targetPosition = document.querySelector(`[data-letter=${translateHenToChickenStashPositioning(targetPositionLetter)}][data-number="${targetPositionNumber}"]`);
+    // console.log('targetPositionColumnLetter', targetPositionColumnLetter);
+    // console.log('targetPositionRowNumber', targetPositionRowNumber);
+    let targetPosition = document.querySelector(`[data-column-letter=${translateHenToChickenStashPositioning(targetPositionColumnLetter)}][data-row-number="${targetPositionRowNumber}"]`);
     let stone = document.getElementById(stoneId)?.getBoundingClientRect();
 
     //console.log('targetPosition', targetPosition);
@@ -278,13 +278,13 @@ export const lionConquerAttemptEvaluation = ({
             let opponentStones = stones.filter((stone) => stone.currentOwner !== stoneData!.currentOwner && !stone.stashed);
             // console.log('opponentStones', opponentStones);
             // console.log('nearby fields of lion target position', lionConquerFields.creator[targetCoordinate]);
-            let nearbyOpponentStones = opponentStones.filter((stone) => lionConquerFields.creator[targetCoordinate].includes(`${stone.positionLetter}${stone.positionNumber}`));
+            let nearbyOpponentStones = opponentStones.filter((stone) => lionConquerFields.creator[targetCoordinate].includes(`${stone.positionColumnLetter}${stone.positionRowNumber}`));
             // console.log('nearbyOpponentStones', nearbyOpponentStones);
             let endangeringOpponentStones = nearbyOpponentStones.filter((stone) => {
                 if (stone.type === "CHICKEN" || stone.type === "HEN") {
-                    return stoneMovements[stone.type].opponent[`${stone.positionLetter}${stone.positionNumber}`].includes(targetCoordinate);
+                    return stoneMovements[stone.type].opponent[`${stone.positionColumnLetter}${stone.positionRowNumber}`].includes(targetCoordinate);
                 } else {
-                    return stoneMovements[stone.type][`${stone.positionLetter}${stone.positionNumber}`].includes(targetCoordinate);
+                    return stoneMovements[stone.type][`${stone.positionColumnLetter}${stone.positionRowNumber}`].includes(targetCoordinate);
                 }
             });
             // console.log('endangeringOpponentStones', endangeringOpponentStones);
@@ -302,13 +302,13 @@ export const lionConquerAttemptEvaluation = ({
             let opponentStones = stones.filter((stone) => stone.currentOwner !== stoneData!.currentOwner && !stone.stashed);
             // console.log('opponentStones', opponentStones);
             // console.log('nearby fields of lion target position', lionConquerFields.opponent[targetCoordinate]);
-            let nearbyOpponentStones = opponentStones.filter((stone) => lionConquerFields.opponent[targetCoordinate].includes(`${stone.positionLetter}${stone.positionNumber}`));
+            let nearbyOpponentStones = opponentStones.filter((stone) => lionConquerFields.opponent[targetCoordinate].includes(`${stone.positionColumnLetter}${stone.positionRowNumber}`));
             // console.log('nearbyOpponentStones', nearbyOpponentStones);
             let endangeringOpponentStones = nearbyOpponentStones.filter((stone) => {
                 if (stone.type === "CHICKEN" || stone.type === "HEN") {
-                    return stoneMovements[stone.type].creator[`${stone.positionLetter}${stone.positionNumber}`].includes(targetCoordinate);
+                    return stoneMovements[stone.type].creator[`${stone.positionColumnLetter}${stone.positionRowNumber}`].includes(targetCoordinate);
                 } else {
-                    return stoneMovements[stone.type][`${stone.positionLetter}${stone.positionNumber}`].includes(targetCoordinate);
+                    return stoneMovements[stone.type][`${stone.positionColumnLetter}${stone.positionRowNumber}`].includes(targetCoordinate);
                 }
             });
             // console.log('endangeringOpponentStones', endangeringOpponentStones);

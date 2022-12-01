@@ -15,10 +15,11 @@ export const StashField: FC<FieldInterface> = ({ columnLetter, amIOpponent}) => 
             backgroundPosition: 'center',
             backgroundSize: 'cover',
             opacity: '0.1'
-        }}>
+        }}
+             >
             <div
-                data-number="1"
-                data-letter={columnLetter}
+                data-row-number="1"
+                data-column-letter={columnLetter}
                 className={`${styles.Field} noselect`}
             />
         </div>

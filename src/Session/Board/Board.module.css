@@ -5,7 +5,7 @@
     grid-template-areas: "board interface1"
                          "board interface2";
     grid-area: board;
-    width: 30vw;
+    width: 35vw;
     max-width:500px;
     max-height:635px;
 }
@@ -25,7 +25,6 @@
     grid-template-rows: repeat(3, 1fr);
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 0;
-    /*width:calc(45vw + 4.5rem);*/
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;

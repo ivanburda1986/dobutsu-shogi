@@ -80,19 +80,19 @@ export type playerType = "CREATOR" | "OPPONENT";
 interface useUpdateStonePositionInterface {
     gameId: string;
     stoneId: string;
-    positionLetter: string;
-    positionNumber: number;
+    positionColumnLetter: string;
+    positionRowNumber: number;
 }
 
-export const useUpdateStonePosition = ({
+export const updateStonePosition = ({
                                            gameId,
                                            stoneId,
-                                           positionLetter,
-                                           positionNumber,
+                                           positionColumnLetter,
+                                           positionRowNumber,
                                        }: useUpdateStonePositionInterface) => {
     updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {
-        positionLetter: positionLetter,
-        positionNumber: positionNumber,
+        positionColumnLetter: positionColumnLetter,
+        positionRowNumber: positionRowNumber,
         stashed: false
     })
         .then(() => console.log("Stone position updated on server"))
@@ -119,7 +119,7 @@ interface useUpdateStoneInvisibilityInterface {
     invisible: boolean;
 }
 
-export const useEmpowerStone = ({gameId, stoneId, type}: useUpdateStoneTypeInterface) => {
+export const empowerStone = ({gameId, stoneId, type}: useUpdateStoneTypeInterface) => {
     updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {type: type})
         .then(() => console.log("Stone empower has been updated on the server"))
         .catch((err) => {
@@ -135,7 +135,7 @@ export const useHandicapStone = ({gameId, stoneId, type}: useUpdateStoneTypeInte
         });
 };
 
-export const useHighlightStone = ({gameId, stoneId, highlighted}: useUpdateStoneHighlightedInterface) => {
+export const highlightStone = ({gameId, stoneId, highlighted}: useUpdateStoneHighlightedInterface) => {
     updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {highlighted: highlighted})
         .then(() => console.log("Stone highlighting has been updated"))
         .catch((err) => {
@@ -155,7 +155,7 @@ export const useInvisibleStone = ({gameId, stoneId, invisible}: useUpdateStoneIn
 export const useUpdateStoneOnTakeOver = ({
                                              gameId,
                                              stone
-                                         }: { gameId: string, stone: Pick<StoneInterface, 'id' | 'currentOwner' | 'stashed' | 'positionLetter' | 'positionNumber'> }) => {
+                                         }: { gameId: string, stone: Pick<StoneInterface, 'id' | 'currentOwner' | 'stashed' | 'positionColumnLetter' | 'positionRowNumber'> }) => {
     updateDoc(doc(db, `games/${gameId}/stones`, stone.id), {...stone})
         .then(() => console.log("Taken stone updated on server"))
         .catch((err) => {
