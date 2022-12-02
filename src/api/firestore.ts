@@ -85,11 +85,11 @@ interface useUpdateStonePositionInterface {
 }
 
 export const updateStonePosition = ({
-                                           gameId,
-                                           stoneId,
-                                           positionColumnLetter,
-                                           positionRowNumber,
-                                       }: useUpdateStonePositionInterface) => {
+                                        gameId,
+                                        stoneId,
+                                        positionColumnLetter,
+                                        positionRowNumber,
+                                    }: useUpdateStonePositionInterface) => {
     updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {
         positionColumnLetter: positionColumnLetter,
         positionRowNumber: positionRowNumber,
@@ -318,13 +318,14 @@ export interface useUpdateGameInterface {
     updatedDetails: Partial<Game>;
 }
 
-export const updateGame = async({id, updatedDetails}: useUpdateGameInterface) => {
+export const updateGame = async ({id, updatedDetails}: useUpdateGameInterface) => {
     const updateGameRef = doc(db, "games", id);
     await updateDoc(updateGameRef, {...updatedDetails})
         .then(() => console.log("Game updated"))
         .catch((err) => {
-            return(err.message);
+            return (err.message);
         });
+
 };
 
 //Get one game details
@@ -377,7 +378,7 @@ export const useLoginUser = ({email, password, loginUserCb}: LoginUserInterface)
         })
         .catch((err) => {
             loginUserCb.forwardError(err.message);
-            return(err.message);
+            return (err.message);
         });
 };
 

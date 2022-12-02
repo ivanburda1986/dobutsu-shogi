@@ -1,6 +1,5 @@
 import {
   chickenTurningToHenCoordinates,
-  lionConquerFields,
   stoneMovements,
 } from "./StoneMovements";
 import { StoneInterface, stoneType } from "./Stone";
@@ -37,10 +36,6 @@ export const shouldChickenTurnIntoHen = ({
   movingToLetter,
   movingToNumber,
 }: shouldChickenTurnIntoHenInterface) => {
-  // console.log('amIOpponent', amIOpponent);
-  // console.log('stashed', stashed);
-  // console.log('movingToLetter', movingToLetter);
-  // console.log('movingToNumber', movingToNumber);
   if (type !== "CHICKEN") {
     return false;
   }
@@ -282,137 +277,4 @@ export const getStashedStonePillCount = ({
     .filter((stone) => stone.currentOwner === currentOwnerId)
     .filter((stashedStone) => stashedStone.type === type);
   return playerStashedCountOfTheStone.length;
-};
-
-// Lion conquer attempt evaluation
-interface LionConquerAttemptEvaluationInputInterface {
-  stoneData: StoneInterface;
-  amIOpponent: boolean;
-  movingToLetter: string;
-  movingToNumber: number;
-  stones: StoneInterface[];
-}
-
-export interface LionConquerAttemptEvaluationOutputInterface {
-  conqueredPlayerId: string | undefined;
-  conqueringPlayerId: string | undefined;
-  endangeringOpponentStones: string[];
-  success: boolean | undefined;
-}
-
-function isCreatorsLionConquering(
-  stoneData: StoneInterface,
-  amIOpponent: boolean,
-  targetCoordinate: string
-) {
-  return (
-    stoneData!.type === "LION" &&
-    !amIOpponent &&
-    targetCoordinate in lionConquerFields.creator
-  );
-}
-
-function isOpponentsLionConquering(
-  stoneData: StoneInterface,
-  amIOpponent: boolean,
-  targetCoordinate: string
-) {
-  return (
-    stoneData!.type === "LION" &&
-    amIOpponent &&
-    targetCoordinate in lionConquerFields.opponent
-  );
-}
-
-function getTheOtherPlayerStones(
-  stones: StoneInterface[],
-  stoneData: StoneInterface
-) {
-  return stones.filter(
-    (stone) => stone.currentOwner !== stoneData!.currentOwner && !stone.stashed
-  );
-}
-
-export const lionConquerAttemptEvaluation = ({
-  stoneData,
-  amIOpponent,
-  movingToLetter,
-  movingToNumber,
-  stones,
-}: LionConquerAttemptEvaluationInputInterface): LionConquerAttemptEvaluationOutputInterface => {
-  const targetCoordinate = `${movingToLetter}${movingToNumber}`;
-
-  if (isCreatorsLionConquering(stoneData, amIOpponent, targetCoordinate)) {
-    let theOtherPlayerStones = getTheOtherPlayerStones(stones, stoneData);
-    let nearbyOtherPlayerStones = theOtherPlayerStones.filter((stone) =>
-      lionConquerFields.creator[targetCoordinate].includes(
-        `${stone.positionColumnLetter}${stone.positionRowNumber}`
-      )
-    );
-    let endangeringOtherPlayerStones = nearbyOtherPlayerStones.filter(
-      (stone) => {
-        if (stone.type === "CHICKEN" || stone.type === "HEN") {
-          return stoneMovements[stone.type].opponent[
-            `${stone.positionColumnLetter}${stone.positionRowNumber}`
-          ].includes(targetCoordinate);
-        } else {
-          return stoneMovements[stone.type][
-            `${stone.positionColumnLetter}${stone.positionRowNumber}`
-          ].includes(targetCoordinate);
-        }
-      }
-    );
-    // console.log('endangeringOtherPlayerStones', endangeringOtherPlayerStones);
-    return {
-      success: endangeringOtherPlayerStones.length === 0,
-      conqueringPlayerId: stoneData!.currentOwner,
-      conqueredPlayerId: theOtherPlayerStones[0].currentOwner,
-      endangeringOpponentStones: endangeringOtherPlayerStones.map(
-        (stone) => stone.id
-      ),
-    };
-  }
-
-  if (isOpponentsLionConquering(stoneData, amIOpponent, targetCoordinate)) {
-    // console.log('lion target coordinate', targetCoordinate);
-    let theOtherPlayerStones = stones.filter(
-      (stone) =>
-        stone.currentOwner !== stoneData!.currentOwner && !stone.stashed
-    );
-    // console.log('theOtherPlayerStones', theOtherPlayerStones);
-    // console.log('nearby fields of lion target position', lionConquerFields.opponent[targetCoordinate]);
-    let nearbyOpponentStones = theOtherPlayerStones.filter((stone) =>
-      lionConquerFields.opponent[targetCoordinate].includes(
-        `${stone.positionColumnLetter}${stone.positionRowNumber}`
-      )
-    );
-    // console.log('nearbyOpponentStones', nearbyOpponentStones);
-    let endangeringOpponentStones = nearbyOpponentStones.filter((stone) => {
-      if (stone.type === "CHICKEN" || stone.type === "HEN") {
-        return stoneMovements[stone.type].creator[
-          `${stone.positionColumnLetter}${stone.positionRowNumber}`
-        ].includes(targetCoordinate);
-      } else {
-        return stoneMovements[stone.type][
-          `${stone.positionColumnLetter}${stone.positionRowNumber}`
-        ].includes(targetCoordinate);
-      }
-    });
-    // console.log('endangeringOpponentStones', endangeringOpponentStones);
-    return {
-      success: endangeringOpponentStones.length === 0,
-      conqueringPlayerId: stoneData!.currentOwner,
-      conqueredPlayerId: theOtherPlayerStones[0].currentOwner,
-      endangeringOpponentStones: endangeringOpponentStones.map(
-        (stone) => stone.id
-      ),
-    };
-  }
-
-  return {
-    conqueredPlayerId: undefined,
-    conqueringPlayerId: undefined,
-    endangeringOpponentStones: [],
-    success: undefined,
-  };
 };

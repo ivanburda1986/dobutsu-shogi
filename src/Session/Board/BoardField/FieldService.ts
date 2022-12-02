@@ -11,23 +11,25 @@ import {
   updateUserStats,
 } from "../../../api/firestore";
 import { StoneInterface, stoneType } from "../Stones/Stone";
-import { lionConquerFields, stoneMovements } from "../Stones/StoneMovements";
 import {
   canStoneMoveThisWay,
-  LionConquerAttemptEvaluationOutputInterface,
   nextTurnPlayerId,
   shouldChickenTurnIntoHen,
 } from "../Stones/StoneService";
+import {
+  lionConquerAttemptEvaluation,
+  LionConquerAttemptEvaluationOutputInterface,
+} from "../Stones/LionStoneService";
 
-interface isLabelVisibleInterface {
+interface shouldShowLabelInterface {
   rowNumber: number;
   columnLetter: string;
 }
 
-export const shouldShowLetter = ({
+export const shouldShowLetterLabel = ({
   rowNumber,
   columnLetter,
-}: isLabelVisibleInterface) => {
+}: shouldShowLabelInterface) => {
   const LABELLED_ROW_NUMBER = 1;
   const COLUMN_LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
   if (
@@ -38,10 +40,10 @@ export const shouldShowLetter = ({
   }
 };
 
-export const shouldShowNumber = ({
+export const shouldShowNumberLabel = ({
   rowNumber,
   columnLetter,
-}: isLabelVisibleInterface) => {
+}: shouldShowLabelInterface) => {
   const LABELLED_COLUMN_LETTER = "A";
   const ROW_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   if (
@@ -50,6 +52,18 @@ export const shouldShowNumber = ({
   ) {
     return true;
   }
+};
+
+export const enableDropping = (event: React.DragEvent<HTMLDivElement>) => {
+  event.preventDefault();
+};
+
+export const rotateField = (amIOpponent: boolean): string => {
+  if (amIOpponent) {
+    return "rotate(180deg)";
+  }
+
+  return "rotate(0deg)";
 };
 
 interface EvaluateStoneMoveInterface {
@@ -69,11 +83,11 @@ interface EvaluateStoneMoveInterface {
   stones: StoneInterface[];
 }
 
-const isFieldEmpty = (
+function isFieldEmpty(
   movingToLetter: string,
   movingToNumber: number,
   stones: StoneInterface[]
-): boolean => {
+): boolean {
   const stonesOccupyingField = stones.filter((stone) => {
     return (
       `${stone.positionColumnLetter}${stone.positionRowNumber}` ===
@@ -82,93 +96,9 @@ const isFieldEmpty = (
   });
 
   return stonesOccupyingField.length <= 0;
-};
-
-function evaluateLionConquerAttempt(
-  stoneData: DocumentData | undefined,
-  amIOpponent: boolean,
-  movingToLetter: string,
-  movingToNumber: number,
-  stones: StoneInterface[]
-) {
-  if (stoneData!.type === "LION" && !amIOpponent) {
-    const targetCoordinate = `${movingToLetter}${movingToNumber}`;
-    // console.log('lion target coordinate', targetCoordinate);
-    if (targetCoordinate in lionConquerFields.creator) {
-      let opponentStones = stones.filter(
-        (stone) =>
-          stone.currentOwner !== stoneData!.currentOwner && !stone.stashed
-      );
-      // console.log('opponentStones', opponentStones);
-      // console.log('nearby fields of lion target position', lionConquerFields.creator[targetCoordinate]);
-      let nearbyOpponentStones = opponentStones.filter((stone) =>
-        lionConquerFields.creator[targetCoordinate].includes(
-          `${stone.positionColumnLetter}${stone.positionRowNumber}`
-        )
-      );
-      // console.log('nearbyOpponentStones', nearbyOpponentStones);
-      let endangeringOpponentStones = nearbyOpponentStones.filter((stone) => {
-        if (stone.type === "CHICKEN" || stone.type === "HEN") {
-          return stoneMovements[stone.type].opponent[
-            `${stone.positionColumnLetter}${stone.positionRowNumber}`
-          ].includes(targetCoordinate);
-        } else {
-          return stoneMovements[stone.type][
-            `${stone.positionColumnLetter}${stone.positionRowNumber}`
-          ].includes(targetCoordinate);
-        }
-      });
-      // console.log('endangeringOpponentStones', endangeringOpponentStones);
-      return {
-        success: endangeringOpponentStones.length === 0,
-        conqueringPlayerId: stoneData!.currentOwner,
-        conqueredPlayerId: opponentStones[0].currentOwner,
-        endangeringOpponentStones: endangeringOpponentStones.map(
-          (stone) => stone.id
-        ),
-      };
-    }
-  } else if (stoneData!.type === "LION" && amIOpponent) {
-    const targetCoordinate = `${movingToLetter}${movingToNumber}`;
-    // console.log('lion target coordinate', targetCoordinate);
-    if (targetCoordinate in lionConquerFields.opponent) {
-      let opponentStones = stones.filter(
-        (stone) =>
-          stone.currentOwner !== stoneData!.currentOwner && !stone.stashed
-      );
-      // console.log('opponentStones', opponentStones);
-      // console.log('nearby fields of lion target position', lionConquerFields.opponent[targetCoordinate]);
-      let nearbyOpponentStones = opponentStones.filter((stone) =>
-        lionConquerFields.opponent[targetCoordinate].includes(
-          `${stone.positionColumnLetter}${stone.positionRowNumber}`
-        )
-      );
-      // console.log('nearbyOpponentStones', nearbyOpponentStones);
-      let endangeringOpponentStones = nearbyOpponentStones.filter((stone) => {
-        if (stone.type === "CHICKEN" || stone.type === "HEN") {
-          return stoneMovements[stone.type].creator[
-            `${stone.positionColumnLetter}${stone.positionRowNumber}`
-          ].includes(targetCoordinate);
-        } else {
-          return stoneMovements[stone.type][
-            `${stone.positionColumnLetter}${stone.positionRowNumber}`
-          ].includes(targetCoordinate);
-        }
-      });
-      // console.log('endangeringOpponentStones', endangeringOpponentStones);
-      return {
-        success: endangeringOpponentStones.length === 0,
-        conqueringPlayerId: stoneData!.currentOwner,
-        conqueredPlayerId: opponentStones[0].currentOwner,
-        endangeringOpponentStones: endangeringOpponentStones.map(
-          (stone) => stone.id
-        ),
-      };
-    }
-  }
 }
 
-export const evaluateStoneMove = ({
+export const evaluateDroppedStoneMove = ({
   amIOpponent,
   cb,
   gameData,
@@ -186,7 +116,10 @@ export const evaluateStoneMove = ({
 }: EvaluateStoneMoveInterface): void => {
   const stone = getSingleStoneDetails({ gameId, stoneId: placedStoneId });
   stone.then((received) => {
-    let stoneData = received?.data();
+    let stoneData = received?.data() as StoneInterface;
+    if (!stoneData) {
+      return;
+    }
 
     let isMoveToThisFieldAllowed =
       isFieldEmpty(movingToLetter, movingToNumber, stones) &&
@@ -208,14 +141,13 @@ export const evaluateStoneMove = ({
       movingToNumber: movingToNumber,
     });
 
-    // Lion conquer attempt evaluation
-    let lionConquerAttempt = evaluateLionConquerAttempt(
+    let lionConquerAttemptResult = lionConquerAttemptEvaluation({
       stoneData,
       amIOpponent,
       movingToLetter,
       movingToNumber,
-      stones
-    );
+      stones,
+    });
 
     return cb({
       gameData,
@@ -228,83 +160,105 @@ export const evaluateStoneMove = ({
       rowNumber,
       stoneMoveAllowed: isMoveToThisFieldAllowed,
       shouldChickenTransformToHen: shouldChickenOnThisFieldTurnToHen,
-      lionConquerAttempt,
+      lionConquerAttemptResult,
     });
   });
 };
 
-export const enableDropping = (event: React.DragEvent<HTMLDivElement>) => {
-  event.preventDefault();
-};
-
-export const rotateField = (amIOpponent: boolean): string => {
-  if (amIOpponent) {
-    return "rotate(180deg)";
-  }
-
-  return "rotate(0deg)";
-};
-
-export interface OndropCallBackInterface {
+interface OnStoneDropCallBackInterface {
+  columnLetter: string;
   gameData: DocumentData;
+  lionConquerAttemptResult: LionConquerAttemptEvaluationOutputInterface;
   loggedInUserUserId: string;
   movedFromColumnLetter: string;
   movedFromRowNumber: number;
   placedStoneType: stoneType;
   placedStoneId: string;
-  columnLetter: string;
   rowNumber: number;
-  stoneMoveAllowed: boolean;
   shouldChickenTransformToHen: boolean;
-  lionConquerAttempt: LionConquerAttemptEvaluationOutputInterface;
+  stoneMoveAllowed: boolean;
 }
 
-export const onDropCallback = ({
-  gameData,
+function getMoveNumber(updatedMoves: MoveInterface[]): number {
+  return updatedMoves.length > 0
+    ? updatedMoves[updatedMoves.length - 1].moveNumber + 1
+    : 0;
+}
+
+interface getUpdateMovesInterface {
+  moves: MoveInterface[];
+  placedStoneId: string;
+  placedStoneType: "CHICKEN" | "ELEPHANT" | "GIRAFFE" | "LION" | "HEN";
+  loggedInUserUserId: string;
+  movedFromColumnLetter: string;
+  movedFromRowNumber: number;
+  columnLetter: string;
+  rowNumber: number;
+}
+
+function getUpdatedMoves({
+  moves,
+  placedStoneId,
+  placedStoneType,
   loggedInUserUserId,
   movedFromColumnLetter,
   movedFromRowNumber,
-  placedStoneType,
-  placedStoneId,
   columnLetter,
   rowNumber,
-  stoneMoveAllowed,
-  shouldChickenTransformToHen,
-  lionConquerAttempt,
-}: OndropCallBackInterface) => {
-  console.log(shouldChickenTransformToHen);
-  console.log(stoneMoveAllowed);
-  const updatedMoves: MoveInterface[] = gameData?.moves;
+}: getUpdateMovesInterface): MoveInterface[] {
+  const movesToReturn = [...moves];
+  moves.push({
+    moveNumber: getMoveNumber(moves),
+    id: placedStoneId,
+    type: placedStoneType,
+    movingPlayerId: loggedInUserUserId,
+    fromCoordinates: `${movedFromColumnLetter}${movedFromRowNumber}`,
+    targetCoordinates: `${columnLetter}${rowNumber}`,
+    isTakeOver: false,
+    isVictory: false,
+  });
+  return movesToReturn;
+}
 
+export const onStoneDropCallback = ({
+  columnLetter,
+  gameData,
+  lionConquerAttemptResult,
+  loggedInUserUserId,
+  movedFromColumnLetter,
+  movedFromRowNumber,
+  placedStoneId,
+  placedStoneType,
+  rowNumber,
+  shouldChickenTransformToHen,
+  stoneMoveAllowed,
+}: OnStoneDropCallBackInterface) => {
   if (shouldChickenTransformToHen) {
     empowerStone({
-      gameId: gameData.gameId!,
+      gameId: gameData.gameId,
       stoneId: placedStoneId,
       type: "HEN",
     });
   }
-  if (stoneMoveAllowed!) {
-    // Update stone position
+  if (stoneMoveAllowed) {
     updateStonePosition({
-      gameId: gameData.gameId!,
+      gameId: gameData.gameId,
       stoneId: placedStoneId,
       positionColumnLetter: columnLetter,
       positionRowNumber: rowNumber,
     });
-    // Prepare data for stone move tracking
-    updatedMoves.push({
-      moveNumber:
-        updatedMoves.length > 0
-          ? updatedMoves[updatedMoves.length - 1].moveNumber + 1
-          : 0,
-      id: placedStoneId,
-      type: placedStoneType,
-      movingPlayerId: loggedInUserUserId,
-      fromCoordinates: `${movedFromColumnLetter}${movedFromRowNumber}`,
-      targetCoordinates: `${columnLetter}${rowNumber}`,
-      isTakeOver: false,
-      isVictory: false,
+
+    const updatedMoves = getUpdatedMoves({
+      moves: gameData?.moves,
+      placedStoneId,
+      placedStoneType,
+      loggedInUserUserId,
+      movedFromColumnLetter,
+      movedFromRowNumber,
+      columnLetter,
+      rowNumber,
     });
+
     // Send data for stone move tracking
     updateGame({
       id: gameData.gameId!,
@@ -314,9 +268,9 @@ export const onDropCallback = ({
     });
 
     //Evaluate whether a lion-move is a homebase-conquer attempt and leads to a game end
-    if (lionConquerAttempt.success !== undefined) {
+    if (lionConquerAttemptResult.success !== undefined) {
       const { success, conqueringPlayerId, conqueredPlayerId } =
-        lionConquerAttempt;
+        lionConquerAttemptResult;
       // console.log('success', success);
       // console.log('conqueringPlayerId', conqueringPlayerId);
       // console.log('conqueredPlayerId', conqueredPlayerId);
@@ -343,7 +297,7 @@ export const onDropCallback = ({
             })
         );
       } else {
-        lionConquerAttempt.endangeringOpponentStones.forEach((id) => {
+        lionConquerAttemptResult.endangeringOpponentStones.forEach((id) => {
           highlightStone({
             gameId: gameData.gameId!,
             stoneId: id,
@@ -374,7 +328,7 @@ export const onDropCallback = ({
       }
 
       // console.log('The stone can move here');
-      // console.log('lionConquerAttemptSuccessful', lionConquerAttempt.success);
+      // console.log('lionConquerAttemptResultSuccessful', lionConquerAttemptResult.success);
     }
 
     // Set turn to the other player
