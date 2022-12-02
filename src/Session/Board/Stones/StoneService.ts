@@ -7,7 +7,10 @@ import {
   empowerStone,
   handicapStone,
   highlightStone,
+  statusType,
+  updateStoneInvisibility,
 } from "../../../api/firestore";
+import React from "react";
 
 interface getStashTargetPositionInterface {
   type: stoneType;
@@ -315,4 +318,113 @@ export function transformHenToChicken(
     stoneId: lyingStoneId,
     type: "CHICKEN",
   });
+}
+
+export function shouldShowStoneStashCountPill(
+  allStones: StoneInterface[],
+  currentOwner: string,
+  stashed: boolean,
+  type: stoneType,
+  hideStoneStashCountPill: boolean
+) {
+  return (
+    getStashedStonePillCount({
+      allStones: allStones,
+      currentOwnerId: currentOwner,
+      stashed: stashed,
+      type: type,
+    }) > 1 && !hideStoneStashCountPill
+  );
+}
+
+export function canStoneBeDragged(
+  status: statusType,
+  currentOwner: string,
+  loggedInUserUserId: string
+) {
+  return (
+    status === "INPROGRESS" &&
+    amIStoneOwner({
+      currentOwner: currentOwner,
+      loggedInUserUserId: loggedInUserUserId,
+    })
+  );
+}
+
+export function getDragStartAction(
+  loggedInUserUserId: string,
+  currentPlayerTurn: string,
+  onDragStartHandler: (event: React.DragEvent<HTMLDivElement>) => void,
+  onDragStartHandlerDisallowed: (event: React.DragEvent<HTMLDivElement>) => void
+) {
+  if (
+    isItMyTurn({
+      myId: loggedInUserUserId,
+      currentTurnPlayerId: currentPlayerTurn,
+    })
+  ) {
+    return onDragStartHandler;
+  } else {
+    return onDragStartHandlerDisallowed;
+  }
+}
+
+export function shouldHighlightStone(stone: StoneInterface[]) {
+  return stone[0] && stone[0].highlighted;
+}
+
+export function shouldMakeStoneInvisible(stone: StoneInterface[]) {
+  return stone[0] && stone[0].invisible;
+}
+
+export function getStone(allStones: StoneInterface[], id: string) {
+  return allStones.filter((stone) => stone.id === id);
+}
+
+export function isDraggedStoneStillAboveItself(
+  lyingStone: StoneInterface,
+  draggedStone: StoneInterface
+) {
+  return lyingStone.id === draggedStone.id;
+}
+
+export function isDraggedStoneComingFromStash(draggedStone: StoneInterface) {
+  return draggedStone.stashed;
+}
+
+export function isDraggedStoneHoveringAboveOwnStone(
+  lyingStone: StoneInterface,
+  draggedStone: StoneInterface
+) {
+  return lyingStone.currentOwner === draggedStone.currentOwner;
+}
+
+export function highlightLionTakeoverStone(
+  gameId: string | undefined,
+  id: string
+) {
+  highlightStone({ gameId: gameId!, stoneId: id, highlighted: true });
+}
+
+export function makeTakenLionInvisible(
+  gameId: string | undefined,
+  lyingStone: StoneInterface
+) {
+  updateStoneInvisibility({
+    gameId: gameId!,
+    stoneId: lyingStone.id,
+    invisible: true,
+  });
+}
+
+export function isLionGettingTaken(lyingStone: StoneInterface) {
+  return lyingStone.type === "LION";
+}
+
+export function isHenGettingTaken(lyingStone: StoneInterface) {
+  return lyingStone.type === "HEN";
+}
+
+export function isChickenTakingOver(draggedStone: StoneInterface) {
+  return draggedStone.type === "CHICKEN";
 }

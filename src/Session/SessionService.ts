@@ -1,4 +1,3 @@
-import { VictoryType } from "./Board/Board";
 import { DocumentData } from "firebase/firestore";
 import { Dispatch } from "react";
 import {
@@ -6,6 +5,7 @@ import {
   updateGame,
   updateUserStats,
   useUpdateGameInterface,
+  VictoryType,
 } from "../api/firestore";
 import { GameFinishedMessageType } from "./GameFinishedMessage/GameFinishedMessageService";
 import { nextTurnPlayerId } from "./Board/Stones/StoneService";

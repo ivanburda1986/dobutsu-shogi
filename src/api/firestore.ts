@@ -4,7 +4,6 @@ import {
   collection,
   deleteDoc,
   doc,
-  DocumentData,
   getDoc,
   getDocs,
   getFirestore,
@@ -23,7 +22,6 @@ import {
 } from "firebase/auth";
 import { getCreatorStones, getOpponentStones } from "./firestoreService";
 import { StoneInterface, stoneType } from "../Session/Board/Stones/Stone";
-import { VictoryType } from "../Session/Board/Board";
 import { DocumentSnapshot } from "@firebase/firestore";
 
 const firebaseConfig = {
@@ -242,6 +240,13 @@ export interface CreateGameInputInterface {
     redirect: (createdGameId: string) => void;
   };
 }
+
+export type VictoryType =
+  | "LION_CAUGHT_SUCCESS"
+  | "HOMEBASE_CONQUERED_SUCCESS"
+  | "HOMEBASE_CONQUERED_FAILURE"
+  | undefined
+  | null;
 
 export interface Game {
   gameId: string;

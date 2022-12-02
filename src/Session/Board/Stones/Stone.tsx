@@ -1,30 +1,35 @@
 import React, { FC, useContext, useEffect, useState } from "react";
 
 import {
-  getSingleUserStats,
   updateGame,
+  updateStoneOnTakeOver,
   updateStonePosition,
   updateUserStats,
-  empowerStone,
-  handicapStone,
-  highlightStone,
-  updateStoneInvisibility,
-  updateStoneOnTakeOver,
-  statusType,
 } from "../../../api/firestore";
 import {
-  amIStoneOwner,
   canDraggedStoneMoveToThisPosition,
+  canStoneBeDragged,
+  getDragStartAction,
   getStashedStonePillCount,
   getStashTargetPosition,
-  isItMyTurn,
-  nextTurnPlayerId,
-  rotateOponentStones,
-  shouldChickenTurnIntoHen,
-  setStonePosition,
+  getStone,
+  highlightLionTakeoverStone,
   highlightStonesThatDefendedAttackedBase,
-  transformHenToChicken,
+  isChickenTakingOver,
+  isDraggedStoneComingFromStash,
+  isDraggedStoneHoveringAboveOwnStone,
+  isDraggedStoneStillAboveItself,
+  isHenGettingTaken,
+  isLionGettingTaken,
+  makeTakenLionInvisible,
+  rotateOponentStones,
+  setStonePosition,
+  shouldChickenTurnIntoHen,
+  shouldHighlightStone,
+  shouldMakeStoneInvisible,
+  shouldShowStoneStashCountPill,
   transformChickenToHen,
+  transformHenToChicken,
 } from "./StoneService";
 import { AppContextInterface } from "../../../App";
 import { AppContext } from "../../../context/AppContext";
@@ -34,19 +39,16 @@ import { StoneStashCountPill } from "./StoneStashCountPill/StoneStashCountPill";
 import { getImgReference } from "../../../images/imageRelatedService";
 import { lionConquerAttemptEvaluation } from "./LionStoneService";
 
-import styles from "./Stone.module.css";
 import {
   increaseUserLossStats,
   increaseUserWinStats,
   setGameToComplete,
   switchMoveToOtherPlayer,
 } from "../../SessionService";
-import { trackStoneMove } from "../BoardField/FieldServiceMoveTracking";
-import { VictoryType } from "../Board";
+import styles from "./Stone.module.css";
 
 export type stoneType = "CHICKEN" | "ELEPHANT" | "GIRAFFE" | "LION" | "HEN";
 
-//STONES
 export interface StoneInterface {
   allStones: StoneInterface[];
   amIOpponent?: boolean;
@@ -68,112 +70,6 @@ export interface StoneInterface {
   setLyingStone?: Function;
   stashed: boolean;
   type: stoneType;
-}
-
-function shouldShowStoneStashCountPill(
-  allStones: StoneInterface[],
-  currentOwner: string,
-  stashed: boolean,
-  type: stoneType,
-  hideStoneStashCountPill: boolean
-) {
-  return (
-    getStashedStonePillCount({
-      allStones: allStones,
-      currentOwnerId: currentOwner,
-      stashed: stashed,
-      type: type,
-    }) > 1 && !hideStoneStashCountPill
-  );
-}
-
-export function canStoneBeDragged(
-  status: statusType,
-  currentOwner: string,
-  loggedInUserUserId: string
-) {
-  return (
-    status === "INPROGRESS" &&
-    amIStoneOwner({
-      currentOwner: currentOwner,
-      loggedInUserUserId: loggedInUserUserId,
-    })
-  );
-}
-
-function getDragStartAction(
-  loggedInUserUserId: string,
-  currentPlayerTurn: string,
-  onDragStartHandler: (event: React.DragEvent<HTMLDivElement>) => void,
-  onDragStartHandlerDisallowed: (event: React.DragEvent<HTMLDivElement>) => void
-) {
-  if (
-    isItMyTurn({
-      myId: loggedInUserUserId,
-      currentTurnPlayerId: currentPlayerTurn,
-    })
-  ) {
-    return onDragStartHandler;
-  } else {
-    return onDragStartHandlerDisallowed;
-  }
-}
-
-function shouldHighlightStone(stone: StoneInterface[]) {
-  return stone[0] && stone[0].highlighted;
-}
-
-function shouldMakeStoneInvisible(stone: StoneInterface[]) {
-  return stone[0] && stone[0].invisible;
-}
-
-function getStone(allStones: StoneInterface[], id: string) {
-  return allStones.filter((stone) => stone.id === id);
-}
-
-function isDraggedStoneStillAboveItself(
-  lyingStone: StoneInterface,
-  draggedStone: StoneInterface
-) {
-  return lyingStone.id === draggedStone.id;
-}
-
-function isDraggedStoneComingFromStash(draggedStone: StoneInterface) {
-  return draggedStone.stashed;
-}
-
-function isDraggedStoneHoveringAboveOwnStone(
-  lyingStone: StoneInterface,
-  draggedStone: StoneInterface
-) {
-  return lyingStone.currentOwner === draggedStone.currentOwner;
-}
-
-function highlightLionTakeoverStone(gameId: string | undefined, id: string) {
-  highlightStone({ gameId: gameId!, stoneId: id, highlighted: true });
-}
-
-function makeTakenLionInvisible(
-  gameId: string | undefined,
-  lyingStone: StoneInterface
-) {
-  updateStoneInvisibility({
-    gameId: gameId!,
-    stoneId: lyingStone.id,
-    invisible: true,
-  });
-}
-
-function isLionGettingTaken(lyingStone: StoneInterface) {
-  return lyingStone.type === "LION";
-}
-
-function isHenGettingTaken(lyingStone: StoneInterface) {
-  return lyingStone.type === "HEN";
-}
-
-function isChickenTakingOver(draggedStone: StoneInterface) {
-  return draggedStone.type === "CHICKEN";
 }
 
 export const Stone: FC<StoneInterface> = ({
@@ -217,28 +113,23 @@ export const Stone: FC<StoneInterface> = ({
   });
 
   // Make sure stones are in place even after change of the UI size and appearance of new elements
-  const onResizeHandler = ({
+  function onResizeHandler({
     newHeight,
     newWidth,
   }: {
     newHeight: number;
     newWidth: number;
-  }) => {
+  }) {
     setScreenHeight(newHeight);
     setScreenWidth(newWidth);
-  };
+  }
+
   window.addEventListener("resize", () =>
     onResizeHandler({
       newHeight: window.innerHeight,
       newWidth: window.innerWidth,
     })
   );
-
-  useEffect(() => {
-    const stone: StoneInterface[] = getStone(allStones, id);
-    shouldHighlightStone(stone) && setIsHighlighted(true);
-    shouldMakeStoneInvisible(stone) && setIsInvisible(true);
-  }, [allStones, id]);
 
   useEffect(() => {
     setStonePosition({
@@ -287,7 +178,13 @@ export const Stone: FC<StoneInterface> = ({
     columnLetters,
   ]);
 
-  const onDragStartHandler = (event: React.DragEvent<HTMLDivElement>) => {
+  useEffect(() => {
+    const stone: StoneInterface[] = getStone(allStones, id);
+    shouldHighlightStone(stone) && setIsHighlighted(true);
+    shouldMakeStoneInvisible(stone) && setIsInvisible(true);
+  }, [allStones, id]);
+
+  function onDragStartHandler(event: React.DragEvent<HTMLDivElement>) {
     event.dataTransfer.setData("placedStoneId", id);
     event.dataTransfer.setData("placedStoneType", type);
     event.dataTransfer.setData("movedFromColumnLetter", positionColumnLetter);
@@ -306,15 +203,15 @@ export const Stone: FC<StoneInterface> = ({
         type,
       });
     setHideStoneStashCountPill(true);
-  };
+  }
 
-  const onDragStartHandlerDisallowed = (
+  function onDragStartHandlerDisallowed(
     event: React.DragEvent<HTMLDivElement>
-  ) => {
+  ) {
     event.preventDefault();
-  };
+  }
 
-  const onDragEnterHandler = () => {
+  function onDragEnterHandler() {
     setLyingStone &&
       setLyingStone({
         amIOpponent,
@@ -328,9 +225,9 @@ export const Stone: FC<StoneInterface> = ({
         rowNumbers,
         columnLetters,
       });
-  };
+  }
 
-  const onTakeOverAttemptHandler = (event: React.DragEvent<HTMLDivElement>) => {
+  function onTakeOverAttemptHandler(event: React.DragEvent<HTMLDivElement>) {
     if (!lyingStone || !draggedStone || !setCanTakeStone) {
       return;
     }
@@ -366,10 +263,9 @@ export const Stone: FC<StoneInterface> = ({
 
     setCanTakeStone(true);
     return;
-  };
+  }
 
-  const onDropHandler = (event: React.DragEvent<HTMLDivElement>) => {
-    const updateStats = updateUserStats;
+  function onDropHandler(event: React.DragEvent<HTMLDivElement>) {
     setHideStoneStashCountPill(false);
 
     if (!lyingStone || !draggedStone || !canTakeStone) {
@@ -534,7 +430,7 @@ export const Stone: FC<StoneInterface> = ({
     } else {
       console.log("The stone cannot be dropped here");
     }
-  };
+  }
 
   return (
     <div
@@ -560,15 +456,6 @@ export const Stone: FC<StoneInterface> = ({
       className={`${styles.Stone} ${isHighlighted && styles.Highlighted} ${
         isInvisible && styles.Invisible
       } noselect`}
-      // onClick={() => setStonePosition({
-      //     stoneId: id,
-      //     targetPositionColumnLetter: positionColumnLetter,
-      //     targetPositionRowNumber: positionRowNumber,
-      //     positionX,
-      //     positionY,
-      //     setPositionX,
-      //     setPositionY
-      // })}
     >
       {shouldShowStoneStashCountPill(
         allStones,
