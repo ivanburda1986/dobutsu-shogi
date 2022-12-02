@@ -8,7 +8,7 @@ import {
   deleteGame,
   getSingleGameDetails,
   MoveInterface,
-  statusType,
+  gameStatusType,
   joinGame,
   VictoryType,
 } from "../../api/firestore";
@@ -31,7 +31,7 @@ export interface ReturnedGameInterface {
   opponentPhotoURL: string;
   currentPlayerTurn?: string;
   name: string;
-  status: statusType;
+  status: gameStatusType;
 
   createdOn?: number;
   creatorJoined?: boolean;

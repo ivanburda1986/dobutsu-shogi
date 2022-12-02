@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { StoneInterface } from "../Session/Board/Stones/Stone";
 
-export const getCreatorStones = (
+export const generateCreatorStones = (
   creatorId: string
 ): Omit<StoneInterface, "allStones">[] => {
   return [
@@ -52,7 +52,7 @@ export const getCreatorStones = (
   ];
 };
 
-export const getOpponentStones = (
+export const generateOpponentStones = (
   opponentId: string
 ): Omit<StoneInterface, "allStones">[] => {
   return [

@@ -309,8 +309,8 @@ export const Stone: FC<StoneInterface> = ({
         updateStonePosition({
           gameId: gameId!,
           stoneId: draggedStone.id,
-          positionColumnLetter: lyingStone.positionColumnLetter,
-          positionRowNumber: lyingStone.positionRowNumber,
+          targetPositionColumnLetter: lyingStone.positionColumnLetter,
+          targetPositionRowNumber: lyingStone.positionRowNumber,
         });
 
         highlightLionTakeoverStone(gameId, id);
@@ -422,8 +422,8 @@ export const Stone: FC<StoneInterface> = ({
       updateStonePosition({
         gameId: gameId!,
         stoneId: draggedStone.id,
-        positionColumnLetter: lyingStone.positionColumnLetter,
-        positionRowNumber: lyingStone.positionRowNumber,
+        targetPositionColumnLetter: lyingStone.positionColumnLetter,
+        targetPositionRowNumber: lyingStone.positionRowNumber,
       });
 
       switchMoveToOtherPlayer(gameData!, loggedInUserUserId);

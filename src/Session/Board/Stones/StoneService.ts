@@ -6,8 +6,8 @@ import { LionConquerAttemptEvaluationOutputInterface } from "./LionStoneService"
 import {
   empowerStone,
   handicapStone,
-  highlightStone,
-  statusType,
+  updateStoneHighlighting,
+  gameStatusType,
   updateStoneInvisibility,
 } from "../../../api/firestore";
 import React from "react";
@@ -290,7 +290,7 @@ export function highlightStonesThatDefendedAttackedBase(
   gameData: DocumentData
 ) {
   lionConquerAttemptResult.endangeringOpponentStones.forEach((id) => {
-    highlightStone({
+    updateStoneHighlighting({
       gameId: gameData.gameId!,
       stoneId: id,
       highlighted: true,
@@ -338,7 +338,7 @@ export function shouldShowStoneStashCountPill(
 }
 
 export function canStoneBeDragged(
-  status: statusType,
+  status: gameStatusType,
   currentOwner: string,
   loggedInUserUserId: string
 ) {
@@ -403,7 +403,7 @@ export function highlightLionTakeoverStone(
   gameId: string | undefined,
   id: string
 ) {
-  highlightStone({ gameId: gameId!, stoneId: id, highlighted: true });
+  updateStoneHighlighting({ gameId: gameId!, stoneId: id, highlighted: true });
 }
 
 export function makeTakenLionInvisible(

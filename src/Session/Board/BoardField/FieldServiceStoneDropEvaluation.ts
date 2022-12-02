@@ -152,8 +152,8 @@ export const onStoneDropCallback = ({
     updateStonePosition({
       gameId: gameData.gameId,
       stoneId: placedStoneId,
-      positionColumnLetter: columnLetter,
-      positionRowNumber: rowNumber,
+      targetPositionColumnLetter: columnLetter,
+      targetPositionRowNumber: rowNumber,
     });
     trackStoneMove(
       gameData,

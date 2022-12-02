@@ -1,5 +1,6 @@
 import { UserDataInterface } from "../App";
 import { initializeApp } from "firebase/app";
+import { DocumentSnapshot } from "@firebase/firestore";
 import {
   collection,
   deleteDoc,
@@ -20,9 +21,12 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
-import { getCreatorStones, getOpponentStones } from "./firestoreService";
+
+import {
+  generateCreatorStones,
+  generateOpponentStones,
+} from "./firestoreService";
 import { StoneInterface, stoneType } from "../Session/Board/Stones/Stone";
-import { DocumentSnapshot } from "@firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCBnawTeOf0cVa7m7aKFQoIqrXbJOorW2c",
@@ -57,14 +61,12 @@ interface RegisterUserInterface {
   };
 }
 
-export const useRegisterUser = ({
+export const registerUser = ({
   email,
   username,
   password,
   registerUserCb,
 }: RegisterUserInterface) => {
-  const updateUserProfile = useUpdateUserProfile;
-  const createUserStats = useCreateUserStats;
   createUserWithEmailAndPassword(auth, email, password)
     .then((credentials) => {
       updateUserProfile({
@@ -80,145 +82,17 @@ export const useRegisterUser = ({
     });
 };
 
-//TYPES
-export type statusType = "WAITING" | "INPROGRESS" | "COMPLETED" | "TIE";
-export type playerType = "CREATOR" | "OPPONENT";
-
-// Update stone position
-interface useUpdateStonePositionInterface {
-  gameId: string;
-  stoneId: string;
-  positionColumnLetter: string;
-  positionRowNumber: number;
-}
-
-export const updateStonePosition = ({
-  gameId,
-  stoneId,
-  positionColumnLetter,
-  positionRowNumber,
-}: useUpdateStonePositionInterface) => {
-  updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {
-    positionColumnLetter: positionColumnLetter,
-    positionRowNumber: positionRowNumber,
-    stashed: false,
-  })
-    .then(() => console.log("Stone position updated on server"))
-    .catch((err) => {
-      console.log(err.message);
-    });
-};
-
-interface useUpdateStoneTypeInterface {
-  gameId: string;
-  stoneId: string;
-  type: stoneType;
-}
-
-interface useUpdateStoneHighlightedInterface {
-  gameId: string;
-  stoneId: string;
-  highlighted: boolean;
-}
-
-interface updateStoneInvisibilityInterface {
-  gameId: string;
-  stoneId: string;
-  invisible: boolean;
-}
-
-export const empowerStone = ({
-  gameId,
-  stoneId,
-  type,
-}: useUpdateStoneTypeInterface) => {
-  updateDoc(doc(db, `games/${gameId}/stones`, stoneId), { type: type })
-    .then(() => console.log("Stone empower has been updated on the server"))
-    .catch((err) => {
-      console.log(err.message);
-    });
-};
-
-export const handicapStone = ({
-  gameId,
-  stoneId,
-  type,
-}: useUpdateStoneTypeInterface) => {
-  updateDoc(doc(db, `games/${gameId}/stones`, stoneId), { type: type })
-    .then(() => console.log("Stone handicap has been updated on the server"))
-    .catch((err) => {
-      console.log(err.message);
-    });
-};
-
-export const highlightStone = ({
-  gameId,
-  stoneId,
-  highlighted,
-}: useUpdateStoneHighlightedInterface) => {
-  updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {
-    highlighted: highlighted,
-  })
-    .then(() => console.log("Stone highlighting has been updated"))
-    .catch((err) => {
-      console.log(err.message);
-    });
-};
-
-export const updateStoneInvisibility = ({
-  gameId,
-  stoneId,
-  invisible,
-}: updateStoneInvisibilityInterface) => {
-  updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {
-    invisible: invisible,
-  })
-    .then(() => console.log("Stone invisibility has been updated"))
-    .catch((err) => {
-      console.log(err.message);
-    });
-};
-
-export const updateStoneOnTakeOver = ({
-  gameId,
-  stone,
-}: {
-  gameId: string;
-  stone: Pick<
-    StoneInterface,
-    | "id"
-    | "currentOwner"
-    | "stashed"
-    | "positionColumnLetter"
-    | "positionRowNumber"
-  >;
-}) => {
-  updateDoc(doc(db, `games/${gameId}/stones`, stone.id), { ...stone })
-    .then(() => console.log("Taken stone updated on server"))
-    .catch((err) => {
-      console.log(err.message);
-    });
-};
-
-//Get stone details
-interface useGetSingleStoneDetailsInterface {
-  gameId: string;
-  stoneId: string;
-}
-
-export const getSingleStoneDetails = async ({
-  gameId,
-  stoneId,
-}: useGetSingleStoneDetailsInterface) => {
-  const stoneRef = doc(db, `games/${gameId}/stones/${stoneId}`);
-  const singleStoneData = await getDoc(stoneRef);
-  if (singleStoneData.exists()) {
-    return singleStoneData;
-  }
-};
-
 // GAME CREATION AND MANAGEMENT
 // ======================================================
+export type VictoryType =
+  | "LION_CAUGHT_SUCCESS"
+  | "HOMEBASE_CONQUERED_SUCCESS"
+  | "HOMEBASE_CONQUERED_FAILURE"
+  | undefined
+  | null;
+
+export type gameStatusType = "WAITING" | "INPROGRESS" | "COMPLETED" | "TIE";
+
 export interface MoveInterface {
   moveNumber: number;
   id: string;
@@ -229,6 +103,8 @@ export interface MoveInterface {
   isTakeOver: boolean;
   isVictory: boolean;
 }
+
+export const gamesCollectionRef = collection(db, "games");
 
 export interface CreateGameInputInterface {
   gameId: string;
@@ -241,37 +117,7 @@ export interface CreateGameInputInterface {
   };
 }
 
-export type VictoryType =
-  | "LION_CAUGHT_SUCCESS"
-  | "HOMEBASE_CONQUERED_SUCCESS"
-  | "HOMEBASE_CONQUERED_FAILURE"
-  | undefined
-  | null;
-
-export interface Game {
-  gameId: string;
-  createdOn: number;
-  creatorId: string;
-  creatorName: string;
-  creatorPhotoURL: string | null;
-  creatorJoined: boolean;
-  name: string;
-  status: statusType;
-  opponentId: string;
-  opponentName: string;
-  opponentPhotoURL: string | null;
-  opponentJoined: boolean;
-  startingPlayer: string;
-  currentPlayerTurn: string;
-  moves: MoveInterface[];
-  moveRepresentations: string[];
-  winner: string;
-  victoryType: VictoryType;
-  finishedTimeStamp: number;
-}
-
-export const gamesCollectionRef = collection(db, "games");
-export const useCreateGame = ({
+export const createGame = ({
   creatorId,
   creatorName,
   name,
@@ -302,7 +148,7 @@ export const useCreateGame = ({
   });
 };
 
-//the docRef is returned if the ID of a newly create item gets generated at the server; the docRef contains an id, such as docRef id
+type playerType = "CREATOR" | "OPPONENT";
 
 interface JoinGame {
   gameId: string;
@@ -329,15 +175,16 @@ export const joinGame = ({
       .catch((err) => {
         console.log(err.message);
       });
+
     //Create creator stones
     let gameStones: Omit<StoneInterface, "allStones">[] =
-      getCreatorStones(joiningPlayerId);
+      generateCreatorStones(joiningPlayerId);
     gameStones.forEach((stone) => {
       setDoc(doc(db, `games/${gameId}/stones`, stone.id), {
         ...stone,
       }).then(() => console.log("Creators stones got created."));
     });
-  } else {
+  } else if (joiningPlayerType === "OPPONENT") {
     //Update game details
     updateDoc(doc(db, "games", gameId), {
       opponentId: joiningPlayerId,
@@ -350,9 +197,10 @@ export const joinGame = ({
       .catch((err) => {
         console.log(err.message);
       });
+
     //Create opponent stones
     let gameStones: Omit<StoneInterface, "allStones">[] =
-      getOpponentStones(joiningPlayerId);
+      generateOpponentStones(joiningPlayerId);
     gameStones.forEach((stone) => {
       setDoc(doc(db, `games/${gameId}/stones`, stone.id), {
         ...stone,
@@ -368,7 +216,29 @@ export const deleteGame = (id: string) => {
   });
 };
 
-export interface useUpdateGameInterface {
+export interface Game {
+  gameId: string;
+  createdOn: number;
+  creatorId: string;
+  creatorName: string;
+  creatorPhotoURL: string | null;
+  creatorJoined: boolean;
+  name: string;
+  status: gameStatusType;
+  opponentId: string;
+  opponentName: string;
+  opponentPhotoURL: string | null;
+  opponentJoined: boolean;
+  startingPlayer: string;
+  currentPlayerTurn: string;
+  moves: MoveInterface[];
+  moveRepresentations: string[];
+  winner: string;
+  victoryType: VictoryType;
+  finishedTimeStamp: number;
+}
+
+export interface updateGameInterface {
   id: string;
   updatedDetails: Partial<Game>;
 }
@@ -376,7 +246,7 @@ export interface useUpdateGameInterface {
 export const updateGame = async ({
   id,
   updatedDetails,
-}: useUpdateGameInterface) => {
+}: updateGameInterface) => {
   const updateGameRef = doc(db, "games", id);
   await updateDoc(updateGameRef, { ...updatedDetails })
     .then(() => console.log("Game updated"))
@@ -385,7 +255,6 @@ export const updateGame = async ({
     });
 };
 
-//Get one game details
 interface getSingleGameDetailsInterface {
   gameId: string;
 }
@@ -396,7 +265,6 @@ export const getSingleGameDetails = ({
   return getDoc(doc(db, "games", gameId));
 };
 
-//Update user profile image in all games where the user has participated
 export interface UpdatePlayerAvatarInGamesInterface {
   playerId: string;
   updatedAvatar: string | null;
@@ -411,12 +279,15 @@ export const updatePlayerAvatarInGames = async ({
   queryGamesSnapshot.forEach((doc) => {
     returnedGames.push({ ...doc.data() } as Game);
   });
+
   let gamesWherePlayerIsOpponent = returnedGames
     .filter((game: Game) => game.opponentId === playerId)
     .map((gameWithPlayerOpponent: Game) => gameWithPlayerOpponent.gameId);
+
   let gamesWherePlayerIsCreator = returnedGames
     .filter((game: Game) => game.creatorId === playerId)
     .map((gameWithPlayerCreator: Game) => gameWithPlayerCreator.gameId);
+
   gamesWherePlayerIsCreator.forEach((gameId) => {
     updateGame({
       id: gameId,
@@ -458,7 +329,7 @@ export const useLoginUser = ({
 
 // USER LOGOUT
 // ======================================================
-export const useLogoutUser = () => {
+export const logoutUser = () => {
   signOut(auth)
     .then(() => {
       console.log("The user has logged out");
@@ -494,7 +365,7 @@ interface UpdateUserProfileInterface {
   cb: ({ email, displayName, photoURL }: UserDataInterface) => void;
 }
 
-export const useUpdateUserProfile = ({
+export const updateUserProfile = ({
   displayName,
   photoURL,
   cb,
@@ -520,16 +391,149 @@ export const useUpdateUserProfile = ({
     });
 };
 
+// STONES
+// ======================================================
+interface updateStonePositionInterface {
+  gameId: string;
+  stoneId: string;
+  targetPositionColumnLetter: string;
+  targetPositionRowNumber: number;
+}
+
+export const updateStonePosition = ({
+  gameId,
+  stoneId,
+  targetPositionColumnLetter,
+  targetPositionRowNumber,
+}: updateStonePositionInterface) => {
+  updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {
+    positionColumnLetter: targetPositionColumnLetter,
+    positionRowNumber: targetPositionRowNumber,
+    stashed: false,
+  })
+    .then(() => console.log("Stone position updated on server"))
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+
+interface updateStoneTypeInterface {
+  gameId: string;
+  stoneId: string;
+  type: stoneType;
+}
+
+export const empowerStone = ({
+  gameId,
+  stoneId,
+  type,
+}: updateStoneTypeInterface) => {
+  updateDoc(doc(db, `games/${gameId}/stones`, stoneId), { type: type })
+    .then(() => console.log("Stone empower has been updated on the server"))
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+
+export const handicapStone = ({
+  gameId,
+  stoneId,
+  type,
+}: updateStoneTypeInterface) => {
+  updateDoc(doc(db, `games/${gameId}/stones`, stoneId), { type: type })
+    .then(() => console.log("Stone handicap has been updated on the server"))
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+
+interface updateStoneHighlightingInterface {
+  gameId: string;
+  stoneId: string;
+  highlighted: boolean;
+}
+
+export const updateStoneHighlighting = ({
+  gameId,
+  stoneId,
+  highlighted,
+}: updateStoneHighlightingInterface) => {
+  updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {
+    highlighted: highlighted,
+  })
+    .then(() => console.log("Stone highlighting has been updated"))
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+
+interface updateStoneInvisibilityInterface {
+  gameId: string;
+  stoneId: string;
+  invisible: boolean;
+}
+
+export const updateStoneInvisibility = ({
+  gameId,
+  stoneId,
+  invisible,
+}: updateStoneInvisibilityInterface) => {
+  updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {
+    invisible: invisible,
+  })
+    .then(() => console.log("Stone invisibility has been updated"))
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+
+interface updateStoneOnTakeOverInterface {
+  gameId: string;
+  stone: Pick<
+    StoneInterface,
+    | "id"
+    | "currentOwner"
+    | "stashed"
+    | "positionColumnLetter"
+    | "positionRowNumber"
+  >;
+}
+
+export const updateStoneOnTakeOver = ({
+  gameId,
+  stone,
+}: updateStoneOnTakeOverInterface) => {
+  updateDoc(doc(db, `games/${gameId}/stones`, stone.id), { ...stone })
+    .then(() => console.log("Taken stone updated on server"))
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+
+interface getSingleStoneDetailsInterface {
+  gameId: string;
+  stoneId: string;
+}
+
+export const getSingleStoneDetails = async ({
+  gameId,
+  stoneId,
+}: getSingleStoneDetailsInterface) => {
+  const stoneRef = doc(db, `games/${gameId}/stones/${stoneId}`);
+  const singleStoneData = await getDoc(stoneRef);
+  if (singleStoneData.exists()) {
+    return singleStoneData;
+  }
+};
+
 // USER GAME STATS
 // =======================================================
-
-// Initial creation of stats
 export interface CreateUserStatsInterface {
   userId: string;
   userName: string;
 }
 
-export const useCreateUserStats = ({
+export const createUserStats = ({
   userId,
   userName,
 }: CreateUserStatsInterface) => {
@@ -546,14 +550,13 @@ export const useCreateUserStats = ({
     });
 };
 
-// Update user stats
 interface UserStats {
   win: number;
   loss: number;
   tie: number;
 }
 
-export interface useUpdateUserStatsInterface {
+export interface updateUserStatsInterface {
   userId: string;
   updatedDetails: Partial<UserStats>;
 }
@@ -561,7 +564,7 @@ export interface useUpdateUserStatsInterface {
 export const updateUserStats = ({
   userId,
   updatedDetails,
-}: useUpdateUserStatsInterface) => {
+}: updateUserStatsInterface) => {
   const updateUserStatsRef = doc(db, "stats", userId);
   updateDoc(updateUserStatsRef, { ...updatedDetails })
     .then(() => console.log("User stats updated"))

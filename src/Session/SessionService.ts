@@ -4,7 +4,7 @@ import {
   getSingleUserStats,
   updateGame,
   updateUserStats,
-  useUpdateGameInterface,
+  updateGameInterface,
   VictoryType,
 } from "../api/firestore";
 import { GameFinishedMessageType } from "./GameFinishedMessage/GameFinishedMessageService";
@@ -43,7 +43,7 @@ export const haveBothPlayersJoined = (
 export const determineStartingPlayer = (
   gameData: DocumentData | undefined,
   gameId: string | undefined,
-  updateGame: Dispatch<useUpdateGameInterface>
+  updateGame: Dispatch<updateGameInterface>
 ) => {
   if (!gameData) {
     return;
@@ -123,7 +123,7 @@ export const areSufficientMoveRecordsAvailable = (
 export const createAndStoreLastRoundMoveHash = (
   gameData: DocumentData | undefined,
   gameId: string | undefined,
-  updateGame: Dispatch<useUpdateGameInterface>
+  updateGame: Dispatch<updateGameInterface>
 ) => {
   if (!areSufficientMoveRecordsAvailable(gameData)) {
     return;
