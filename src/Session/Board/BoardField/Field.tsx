@@ -7,13 +7,15 @@ import { isThisPlayerOpponent } from "../../SessionService";
 import { StoneInterface, stoneType } from "../Stones/Stone";
 import {
   enableDropping,
-  evaluateDroppedStoneMove,
-  onStoneDropCallback,
   rotateField,
   shouldShowLetterLabel,
   shouldShowNumberLabel,
 } from "./FieldService";
 import styles from "./Field.module.css";
+import {
+  evaluateDroppedStoneMove,
+  onStoneDropCallback,
+} from "./FieldServiceStoneDropEvaluation";
 
 interface FieldInterface {
   columnLetter: string;

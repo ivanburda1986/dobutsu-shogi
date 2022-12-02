@@ -5,6 +5,8 @@ import {
 import { StoneInterface, stoneType } from "./Stone";
 import { columnLetterType } from "../../PlayerInterface/PlayerInterfaceService";
 import { DocumentData } from "firebase/firestore";
+import { LionConquerAttemptEvaluationOutputInterface } from "./LionStoneService";
+import { empowerStone, highlightStone } from "../../../api/firestore";
 
 interface getStashTargetPositionInterface {
   type: stoneType;
@@ -278,3 +280,27 @@ export const getStashedStonePillCount = ({
     .filter((stashedStone) => stashedStone.type === type);
   return playerStashedCountOfTheStone.length;
 };
+
+export function highlightStonesThatDefendedAttackedBase(
+  lionConquerAttemptResult: LionConquerAttemptEvaluationOutputInterface,
+  gameData: DocumentData
+) {
+  lionConquerAttemptResult.endangeringOpponentStones.forEach((id) => {
+    highlightStone({
+      gameId: gameData.gameId!,
+      stoneId: id,
+      highlighted: true,
+    });
+  });
+}
+
+export function transformChickenToHen(
+  gameData: DocumentData,
+  placedStoneId: string
+) {
+  empowerStone({
+    gameId: gameData.gameId,
+    stoneId: placedStoneId,
+    type: "HEN",
+  });
+}
