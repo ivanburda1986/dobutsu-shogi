@@ -123,7 +123,7 @@ interface useUpdateStoneHighlightedInterface {
   highlighted: boolean;
 }
 
-interface useUpdateStoneInvisibilityInterface {
+interface updateStoneInvisibilityInterface {
   gameId: string;
   stoneId: string;
   invisible: boolean;
@@ -141,7 +141,7 @@ export const empowerStone = ({
     });
 };
 
-export const useHandicapStone = ({
+export const handicapStone = ({
   gameId,
   stoneId,
   type,
@@ -167,11 +167,11 @@ export const highlightStone = ({
     });
 };
 
-export const useInvisibleStone = ({
+export const updateStoneInvisibility = ({
   gameId,
   stoneId,
   invisible,
-}: useUpdateStoneInvisibilityInterface) => {
+}: updateStoneInvisibilityInterface) => {
   updateDoc(doc(db, `games/${gameId}/stones`, stoneId), {
     invisible: invisible,
   })
@@ -181,7 +181,7 @@ export const useInvisibleStone = ({
     });
 };
 
-export const useUpdateStoneOnTakeOver = ({
+export const updateStoneOnTakeOver = ({
   gameId,
   stone,
 }: {
@@ -325,7 +325,8 @@ export const joinGame = ({
         console.log(err.message);
       });
     //Create creator stones
-    let gameStones: StoneInterface[] = getCreatorStones(joiningPlayerId);
+    let gameStones: Omit<StoneInterface, "allStones">[] =
+      getCreatorStones(joiningPlayerId);
     gameStones.forEach((stone) => {
       setDoc(doc(db, `games/${gameId}/stones`, stone.id), {
         ...stone,
@@ -345,7 +346,8 @@ export const joinGame = ({
         console.log(err.message);
       });
     //Create opponent stones
-    let gameStones: StoneInterface[] = getOpponentStones(joiningPlayerId);
+    let gameStones: Omit<StoneInterface, "allStones">[] =
+      getOpponentStones(joiningPlayerId);
     gameStones.forEach((stone) => {
       setDoc(doc(db, `games/${gameId}/stones`, stone.id), {
         ...stone,

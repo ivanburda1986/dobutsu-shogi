@@ -4,7 +4,7 @@ import {
   updateStonePosition,
 } from "../../../api/firestore";
 import {
-  canStoneMoveThisWay,
+  canDraggedStoneMoveToThisPosition,
   highlightStonesThatDefendedAttackedBase,
   shouldChickenTurnIntoHen,
   transformChickenToHen,
@@ -79,7 +79,7 @@ export const evaluateDroppedStoneMove = ({
 
     let isMoveToThisFieldAllowed =
       isFieldEmpty(movingToLetter, movingToNumber, stones) &&
-      canStoneMoveThisWay({
+      canDraggedStoneMoveToThisPosition({
         amIOpponent: amIOpponent,
         movedFromColumnLetter,
         movedFromRowNumber,

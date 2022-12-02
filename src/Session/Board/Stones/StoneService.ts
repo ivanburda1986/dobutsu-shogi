@@ -1,7 +1,4 @@
-import {
-  chickenTurningToHenCoordinates,
-  stoneMovements,
-} from "./StoneMovements";
+import { chickenTurningToHenCoordinates, movementRules } from "./MovementRules";
 import { StoneInterface, stoneType } from "./Stone";
 import { columnLetterType } from "../../PlayerInterface/PlayerInterfaceService";
 import { DocumentData } from "firebase/firestore";
@@ -104,7 +101,7 @@ interface canStoneMoveThisWayInterface {
   stashed: boolean;
 }
 
-export const canStoneMoveThisWay = ({
+export const canDraggedStoneMoveToThisPosition = ({
   stoneType,
   movedFromColumnLetter,
   movedFromRowNumber,
@@ -121,7 +118,7 @@ export const canStoneMoveThisWay = ({
     const targetCoordinate = `${movingToLetter}${movingToNumber}`;
     // console.log('amIOpponent', amIOpponent);
     const allowedLetters =
-      stoneMovements.CHICKEN[amIOpponent ? "opponent" : "creator"][
+      movementRules.CHICKEN[amIOpponent ? "opponent" : "creator"][
         originatingCoordinate
       ];
     // console.log(allowedLetters.includes(targetCoordinate));
@@ -133,7 +130,7 @@ export const canStoneMoveThisWay = ({
     }
     const originatingCoordinate = `${movedFromColumnLetter}${movedFromRowNumber}`;
     const targetCoordinate = `${movingToLetter}${movingToNumber}`;
-    const allowedLetters = stoneMovements.GIRAFFE[originatingCoordinate];
+    const allowedLetters = movementRules.GIRAFFE[originatingCoordinate];
     // console.log(allowedLetters.includes(targetCoordinate));
     return allowedLetters.includes(targetCoordinate);
   }
@@ -143,14 +140,14 @@ export const canStoneMoveThisWay = ({
     }
     const originatingCoordinate = `${movedFromColumnLetter}${movedFromRowNumber}`;
     const targetCoordinate = `${movingToLetter}${movingToNumber}`;
-    const allowedLetters = stoneMovements.ELEPHANT[originatingCoordinate];
+    const allowedLetters = movementRules.ELEPHANT[originatingCoordinate];
     // console.log(allowedLetters.includes(targetCoordinate));
     return allowedLetters.includes(targetCoordinate);
   }
   if (stoneType === "LION") {
     const originatingCoordinate = `${movedFromColumnLetter}${movedFromRowNumber}`;
     const targetCoordinate = `${movingToLetter}${movingToNumber}`;
-    const allowedLetters = stoneMovements.LION[originatingCoordinate];
+    const allowedLetters = movementRules.LION[originatingCoordinate];
     // console.log(allowedLetters.includes(targetCoordinate));
     // console.log(allowedLetters.includes(targetCoordinate));
     return allowedLetters.includes(targetCoordinate);
@@ -162,7 +159,7 @@ export const canStoneMoveThisWay = ({
     const originatingCoordinate = `${movedFromColumnLetter}${movedFromRowNumber}`;
     const targetCoordinate = `${movingToLetter}${movingToNumber}`;
     const allowedLetters =
-      stoneMovements.HEN[amIOpponent ? "opponent" : "creator"][
+      movementRules.HEN[amIOpponent ? "opponent" : "creator"][
         originatingCoordinate
       ];
     // console.log(allowedLetters.includes(targetCoordinate));
@@ -183,7 +180,7 @@ export const amIStoneOwner = ({
   return currentOwner === loggedInUserUserId;
 };
 
-interface useSetStonePositionInterface {
+interface setStonePositionInterface {
   stoneId: string;
   targetPositionColumnLetter: string | columnLetterType;
   targetPositionRowNumber: number;
@@ -205,7 +202,7 @@ const translateHenToChickenStashPositioning = (
   return targetPositionColumnLetter;
 };
 
-export const useSetStonePosition = ({
+export const setStonePosition = ({
   stoneId,
   targetPositionColumnLetter,
   targetPositionRowNumber,
@@ -213,7 +210,7 @@ export const useSetStonePosition = ({
   setPositionX,
   positionY,
   setPositionY,
-}: useSetStonePositionInterface) => {
+}: setStonePositionInterface) => {
   // console.log('targetPositionColumnLetter', targetPositionColumnLetter);
   // console.log('targetPositionRowNumber', targetPositionRowNumber);
   let targetPosition = document.querySelector(

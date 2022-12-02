@@ -21,7 +21,7 @@ interface getUpdateMovesInterface {
   rowNumber: number;
 }
 
-export function getUpdatedMoves({
+function getUpdatedMoves({
   gameData,
   placedStoneId,
   placedStoneType,
@@ -49,7 +49,7 @@ export function getUpdatedMoves({
 export function trackStoneMove(
   gameData: DocumentData,
   placedStoneId: string,
-  placedStoneType: "CHICKEN" | "ELEPHANT" | "GIRAFFE" | "LION" | "HEN",
+  placedStoneType: stoneType,
   loggedInUserUserId: string,
   movedFromColumnLetter: string,
   movedFromRowNumber: number,

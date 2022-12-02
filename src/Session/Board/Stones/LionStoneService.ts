@@ -1,20 +1,5 @@
 import { StoneInterface } from "./Stone";
-import { lionConquerFields, stoneMovements } from "./StoneMovements";
-
-interface LionConquerAttemptEvaluationInputInterface {
-  stoneData: StoneInterface;
-  amIOpponent: boolean;
-  movingToLetter: string;
-  movingToNumber: number;
-  stones: StoneInterface[];
-}
-
-export interface LionConquerAttemptEvaluationOutputInterface {
-  conqueredPlayerId: string | undefined;
-  conqueringPlayerId: string | undefined;
-  endangeringOpponentStones: string[];
-  success: boolean | undefined;
-}
+import { lionConquerFields, movementRules } from "./MovementRules";
 
 function isCreatorsLionConquering(
   stoneData: StoneInterface,
@@ -66,11 +51,11 @@ function getEndangeringOpponentStones(
 ) {
   return nearbyOpponentStones.filter((stone) => {
     if (stone.type === "CHICKEN" || stone.type === "HEN") {
-      return stoneMovements[stone.type].opponent[
+      return movementRules[stone.type].opponent[
         `${stone.positionColumnLetter}${stone.positionRowNumber}`
       ].includes(targetCoordinate);
     } else {
-      return stoneMovements[stone.type][
+      return movementRules[stone.type][
         `${stone.positionColumnLetter}${stone.positionRowNumber}`
       ].includes(targetCoordinate);
     }
@@ -94,11 +79,11 @@ function getEndangeringCreatorStones(
 ) {
   return nearbyCreatorStones.filter((stone) => {
     if (stone.type === "CHICKEN" || stone.type === "HEN") {
-      return stoneMovements[stone.type].creator[
+      return movementRules[stone.type].creator[
         `${stone.positionColumnLetter}${stone.positionRowNumber}`
       ].includes(targetCoordinate);
     } else {
-      return stoneMovements[stone.type][
+      return movementRules[stone.type][
         `${stone.positionColumnLetter}${stone.positionRowNumber}`
       ].includes(targetCoordinate);
     }
@@ -118,6 +103,21 @@ function getLionConqueringResult(
       (stone) => stone.id
     ),
   };
+}
+
+interface LionConquerAttemptEvaluationInputInterface {
+  amIOpponent: boolean;
+  movingToLetter: string;
+  movingToNumber: number;
+  stoneData: StoneInterface;
+  stones: StoneInterface[];
+}
+
+export interface LionConquerAttemptEvaluationOutputInterface {
+  conqueredPlayerId: string | undefined;
+  conqueringPlayerId: string | undefined;
+  endangeringOpponentStones: string[];
+  success: boolean | undefined;
 }
 
 export const lionConquerAttemptEvaluation = ({
