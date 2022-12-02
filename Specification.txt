@@ -1,25 +1,15 @@
 =================================================================
-Refactoring and testing:
-refactor the whole game. Remaining:
--api
--session
-
-write automated tests in jest and RTL
+Write automated tests in jest and RTL
 =================================================================
 
 Next enhancements:
-Latest move should visualise also a lion takeover
 Show game LOSS/VICTORY/TIE status on game cards on launch screen
 
 Make sure stone position works correctly even when the screen is displayed as a column
 -could render stones directly in containers of fields
 -board field, stash field
 
-Moving stones should be possible not only by dragging but also by clicking, this is vital for touch devices. Or on a touch device the Board screen should not be scrollable.
-
-=================================================================
-Possible future enhancements:
-a created game can be password protected
+Moving stones should be possible not only by dragging but also by clicking, this is vital for touch devices.
 
 
 =================================================================
