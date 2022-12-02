@@ -1,102 +1,15 @@
-import { chickenTurningToHenCoordinates, movementRules } from "./MovementRules";
+import { movementRules } from "./MovementRules";
 import { StoneInterface, stoneType } from "./Stone";
 import { columnLetterType } from "../../PlayerInterface/PlayerInterfaceService";
 import { DocumentData } from "firebase/firestore";
 import { LionConquerAttemptEvaluationOutputInterface } from "./LionStoneService";
 import {
-  empowerStone,
-  handicapStone,
-  updateStoneHighlighting,
   gameStatusType,
+  updateStoneHighlighting,
   updateStoneInvisibility,
 } from "../../../api/firestore";
 import React from "react";
-
-interface getStashTargetPositionInterface {
-  type: stoneType;
-  amIOpponent: boolean;
-}
-
-export const getStashTargetPosition = ({
-  type,
-  amIOpponent,
-}: getStashTargetPositionInterface): string => {
-  if (amIOpponent) {
-    return `OPPONENT-${type}`;
-  }
-  return `CREATOR-${type}`;
-};
-
-interface shouldChickenTurnIntoHenInterface {
-  amIOpponent: boolean;
-  stashed: boolean;
-  type: stoneType;
-  movingToLetter: string;
-  movingToNumber: number;
-}
-
-export const shouldChickenTurnIntoHen = ({
-  amIOpponent,
-  stashed,
-  type,
-  movingToLetter,
-  movingToNumber,
-}: shouldChickenTurnIntoHenInterface) => {
-  if (type !== "CHICKEN") {
-    return false;
-  }
-
-  if (stashed) {
-    return false;
-  }
-
-  if (
-    amIOpponent &&
-    chickenTurningToHenCoordinates.opponent.includes(
-      `${movingToLetter}${movingToNumber}`
-    )
-  ) {
-    return true;
-  }
-
-  return (
-    !amIOpponent &&
-    chickenTurningToHenCoordinates.creator.includes(
-      `${movingToLetter}${movingToNumber}`
-    )
-  );
-};
-
-interface isItMyTurnInterface {
-  myId: string;
-  currentTurnPlayerId: string;
-}
-
-export const isItMyTurn = ({
-  myId,
-  currentTurnPlayerId,
-}: isItMyTurnInterface): boolean => {
-  return myId === currentTurnPlayerId;
-};
-
-interface nextTurnPlayerIdInterface {
-  myId: string;
-  gameData: DocumentData | undefined;
-}
-
-export const nextTurnPlayerId = ({
-  myId,
-  gameData,
-}: nextTurnPlayerIdInterface): string => {
-  if (myId === gameData?.currentPlayerTurn) {
-    let nextTurnPlayerId =
-      myId === gameData?.creatorId ? gameData?.opponentId : gameData?.creatorId;
-    // console.log('nextTurnPlayerId', nextTurnPlayerId);
-    return nextTurnPlayerId;
-  }
-  // console.log('nextTurnPlayerId', myId);
-  return myId;
-};
+import { isItMyTurn } from "../../SessionService";
 
 interface canStoneMoveThisWayInterface {
   stoneType: stoneType;
@@ -298,28 +211,6 @@ export function highlightStonesThatDefendedAttackedBase(
   });
 }
 
-export function transformChickenToHen(
-  gameData: DocumentData,
-  placedStoneId: string
-) {
-  empowerStone({
-    gameId: gameData.gameId,
-    stoneId: placedStoneId,
-    type: "HEN",
-  });
-}
-
-export function transformHenToChicken(
-  gameData: DocumentData,
-  lyingStoneId: string
-) {
-  handicapStone({
-    gameId: gameData.gameId,
-    stoneId: lyingStoneId,
-    type: "CHICKEN",
-  });
-}
-
 export function shouldShowStoneStashCountPill(
   allStones: StoneInterface[],
   currentOwner: string,
@@ -419,12 +310,4 @@ export function makeTakenLionInvisible(
 
 export function isLionGettingTaken(lyingStone: StoneInterface) {
   return lyingStone.type === "LION";
-}
-
-export function isHenGettingTaken(lyingStone: StoneInterface) {
-  return lyingStone.type === "HEN";
-}
-
-export function isChickenTakingOver(draggedStone: StoneInterface) {
-  return draggedStone.type === "CHICKEN";
 }

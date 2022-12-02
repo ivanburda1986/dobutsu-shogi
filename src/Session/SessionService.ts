@@ -3,12 +3,11 @@ import { Dispatch } from "react";
 import {
   getSingleUserStats,
   updateGame,
-  updateUserStats,
   updateGameInterface,
+  updateUserStats,
   VictoryType,
 } from "../api/firestore";
 import { GameFinishedMessageType } from "./GameFinishedMessage/GameFinishedMessageService";
-import { nextTurnPlayerId } from "./Board/Stones/StoneService";
 
 export const isGameDataAvailable = (
   gameData: DocumentData | undefined,
@@ -285,6 +284,37 @@ export function isTouchEnabled(): boolean {
 }
 
 // !!! Todo: Test coverage
+interface isItMyTurnInterface {
+  myId: string;
+  currentTurnPlayerId: string;
+}
+
+export const isItMyTurn = ({
+  myId,
+  currentTurnPlayerId,
+}: isItMyTurnInterface): boolean => {
+  return myId === currentTurnPlayerId;
+};
+
+interface nextTurnPlayerIdInterface {
+  myId: string;
+  gameData: DocumentData | undefined;
+}
+
+export const nextTurnPlayerId = ({
+  myId,
+  gameData,
+}: nextTurnPlayerIdInterface): string => {
+  if (myId === gameData?.currentPlayerTurn) {
+    let nextTurnPlayerId =
+      myId === gameData?.creatorId ? gameData?.opponentId : gameData?.creatorId;
+    // console.log('nextTurnPlayerId', nextTurnPlayerId);
+    return nextTurnPlayerId;
+  }
+  // console.log('nextTurnPlayerId', myId);
+  return myId;
+};
+
 export function switchMoveToOtherPlayer(
   gameData: DocumentData,
   loggedInUserUserId: string
