@@ -27,7 +27,7 @@ import { AppContextInterface } from "../../../App";
 import { AppContext } from "../../../context/AppContext";
 import { useParams } from "react-router";
 import { DocumentData } from "firebase/firestore";
-import { StoneStashCount } from "./StoneStashCount/StoneStashCount";
+import { StoneStashCountPill } from "./StoneStashCountPill/StoneStashCountPill";
 import { getImgReference } from "../../../images/imageRelatedService";
 import { lionConquerAttemptEvaluation } from "./LionStoneService";
 
@@ -565,7 +565,7 @@ export const Stone: FC<StoneInterface> = ({
     >
       {/*{currentOwner.substr(0, 2)}*/}
       {stashedPillCount > 1 && !hideStoneStashCount ? (
-        <StoneStashCount count={stashedPillCount} />
+        <StoneStashCountPill count={stashedPillCount} />
       ) : null}
     </div>
   );
