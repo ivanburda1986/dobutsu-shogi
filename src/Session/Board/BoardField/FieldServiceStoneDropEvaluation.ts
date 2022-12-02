@@ -175,7 +175,8 @@ export const onStoneDropCallback = ({
       setGameToComplete(
         gameData.gameId,
         conqueringPlayerId,
-        "HOMEBASE_CONQUERED_SUCCESS"
+        "HOMEBASE_CONQUERED_SUCCESS",
+        conqueredPlayerId
       );
       increaseUserLossStats(conqueredPlayerId);
       increaseUserWinStats(conqueringPlayerId);
@@ -185,7 +186,8 @@ export const onStoneDropCallback = ({
       setGameToComplete(
         gameData.gameId,
         conqueredPlayerId,
-        "HOMEBASE_CONQUERED_FAILURE"
+        "HOMEBASE_CONQUERED_FAILURE",
+        conqueredPlayerId
       );
       highlightStonesThatDefendedAttackedBase(
         lionConquerAttemptResult,

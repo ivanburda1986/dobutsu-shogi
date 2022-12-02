@@ -303,7 +303,8 @@ export function switchMoveToOtherPlayer(
 export function setGameToComplete(
   gameId: string,
   winner: string | undefined,
-  victoryType: VictoryType
+  victoryType: VictoryType,
+  nextTurnPlayerId: string | undefined
 ) {
   updateGame({
     id: gameId,
@@ -311,6 +312,8 @@ export function setGameToComplete(
       status: "COMPLETED",
       winner,
       victoryType,
+      finishedTimeStamp: Date.now(),
+      currentPlayerTurn: nextTurnPlayerId,
     },
   });
 }

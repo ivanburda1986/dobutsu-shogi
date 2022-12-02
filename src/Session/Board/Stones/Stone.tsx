@@ -22,6 +22,9 @@ import {
   rotateOponentStones,
   shouldChickenTurnIntoHen,
   setStonePosition,
+  highlightStonesThatDefendedAttackedBase,
+  transformHenToChicken,
+  transformChickenToHen,
 } from "./StoneService";
 import { AppContextInterface } from "../../../App";
 import { AppContext } from "../../../context/AppContext";
@@ -32,8 +35,14 @@ import { getImgReference } from "../../../images/imageRelatedService";
 import { lionConquerAttemptEvaluation } from "./LionStoneService";
 
 import styles from "./Stone.module.css";
-import { switchMoveToOtherPlayer } from "../../SessionService";
+import {
+  increaseUserLossStats,
+  increaseUserWinStats,
+  setGameToComplete,
+  switchMoveToOtherPlayer,
+} from "../../SessionService";
 import { trackStoneMove } from "../BoardField/FieldServiceMoveTracking";
+import { VictoryType } from "../Board";
 
 export type stoneType = "CHICKEN" | "ELEPHANT" | "GIRAFFE" | "LION" | "HEN";
 
@@ -138,6 +147,33 @@ function isDraggedStoneHoveringAboveOwnStone(
   draggedStone: StoneInterface
 ) {
   return lyingStone.currentOwner === draggedStone.currentOwner;
+}
+
+function highlightLionTakeoverStone(gameId: string | undefined, id: string) {
+  highlightStone({ gameId: gameId!, stoneId: id, highlighted: true });
+}
+
+function makeTakenLionInvisible(
+  gameId: string | undefined,
+  lyingStone: StoneInterface
+) {
+  updateStoneInvisibility({
+    gameId: gameId!,
+    stoneId: lyingStone.id,
+    invisible: true,
+  });
+}
+
+function isLionGettingTaken(lyingStone: StoneInterface) {
+  return lyingStone.type === "LION";
+}
+
+function isHenGettingTaken(lyingStone: StoneInterface) {
+  return lyingStone.type === "HEN";
+}
+
+function isChickenTakingOver(draggedStone: StoneInterface) {
+  return draggedStone.type === "CHICKEN";
 }
 
 export const Stone: FC<StoneInterface> = ({
@@ -366,64 +402,30 @@ export const Stone: FC<StoneInterface> = ({
         },
       });
 
-      // trackStoneMove(
-      //   gameData!,
-      //   draggedStone.id,
-      //   draggedStone.type,
-      //   loggedInUserUserId,
-      //   draggedStone.positionColumnLetter,
-      //   draggedStone.positionRowNumber,
-      //   lyingStone.positionColumnLetter,
-      //   lyingStone.positionRowNumber
-      // );
+      if (isLionGettingTaken(lyingStone)) {
+        setGameToComplete(
+          gameId!,
+          draggedStone.currentOwner,
+          "LION_CAUGHT_SUCCESS",
+          lyingStone.currentOwner
+        );
 
-      //Victory handling for taking a LION
-      if (lyingStone.type === "LION") {
-        updateGame({
-          id: gameId!,
-          updatedDetails: {
-            status: "COMPLETED",
-            winner: draggedStone.currentOwner,
-            victoryType: "LION_CAUGHT_SUCCESS",
-            finishedTimeStamp: Date.now(),
-            currentPlayerTurn: lyingStone.currentOwner,
-          },
-        });
-        //Update dragged stone
         updateStonePosition({
           gameId: gameId!,
           stoneId: draggedStone.id,
           positionColumnLetter: lyingStone.positionColumnLetter,
           positionRowNumber: lyingStone.positionRowNumber,
         });
-        //Highlight the taking stone to make it clear it has taken the opponents lion
-        highlightStone({ gameId: gameId!, stoneId: id, highlighted: true });
 
-        //Set the lion stone to invisible after it has been taken
-        updateStoneInvisibility({
-          gameId: gameId!,
-          stoneId: lyingStone.id,
-          invisible: true,
-        });
+        highlightLionTakeoverStone(gameId, id);
+        makeTakenLionInvisible(gameId, lyingStone);
+        increaseUserLossStats(lyingStone.originalOwner);
+        increaseUserWinStats(draggedStone.currentOwner);
 
-        getSingleUserStats({ userId: lyingStone.originalOwner }).then(
-          (serverStats) =>
-            updateStats({
-              userId: lyingStone.originalOwner,
-              updatedDetails: { loss: serverStats.data()?.loss + 1 },
-            })
-        );
-        getSingleUserStats({ userId: draggedStone.currentOwner }).then(
-          (serverStats) =>
-            updateStats({
-              userId: draggedStone.currentOwner,
-              updatedDetails: { win: serverStats.data()?.win + 1 },
-            })
-        );
         return;
       }
 
-      //Evaluate whether a lion-move is a homebase-conquer attempt and leads to a game end
+      //Evaluate whether a dragged lion taking over a stone in opponents homebase is a successful or failed conquer
       const lionConquerAttemptResult = lionConquerAttemptEvaluation({
         stoneData: draggedStone,
         amIOpponent: amIOpponent!,
@@ -431,78 +433,41 @@ export const Stone: FC<StoneInterface> = ({
         movingToNumber: lyingStone.positionRowNumber,
         stones: allStones!,
       });
-      if (lionConquerAttemptResult.success !== undefined) {
-        const { success, conqueringPlayerId, conqueredPlayerId } =
-          lionConquerAttemptResult;
-        // console.log('success', success);
-        // console.log('conqueringPlayerId', conqueringPlayerId);
-        // console.log('conqueredPlayerId', conqueredPlayerId);
-        if (success === true) {
-          updateGame({
-            id: gameId!,
-            updatedDetails: {
-              status: "COMPLETED",
-              winner: conqueringPlayerId,
-              victoryType: "HOMEBASE_CONQUERED_SUCCESS",
-            },
-          });
-          getSingleUserStats({ userId: conqueredPlayerId! }).then(
-            (serverStats) =>
-              updateStats({
-                userId: conqueredPlayerId!,
-                updatedDetails: { loss: serverStats.data()?.loss + 1 },
-              })
-          );
-          getSingleUserStats({ userId: conqueringPlayerId! }).then(
-            (serverStats) =>
-              updateStats({
-                userId: conqueringPlayerId!,
-                updatedDetails: { win: serverStats.data()?.win + 1 },
-              })
-          );
-        } else {
-          lionConquerAttemptResult.endangeringOpponentStones.forEach((id) => {
-            highlightStone({ gameId: gameId!, stoneId: id, highlighted: true });
-          });
-          updateGame({
-            id: gameId!,
-            updatedDetails: {
-              status: "COMPLETED",
-              winner: conqueredPlayerId,
-              victoryType: "HOMEBASE_CONQUERED_FAILURE",
-            },
-          });
-          getSingleUserStats({ userId: conqueringPlayerId! }).then(
-            (serverStats) =>
-              updateStats({
-                userId: conqueringPlayerId!,
-                updatedDetails: { loss: serverStats.data()?.loss + 1 },
-              })
-          );
-          getSingleUserStats({ userId: conqueredPlayerId! }).then(
-            (serverStats) =>
-              updateStats({
-                userId: conqueredPlayerId!,
-                updatedDetails: { win: serverStats.data()?.win + 1 },
-              })
-          );
-        }
+      const { conqueringPlayerId, conqueredPlayerId } =
+        lionConquerAttemptResult;
 
-        // console.log('The stone can move here');
-        // console.log('lionConquerAttemptSuccessful', lionConquerAttempt.success);
+      if (lionConquerAttemptResult.success === true) {
+        setGameToComplete(
+          gameData?.gameId,
+          conqueringPlayerId,
+          "HOMEBASE_CONQUERED_SUCCESS",
+          conqueredPlayerId
+        );
+        increaseUserLossStats(conqueredPlayerId);
+        increaseUserWinStats(conqueringPlayerId);
       }
 
-      //Special handling to handicap a HEN getting stashed
-      if (lyingStone.type === "HEN") {
-        // console.log('dis-empowering!');
-        handicapStone({
-          gameId: gameId!,
-          stoneId: lyingStone.id,
-          type: "CHICKEN",
-        });
+      if (lionConquerAttemptResult.success === false) {
+        setGameToComplete(
+          gameData?.gameId,
+          conqueredPlayerId,
+          "HOMEBASE_CONQUERED_FAILURE",
+          conqueredPlayerId
+        );
+        highlightStonesThatDefendedAttackedBase(
+          lionConquerAttemptResult,
+          gameData!
+        );
+        increaseUserLossStats(conqueringPlayerId);
+        increaseUserWinStats(conqueredPlayerId);
       }
 
-      //Update taken stone
+      switchMoveToOtherPlayer(gameData!, loggedInUserUserId);
+
+      if (isHenGettingTaken(lyingStone)) {
+        transformHenToChicken(gameData!, lyingStone.id);
+      }
+
       updateStoneOnTakeOver({
         gameId: gameId!,
         stone: {
@@ -544,39 +509,18 @@ export const Stone: FC<StoneInterface> = ({
           moves: updatedMoves,
         },
       });
-      // trackStoneMove(
-      //   gameData!,
-      //   lyingStone.id,
-      //   lyingStone.type,
-      //   loggedInUserUserId,
-      //   lyingStone.positionColumnLetter,
-      //   lyingStone.positionRowNumber,
-      //   getStashTargetPosition({
-      //     type: lyingStone.type,
-      //     amIOpponent: amIOpponent!,
-      //   }),
-      //   lyingStone.positionRowNumber
-      // );
 
-      //Special handling to empower a CHICKEN when it should become a HEN
-      if (draggedStone.type === "CHICKEN") {
-        // this turnChickenToHen could be ensapsulated in shouldChickenTurnIntoHen() which would also trigger the empowerStone()
-        let turnChickenToHen = shouldChickenTurnIntoHen({
+      if (
+        isChickenTakingOver(draggedStone) &&
+        shouldChickenTurnIntoHen({
           amIOpponent: amIOpponent!,
           type: draggedStone!.type,
           stashed: draggedStone!.stashed,
           movingToLetter: lyingStone.positionColumnLetter,
           movingToNumber: lyingStone.positionRowNumber,
-        });
-        // console.log('turnChickenToHen', turnChickenToHen);
-        if (turnChickenToHen) {
-          // console.log('empowering!');
-          empowerStone({
-            gameId: gameId!,
-            stoneId: draggedStone.id,
-            type: "HEN",
-          });
-        }
+        })
+      ) {
+        transformChickenToHen(gameData!, draggedStone.id);
       }
 
       updateStonePosition({
@@ -587,10 +531,9 @@ export const Stone: FC<StoneInterface> = ({
       });
 
       switchMoveToOtherPlayer(gameData!, loggedInUserUserId);
+    } else {
+      console.log("The stone cannot be dropped here");
     }
-
-    // console.log('Cannot drop');
-    return;
   };
 
   return (

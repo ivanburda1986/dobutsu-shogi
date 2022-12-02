@@ -3,7 +3,11 @@ import { StoneInterface, stoneType } from "./Stone";
 import { columnLetterType } from "../../PlayerInterface/PlayerInterfaceService";
 import { DocumentData } from "firebase/firestore";
 import { LionConquerAttemptEvaluationOutputInterface } from "./LionStoneService";
-import { empowerStone, highlightStone } from "../../../api/firestore";
+import {
+  empowerStone,
+  handicapStone,
+  highlightStone,
+} from "../../../api/firestore";
 
 interface getStashTargetPositionInterface {
   type: stoneType;
@@ -299,5 +303,16 @@ export function transformChickenToHen(
     gameId: gameData.gameId,
     stoneId: placedStoneId,
     type: "HEN",
+  });
+}
+
+export function transformHenToChicken(
+  gameData: DocumentData,
+  lyingStoneId: string
+) {
+  handicapStone({
+    gameId: gameData.gameId,
+    stoneId: lyingStoneId,
+    type: "CHICKEN",
   });
 }
