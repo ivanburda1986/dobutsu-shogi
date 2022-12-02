@@ -1,5 +1,9 @@
 import { StoneInterface } from "./Stone";
 import { lionConquerFields, movementRules } from "./MovementRules";
+import {
+  updateStoneHighlighting,
+  updateStoneInvisibility,
+} from "../../../api/firestore";
 
 function isCreatorsLionConquering(
   stoneData: StoneInterface,
@@ -170,3 +174,25 @@ export const lionConquerAttemptEvaluation = ({
     success: undefined,
   };
 };
+
+export function highlightLionTakeoverStone(
+  gameId: string | undefined,
+  id: string
+) {
+  updateStoneHighlighting({ gameId: gameId!, stoneId: id, highlighted: true });
+}
+
+export function makeTakenLionInvisible(
+  gameId: string | undefined,
+  lyingStone: StoneInterface
+) {
+  updateStoneInvisibility({
+    gameId: gameId!,
+    stoneId: lyingStone.id,
+    invisible: true,
+  });
+}
+
+export function isLionGettingTaken(lyingStone: StoneInterface) {
+  return lyingStone.type === "LION";
+}

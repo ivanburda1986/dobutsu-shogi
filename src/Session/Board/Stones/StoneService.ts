@@ -6,10 +6,10 @@ import { LionConquerAttemptEvaluationOutputInterface } from "./LionStoneService"
 import {
   gameStatusType,
   updateStoneHighlighting,
-  updateStoneInvisibility,
 } from "../../../api/firestore";
 import React from "react";
 import { isItMyTurn } from "../../SessionService";
+import { translateHenToChickenStashPositioning } from "../StashField/StashFieldService";
 
 interface canStoneMoveThisWayInterface {
   stoneType: stoneType;
@@ -19,6 +19,38 @@ interface canStoneMoveThisWayInterface {
   movingToNumber: number;
   amIOpponent: boolean;
   stashed: boolean;
+}
+
+function getAllowedLetters(
+  stoneType: stoneType,
+  originatingCoordinate: string,
+  amIOpponent: boolean
+) {
+  if (stoneType === "CHICKEN" || stoneType === "HEN") {
+    return movementRules[stoneType][amIOpponent ? "opponent" : "creator"][
+      originatingCoordinate
+    ];
+  }
+
+  return movementRules[stoneType][originatingCoordinate];
+}
+
+function canStoneMoveInThisDirection(
+  movedFromColumnLetter: string,
+  movedFromRowNumber: number,
+  movingToLetter: string,
+  movingToNumber: number,
+  stoneType: stoneType,
+  amIOpponent: boolean
+) {
+  const originatingCoordinate = `${movedFromColumnLetter}${movedFromRowNumber}`;
+  const targetCoordinate = `${movingToLetter}${movingToNumber}`;
+  const allowedLetters = getAllowedLetters(
+    stoneType,
+    originatingCoordinate,
+    amIOpponent
+  );
+  return allowedLetters.includes(targetCoordinate);
 }
 
 export const canDraggedStoneMoveToThisPosition = ({
@@ -34,56 +66,63 @@ export const canDraggedStoneMoveToThisPosition = ({
     if (stashed) {
       return true;
     }
-    const originatingCoordinate = `${movedFromColumnLetter}${movedFromRowNumber}`;
-    const targetCoordinate = `${movingToLetter}${movingToNumber}`;
-    // console.log('amIOpponent', amIOpponent);
-    const allowedLetters =
-      movementRules.CHICKEN[amIOpponent ? "opponent" : "creator"][
-        originatingCoordinate
-      ];
-    // console.log(allowedLetters.includes(targetCoordinate));
-    return allowedLetters.includes(targetCoordinate);
+    return canStoneMoveInThisDirection(
+      movedFromColumnLetter,
+      movedFromRowNumber,
+      movingToLetter,
+      movingToNumber,
+      stoneType,
+      amIOpponent
+    );
   }
   if (stoneType === "GIRAFFE") {
     if (stashed) {
       return true;
     }
-    const originatingCoordinate = `${movedFromColumnLetter}${movedFromRowNumber}`;
-    const targetCoordinate = `${movingToLetter}${movingToNumber}`;
-    const allowedLetters = movementRules.GIRAFFE[originatingCoordinate];
-    // console.log(allowedLetters.includes(targetCoordinate));
-    return allowedLetters.includes(targetCoordinate);
+    return canStoneMoveInThisDirection(
+      movedFromColumnLetter,
+      movedFromRowNumber,
+      movingToLetter,
+      movingToNumber,
+      stoneType,
+      amIOpponent
+    );
   }
   if (stoneType === "ELEPHANT") {
     if (stashed) {
       return true;
     }
-    const originatingCoordinate = `${movedFromColumnLetter}${movedFromRowNumber}`;
-    const targetCoordinate = `${movingToLetter}${movingToNumber}`;
-    const allowedLetters = movementRules.ELEPHANT[originatingCoordinate];
-    // console.log(allowedLetters.includes(targetCoordinate));
-    return allowedLetters.includes(targetCoordinate);
+    return canStoneMoveInThisDirection(
+      movedFromColumnLetter,
+      movedFromRowNumber,
+      movingToLetter,
+      movingToNumber,
+      stoneType,
+      amIOpponent
+    );
   }
   if (stoneType === "LION") {
-    const originatingCoordinate = `${movedFromColumnLetter}${movedFromRowNumber}`;
-    const targetCoordinate = `${movingToLetter}${movingToNumber}`;
-    const allowedLetters = movementRules.LION[originatingCoordinate];
-    // console.log(allowedLetters.includes(targetCoordinate));
-    // console.log(allowedLetters.includes(targetCoordinate));
-    return allowedLetters.includes(targetCoordinate);
+    return canStoneMoveInThisDirection(
+      movedFromColumnLetter,
+      movedFromRowNumber,
+      movingToLetter,
+      movingToNumber,
+      stoneType,
+      amIOpponent
+    );
   }
   if (stoneType === "HEN") {
     if (stashed) {
       return true;
     }
-    const originatingCoordinate = `${movedFromColumnLetter}${movedFromRowNumber}`;
-    const targetCoordinate = `${movingToLetter}${movingToNumber}`;
-    const allowedLetters =
-      movementRules.HEN[amIOpponent ? "opponent" : "creator"][
-        originatingCoordinate
-      ];
-    // console.log(allowedLetters.includes(targetCoordinate));
-    return allowedLetters.includes(targetCoordinate);
+    return canStoneMoveInThisDirection(
+      movedFromColumnLetter,
+      movedFromRowNumber,
+      movingToLetter,
+      movingToNumber,
+      stoneType,
+      amIOpponent
+    );
   }
   return false;
 };
@@ -110,18 +149,6 @@ interface setStonePositionInterface {
   setPositionY: (position: number) => void;
 }
 
-const translateHenToChickenStashPositioning = (
-  targetPositionColumnLetter: columnLetterType | string
-) => {
-  if (targetPositionColumnLetter === "OPPONENT-HEN") {
-    return "OPPONENT-CHICKEN";
-  }
-  if (targetPositionColumnLetter === "CREATOR-HEN") {
-    return "CREATOR-CHICKEN";
-  }
-  return targetPositionColumnLetter;
-};
-
 export const setStonePosition = ({
   stoneId,
   targetPositionColumnLetter,
@@ -131,18 +158,13 @@ export const setStonePosition = ({
   positionY,
   setPositionY,
 }: setStonePositionInterface) => {
-  // console.log('targetPositionColumnLetter', targetPositionColumnLetter);
-  // console.log('targetPositionRowNumber', targetPositionRowNumber);
   let targetPosition = document.querySelector(
     `[data-column-letter=${translateHenToChickenStashPositioning(
       targetPositionColumnLetter
     )}][data-row-number="${targetPositionRowNumber}"]`
   );
   let stone = document.getElementById(stoneId)?.getBoundingClientRect();
-
-  //console.log('targetPosition', targetPosition);
   let rect = targetPosition?.getBoundingClientRect();
-  //console.log('rect', rect);
 
   setPositionX(Math.floor(rect!.left + (rect!.width - stone!.width) / 2));
   setPositionY(Math.floor(rect!.top + (rect!.height - stone!.height) / 2));
@@ -151,17 +173,17 @@ export const setStonePosition = ({
   div!.style.top = positionY + "px";
 };
 
-interface rotateOponentStonesInterface {
+interface rotateOpponentStonesInterface {
   currentOwner: string;
   loggedInUserUserId: string;
   setRotateDegrees: (numberOfDegrees: number) => void;
 }
 
-export const rotateOponentStones = ({
+export const rotateOpponentStones = ({
   currentOwner,
   loggedInUserUserId,
   setRotateDegrees,
-}: rotateOponentStonesInterface) => {
+}: rotateOpponentStonesInterface) => {
   if (!currentOwner || !loggedInUserUserId) {
     return setRotateDegrees(0);
   }
@@ -288,26 +310,4 @@ export function isDraggedStoneHoveringAboveOwnStone(
   draggedStone: StoneInterface
 ) {
   return lyingStone.currentOwner === draggedStone.currentOwner;
-}
-
-export function highlightLionTakeoverStone(
-  gameId: string | undefined,
-  id: string
-) {
-  updateStoneHighlighting({ gameId: gameId!, stoneId: id, highlighted: true });
-}
-
-export function makeTakenLionInvisible(
-  gameId: string | undefined,
-  lyingStone: StoneInterface
-) {
-  updateStoneInvisibility({
-    gameId: gameId!,
-    stoneId: lyingStone.id,
-    invisible: true,
-  });
-}
-
-export function isLionGettingTaken(lyingStone: StoneInterface) {
-  return lyingStone.type === "LION";
 }
