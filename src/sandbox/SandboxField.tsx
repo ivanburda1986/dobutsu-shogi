@@ -1,16 +1,14 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent } from "react";
 import styles from "./SandboxField.module.css";
 import { SandboxStone } from "./SandboxStone";
 import { sandboxDefaultStoneInterface } from "./Sandbox";
 
 interface Props {
   name: string;
-  setStonesToRender: Function;
-  stonesToRender: sandboxDefaultStoneInterface[];
-
-  setDraggingOverId: Function;
-
   draggingOverId: string | undefined;
+  setDraggingOverId: Function;
+  stonesToRender: sandboxDefaultStoneInterface[];
+  setStonesToRender: Function;
 }
 
 function getRelatedStoneData(
@@ -25,10 +23,10 @@ function getRelatedStoneData(
 
 export const SandboxField: FunctionComponent<Props> = ({
   name,
-  setStonesToRender,
-  stonesToRender,
-  setDraggingOverId,
   draggingOverId,
+  setDraggingOverId,
+  stonesToRender,
+  setStonesToRender,
 }) => {
   function onDragOverHandler(event: React.DragEvent<HTMLDivElement>) {
     setDraggingOverId(name);
@@ -46,7 +44,6 @@ export const SandboxField: FunctionComponent<Props> = ({
         <SandboxStone
           id={thisStone.id}
           background={thisStone.background}
-          name={thisStone.name}
           stonesToRender={stonesToRender}
           setStonesToRender={setStonesToRender}
           draggingOverId={draggingOverId}

@@ -1,4 +1,4 @@
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, useState } from "react";
 import { SandboxField } from "./SandboxField";
 import styles from "./Sandbox.module.css";
 
@@ -38,6 +38,7 @@ export const Sandbox: FunctionComponent = () => {
     },
     { id: "stone3", background: "gold", name: "chicken", parent: "field3" },
   ]);
+
   const [draggingOverId, setDraggingOverId] = useState<string | undefined>();
   useState<sandboxDefaultStoneInterface>();
 

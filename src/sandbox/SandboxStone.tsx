@@ -5,16 +5,13 @@ import { sandboxDefaultStoneInterface } from "./Sandbox";
 export interface sandboxStoneInterface {
   id: string;
   background: string;
-  name: string;
   stonesToRender: sandboxDefaultStoneInterface[];
   setStonesToRender: Function;
-
   draggingOverId: string | undefined;
 }
 
 export const SandboxStone: FunctionComponent<sandboxStoneInterface> = ({
   id,
-  name,
   background,
   stonesToRender,
   setStonesToRender,
