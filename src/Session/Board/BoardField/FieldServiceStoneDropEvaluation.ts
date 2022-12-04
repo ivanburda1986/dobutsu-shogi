@@ -6,8 +6,6 @@ import {
 import {
   canDraggedStoneMoveToThisPosition,
   highlightStonesThatDefendedAttackedBase,
-  shouldChickenTurnIntoHen,
-  transformChickenToHen,
 } from "../Stones/StoneService";
 import {
   lionConquerAttemptEvaluation,
@@ -21,6 +19,10 @@ import {
   setGameToComplete,
   switchMoveToOtherPlayer,
 } from "../../SessionService";
+import {
+  shouldChickenTurnIntoHen,
+  transformChickenToHen,
+} from "../Stones/ChickenStoneService";
 
 function isFieldEmpty(
   movingToLetter: string,
@@ -172,23 +174,23 @@ export const onStoneDropCallback = ({
 
     const { conqueringPlayerId, conqueredPlayerId } = lionConquerAttemptResult;
     if (lionConquerAttemptResult.success === true) {
-      setGameToComplete(
-        gameData.gameId,
-        conqueringPlayerId,
-        "HOMEBASE_CONQUERED_SUCCESS",
-        conqueredPlayerId
-      );
+      setGameToComplete({
+        gameId: gameData.gameId,
+        winner: conqueringPlayerId,
+        victoryType: "HOMEBASE_CONQUERED_SUCCESS",
+        nextTurnPlayerId: conqueredPlayerId,
+      });
       increaseUserLossStats(conqueredPlayerId);
       increaseUserWinStats(conqueringPlayerId);
     }
 
     if (lionConquerAttemptResult.success === false) {
-      setGameToComplete(
-        gameData.gameId,
-        conqueredPlayerId,
-        "HOMEBASE_CONQUERED_FAILURE",
-        conqueredPlayerId
-      );
+      setGameToComplete({
+        gameId: gameData.gameId,
+        winner: conqueredPlayerId,
+        victoryType: "HOMEBASE_CONQUERED_FAILURE",
+        nextTurnPlayerId: conqueredPlayerId,
+      });
       highlightStonesThatDefendedAttackedBase(
         lionConquerAttemptResult,
         gameData

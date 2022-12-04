@@ -1,0 +1,7 @@
+.Sandbox {
+    display: grid;
+    width: 300px;
+    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 0;
+}

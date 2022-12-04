@@ -4,32 +4,21 @@ import {
   updateGame,
   updateStoneOnTakeOver,
   updateStonePosition,
-  updateUserStats,
 } from "../../../api/firestore";
 import {
   canDraggedStoneMoveToThisPosition,
   canStoneBeDragged,
   getDragStartAction,
   getStashedStonePillCount,
-  getStashTargetPosition,
   getStone,
-  highlightLionTakeoverStone,
-  highlightStonesThatDefendedAttackedBase,
-  isChickenTakingOver,
   isDraggedStoneComingFromStash,
   isDraggedStoneHoveringAboveOwnStone,
   isDraggedStoneStillAboveItself,
-  isHenGettingTaken,
-  isLionGettingTaken,
-  makeTakenLionInvisible,
-  rotateOponentStones,
+  rotateOpponentStones,
   setStonePosition,
-  shouldChickenTurnIntoHen,
   shouldHighlightStone,
   shouldMakeStoneInvisible,
   shouldShowStoneStashCountPill,
-  transformChickenToHen,
-  transformHenToChicken,
 } from "./StoneService";
 import { AppContextInterface } from "../../../App";
 import { AppContext } from "../../../context/AppContext";
@@ -37,7 +26,12 @@ import { useParams } from "react-router";
 import { DocumentData } from "firebase/firestore";
 import { StoneStashCountPill } from "./StoneStashCountPill/StoneStashCountPill";
 import { getImgReference } from "../../../images/imageRelatedService";
-import { lionConquerAttemptEvaluation } from "./LionStoneService";
+import {
+  evaluateLionConquerAttempt,
+  highlightLionTakeoverStone,
+  isLionGettingTaken,
+  makeTakenLionInvisible,
+} from "./LionStoneService";
 
 import {
   increaseUserLossStats,
@@ -45,6 +39,14 @@ import {
   setGameToComplete,
   switchMoveToOtherPlayer,
 } from "../../SessionService";
+import { getStashTargetPosition } from "../StashField/StashFieldService";
+import {
+  isChickenTakingOver,
+  isHenGettingTaken,
+  shouldChickenTurnIntoHen,
+  transformChickenToHen,
+  transformHenToChicken,
+} from "./ChickenStoneService";
 import styles from "./Stone.module.css";
 
 export type stoneType = "CHICKEN" | "ELEPHANT" | "GIRAFFE" | "LION" | "HEN";
@@ -96,13 +98,12 @@ export const Stone: FC<StoneInterface> = ({
 }) => {
   const { loggedInUserUserId }: AppContextInterface = useContext(AppContext);
   const { gameId } = useParams();
-  const [rotateDegrees, setRotateDegrees] = useState<number>(0);
   const [positionX, setPositionX] = useState<number>(0);
   const [positionY, setPositionY] = useState<number>(0);
-  const [hideStoneStashCountPill, setHideStoneStashCountPill] =
-    useState<boolean>(false);
   const [screenWidth, setScreenWidth] = useState<number>();
   const [screenHeight, setScreenHeight] = useState<number>();
+  const [hideStoneStashCountPill, setHideStoneStashCountPill] =
+    useState<boolean>(false);
   const [isHighlighted, setIsHighlighted] = useState<boolean>(false);
   const [isInvisible, setIsInvisible] = useState<boolean>(false);
   const stashedPillCount = getStashedStonePillCount({
@@ -111,6 +112,38 @@ export const Stone: FC<StoneInterface> = ({
     stashed,
     type,
   });
+
+  useEffect(() => {
+    setStonePosition({
+      stoneId: id,
+      targetPositionColumnLetter: positionColumnLetter,
+      targetPositionRowNumber: positionRowNumber,
+      positionX,
+      positionY,
+      setPositionX,
+      setPositionY,
+    });
+    return () => {
+      console.log("Stone cleanup");
+    };
+  }, [
+    id,
+    positionColumnLetter,
+    positionRowNumber,
+    positionX,
+    positionY,
+    screenHeight,
+    screenWidth,
+  ]);
+
+  useEffect(() => {
+    const stone: StoneInterface[] = getStone(allStones, id);
+    shouldHighlightStone(stone) && setIsHighlighted(true);
+    shouldMakeStoneInvisible(stone) && setIsInvisible(true);
+    return () => {
+      console.log("Stone cleanup");
+    };
+  }, [allStones, id]);
 
   // Make sure stones are in place even after change of the UI size and appearance of new elements
   function onResizeHandler({
@@ -130,59 +163,6 @@ export const Stone: FC<StoneInterface> = ({
       newWidth: window.innerWidth,
     })
   );
-
-  useEffect(() => {
-    setStonePosition({
-      stoneId: id,
-      targetPositionColumnLetter: positionColumnLetter,
-      targetPositionRowNumber: positionRowNumber,
-      positionX,
-      positionY,
-      setPositionX,
-      setPositionY,
-    });
-  }, [
-    id,
-    positionColumnLetter,
-    positionRowNumber,
-    positionX,
-    positionY,
-    screenHeight,
-    screenWidth,
-    setStonePosition,
-  ]);
-
-  useEffect(() => {
-    setStonePosition({
-      stoneId: id,
-      targetPositionColumnLetter: positionColumnLetter,
-      targetPositionRowNumber: positionRowNumber,
-      positionX,
-      positionY,
-      setPositionX,
-      setPositionY,
-    });
-    rotateOponentStones({
-      currentOwner: currentOwner,
-      loggedInUserUserId: loggedInUserUserId,
-      setRotateDegrees,
-    });
-  }, [
-    id,
-    positionColumnLetter,
-    positionRowNumber,
-    positionX,
-    positionY,
-    amIOpponent,
-    rowNumbers,
-    columnLetters,
-  ]);
-
-  useEffect(() => {
-    const stone: StoneInterface[] = getStone(allStones, id);
-    shouldHighlightStone(stone) && setIsHighlighted(true);
-    shouldMakeStoneInvisible(stone) && setIsInvisible(true);
-  }, [allStones, id]);
 
   function onDragStartHandler(event: React.DragEvent<HTMLDivElement>) {
     event.dataTransfer.setData("placedStoneId", id);
@@ -299,12 +279,12 @@ export const Stone: FC<StoneInterface> = ({
       });
 
       if (isLionGettingTaken(lyingStone)) {
-        setGameToComplete(
-          gameId!,
-          draggedStone.currentOwner,
-          "LION_CAUGHT_SUCCESS",
-          lyingStone.currentOwner
-        );
+        setGameToComplete({
+          gameId: gameData?.gameId,
+          winner: draggedStone.currentOwner,
+          victoryType: "LION_CAUGHT_SUCCESS",
+          nextTurnPlayerId: lyingStone.currentOwner,
+        });
 
         updateStonePosition({
           gameId: gameId!,
@@ -321,48 +301,20 @@ export const Stone: FC<StoneInterface> = ({
         return;
       }
 
-      //Evaluate whether a dragged lion taking over a stone in opponents homebase is a successful or failed conquer
-      const lionConquerAttemptResult = lionConquerAttemptEvaluation({
-        stoneData: draggedStone,
-        amIOpponent: amIOpponent!,
-        movingToLetter: lyingStone.positionColumnLetter,
-        movingToNumber: lyingStone.positionRowNumber,
-        stones: allStones!,
-      });
-      const { conqueringPlayerId, conqueredPlayerId } =
-        lionConquerAttemptResult;
-
-      if (lionConquerAttemptResult.success === true) {
-        setGameToComplete(
-          gameData?.gameId,
-          conqueringPlayerId,
-          "HOMEBASE_CONQUERED_SUCCESS",
-          conqueredPlayerId
-        );
-        increaseUserLossStats(conqueredPlayerId);
-        increaseUserWinStats(conqueringPlayerId);
-      }
-
-      if (lionConquerAttemptResult.success === false) {
-        setGameToComplete(
-          gameData?.gameId,
-          conqueredPlayerId,
-          "HOMEBASE_CONQUERED_FAILURE",
-          conqueredPlayerId
-        );
-        highlightStonesThatDefendedAttackedBase(
-          lionConquerAttemptResult,
-          gameData!
-        );
-        increaseUserLossStats(conqueringPlayerId);
-        increaseUserWinStats(conqueredPlayerId);
-      }
-
-      switchMoveToOtherPlayer(gameData!, loggedInUserUserId);
+      evaluateLionConquerAttempt(
+        draggedStone,
+        amIOpponent,
+        lyingStone,
+        allStones,
+        gameData,
+        setGameToComplete
+      );
 
       if (isHenGettingTaken(lyingStone)) {
         transformHenToChicken(gameData!, lyingStone.id);
       }
+
+      switchMoveToOtherPlayer(gameData!, loggedInUserUserId);
 
       updateStoneOnTakeOver({
         gameId: gameId!,
@@ -451,7 +403,10 @@ export const Stone: FC<StoneInterface> = ({
       onDragEnd={onDropHandler}
       style={{
         backgroundImage: `url(${getImgReference(type)})`,
-        transform: `rotate(${rotateDegrees}deg)`,
+        transform: `rotate(${rotateOpponentStones({
+          currentOwner: currentOwner,
+          loggedInUserUserId: loggedInUserUserId,
+        })}deg)`,
       }}
       className={`${styles.Stone} ${isHighlighted && styles.Highlighted} ${
         isInvisible && styles.Invisible

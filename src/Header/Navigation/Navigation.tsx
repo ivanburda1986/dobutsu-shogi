@@ -18,9 +18,9 @@ export const Navigation: FC<
       className={`${styles.Navigation} d-none d-md-flex flex-row justify-content-between align-items-center mb-2`}
     >
       <div>
-        <NavLink to="/" className="btn">
-          <button type="button" className="btn btn-success fs4">
-            Dobutsu Shogi
+        <NavLink to="/" className="btn border-0">
+          <button type="button" className={`btn btn-success fs4`}>
+            Shogi Overview
           </button>
         </NavLink>
         {userLoggedIn && (

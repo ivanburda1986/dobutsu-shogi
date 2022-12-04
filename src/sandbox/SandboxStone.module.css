@@ -1,0 +1,10 @@
+.sandboxStone {
+    height: 80px;
+    width: 80px;
+    border-radius: 10px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+}

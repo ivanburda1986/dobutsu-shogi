@@ -1,0 +1,9 @@
+.sandboxField {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    width: 100px;
+    border: 2px solid blue;
+    margin: 1px;
+}

@@ -1,5 +1,16 @@
 import { StoneInterface } from "./Stone";
 import { lionConquerFields, movementRules } from "./MovementRules";
+import {
+  updateStoneHighlighting,
+  updateStoneInvisibility,
+} from "../../../api/firestore";
+import { DocumentData } from "firebase/firestore";
+import {
+  increaseUserLossStats,
+  increaseUserWinStats,
+  setGameToCompleteInputInterface,
+} from "../../SessionService";
+import { highlightStonesThatDefendedAttackedBase } from "./StoneService";
 
 function isCreatorsLionConquering(
   stoneData: StoneInterface,
@@ -170,3 +181,69 @@ export const lionConquerAttemptEvaluation = ({
     success: undefined,
   };
 };
+
+export function highlightLionTakeoverStone(
+  gameId: string | undefined,
+  id: string
+) {
+  updateStoneHighlighting({ gameId: gameId!, stoneId: id, highlighted: true });
+}
+
+export function makeTakenLionInvisible(
+  gameId: string | undefined,
+  lyingStone: StoneInterface
+) {
+  updateStoneInvisibility({
+    gameId: gameId!,
+    stoneId: lyingStone.id,
+    invisible: true,
+  });
+}
+
+export function isLionGettingTaken(lyingStone: StoneInterface) {
+  return lyingStone.type === "LION";
+}
+
+export function evaluateLionConquerAttempt(
+  draggedStone: StoneInterface,
+  amIOpponent: undefined | boolean,
+  lyingStone: StoneInterface,
+  allStones: StoneInterface[],
+  gameData: DocumentData | undefined,
+  setGameToComplete: (input: setGameToCompleteInputInterface) => void
+) {
+  const lionConquerAttemptResult = lionConquerAttemptEvaluation({
+    stoneData: draggedStone,
+    amIOpponent: amIOpponent!,
+    movingToLetter: lyingStone.positionColumnLetter,
+    movingToNumber: lyingStone.positionRowNumber,
+    stones: allStones!,
+  });
+  const { conqueringPlayerId, conqueredPlayerId } = lionConquerAttemptResult;
+
+  if (lionConquerAttemptResult.success === true) {
+    setGameToComplete({
+      gameId: gameData?.gameId,
+      winner: conqueringPlayerId,
+      victoryType: "HOMEBASE_CONQUERED_SUCCESS",
+      nextTurnPlayerId: conqueredPlayerId,
+    });
+    increaseUserLossStats(conqueredPlayerId);
+    increaseUserWinStats(conqueringPlayerId);
+  }
+
+  if (lionConquerAttemptResult.success === false) {
+    setGameToComplete({
+      gameId: gameData?.gameId,
+      winner: conqueredPlayerId,
+      victoryType: "HOMEBASE_CONQUERED_FAILURE",
+      nextTurnPlayerId: conqueredPlayerId,
+    });
+    highlightStonesThatDefendedAttackedBase(
+      lionConquerAttemptResult,
+      gameData!
+    );
+    increaseUserLossStats(conqueringPlayerId);
+    increaseUserWinStats(conqueredPlayerId);
+  }
+}
