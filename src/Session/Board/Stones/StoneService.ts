@@ -176,25 +176,23 @@ export const setStonePosition = ({
 interface rotateOpponentStonesInterface {
   currentOwner: string;
   loggedInUserUserId: string;
-  setRotateDegrees: (numberOfDegrees: number) => void;
 }
 
 export const rotateOpponentStones = ({
   currentOwner,
   loggedInUserUserId,
-  setRotateDegrees,
 }: rotateOpponentStonesInterface) => {
   if (!currentOwner || !loggedInUserUserId) {
-    return setRotateDegrees(0);
+    return 0;
   }
   if (currentOwner === loggedInUserUserId) {
-    return setRotateDegrees(0);
+    return 0;
   }
   if (currentOwner !== loggedInUserUserId) {
-    return setRotateDegrees(180);
+    return 180;
   }
 
-  return setRotateDegrees(0);
+  return 0;
 };
 
 interface getStashedStonePillCountInterface {

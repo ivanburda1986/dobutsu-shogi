@@ -4,7 +4,6 @@ import {
   updateGame,
   updateStoneOnTakeOver,
   updateStonePosition,
-  updateUserStats,
 } from "../../../api/firestore";
 import {
   canDraggedStoneMoveToThisPosition,
@@ -41,7 +40,6 @@ import {
   setGameToComplete,
   switchMoveToOtherPlayer,
 } from "../../SessionService";
-import styles from "./Stone.module.css";
 import { getStashTargetPosition } from "../StashField/StashFieldService";
 import {
   isChickenTakingOver,
@@ -50,6 +48,7 @@ import {
   transformChickenToHen,
   transformHenToChicken,
 } from "./ChickenStoneService";
+import styles from "./Stone.module.css";
 
 export type stoneType = "CHICKEN" | "ELEPHANT" | "GIRAFFE" | "LION" | "HEN";
 
@@ -145,6 +144,9 @@ export const Stone: FC<StoneInterface> = ({
       setPositionX,
       setPositionY,
     });
+    return () => {
+      console.log("Stone cleanup");
+    };
   }, [
     id,
     positionColumnLetter,
@@ -153,39 +155,15 @@ export const Stone: FC<StoneInterface> = ({
     positionY,
     screenHeight,
     screenWidth,
-    setStonePosition,
-  ]);
-
-  useEffect(() => {
-    setStonePosition({
-      stoneId: id,
-      targetPositionColumnLetter: positionColumnLetter,
-      targetPositionRowNumber: positionRowNumber,
-      positionX,
-      positionY,
-      setPositionX,
-      setPositionY,
-    });
-    rotateOpponentStones({
-      currentOwner: currentOwner,
-      loggedInUserUserId: loggedInUserUserId,
-      setRotateDegrees,
-    });
-  }, [
-    id,
-    positionColumnLetter,
-    positionRowNumber,
-    positionX,
-    positionY,
-    amIOpponent,
-    rowNumbers,
-    columnLetters,
   ]);
 
   useEffect(() => {
     const stone: StoneInterface[] = getStone(allStones, id);
     shouldHighlightStone(stone) && setIsHighlighted(true);
     shouldMakeStoneInvisible(stone) && setIsInvisible(true);
+    return () => {
+      console.log("Stone cleanup");
+    };
   }, [allStones, id]);
 
   function onDragStartHandler(event: React.DragEvent<HTMLDivElement>) {
@@ -455,7 +433,10 @@ export const Stone: FC<StoneInterface> = ({
       onDragEnd={onDropHandler}
       style={{
         backgroundImage: `url(${getImgReference(type)})`,
-        transform: `rotate(${rotateDegrees}deg)`,
+        transform: `rotate(${rotateOpponentStones({
+          currentOwner: currentOwner,
+          loggedInUserUserId: loggedInUserUserId,
+        })}deg)`,
       }}
       className={`${styles.Stone} ${isHighlighted && styles.Highlighted} ${
         isInvisible && styles.Invisible

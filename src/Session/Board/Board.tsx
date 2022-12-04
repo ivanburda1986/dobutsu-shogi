@@ -39,6 +39,9 @@ export const Board: FC<BoardInterface> = ({ gameData }) => {
 
   useEffect(() => {
     listenToStonePositionChange({ updateState: setStones, gameId: gameId });
+    return () => {
+      console.log("Board cleanup");
+    };
   }, [gameId]);
 
   return (
