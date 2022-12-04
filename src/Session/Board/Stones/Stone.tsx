@@ -11,7 +11,6 @@ import {
   getDragStartAction,
   getStashedStonePillCount,
   getStone,
-  highlightStonesThatDefendedAttackedBase,
   isDraggedStoneComingFromStash,
   isDraggedStoneHoveringAboveOwnStone,
   isDraggedStoneStillAboveItself,
@@ -28,9 +27,9 @@ import { DocumentData } from "firebase/firestore";
 import { StoneStashCountPill } from "./StoneStashCountPill/StoneStashCountPill";
 import { getImgReference } from "../../../images/imageRelatedService";
 import {
+  evaluateLionConquerAttempt,
   highlightLionTakeoverStone,
   isLionGettingTaken,
-  lionConquerAttemptEvaluation,
   makeTakenLionInvisible,
 } from "./LionStoneService";
 
@@ -99,13 +98,12 @@ export const Stone: FC<StoneInterface> = ({
 }) => {
   const { loggedInUserUserId }: AppContextInterface = useContext(AppContext);
   const { gameId } = useParams();
-  const [rotateDegrees, setRotateDegrees] = useState<number>(0);
   const [positionX, setPositionX] = useState<number>(0);
   const [positionY, setPositionY] = useState<number>(0);
-  const [hideStoneStashCountPill, setHideStoneStashCountPill] =
-    useState<boolean>(false);
   const [screenWidth, setScreenWidth] = useState<number>();
   const [screenHeight, setScreenHeight] = useState<number>();
+  const [hideStoneStashCountPill, setHideStoneStashCountPill] =
+    useState<boolean>(false);
   const [isHighlighted, setIsHighlighted] = useState<boolean>(false);
   const [isInvisible, setIsInvisible] = useState<boolean>(false);
   const stashedPillCount = getStashedStonePillCount({
@@ -114,25 +112,6 @@ export const Stone: FC<StoneInterface> = ({
     stashed,
     type,
   });
-
-  // Make sure stones are in place even after change of the UI size and appearance of new elements
-  function onResizeHandler({
-    newHeight,
-    newWidth,
-  }: {
-    newHeight: number;
-    newWidth: number;
-  }) {
-    setScreenHeight(newHeight);
-    setScreenWidth(newWidth);
-  }
-
-  window.addEventListener("resize", () =>
-    onResizeHandler({
-      newHeight: window.innerHeight,
-      newWidth: window.innerWidth,
-    })
-  );
 
   useEffect(() => {
     setStonePosition({
@@ -165,6 +144,25 @@ export const Stone: FC<StoneInterface> = ({
       console.log("Stone cleanup");
     };
   }, [allStones, id]);
+
+  // Make sure stones are in place even after change of the UI size and appearance of new elements
+  function onResizeHandler({
+    newHeight,
+    newWidth,
+  }: {
+    newHeight: number;
+    newWidth: number;
+  }) {
+    setScreenHeight(newHeight);
+    setScreenWidth(newWidth);
+  }
+
+  window.addEventListener("resize", () =>
+    onResizeHandler({
+      newHeight: window.innerHeight,
+      newWidth: window.innerWidth,
+    })
+  );
 
   function onDragStartHandler(event: React.DragEvent<HTMLDivElement>) {
     event.dataTransfer.setData("placedStoneId", id);
@@ -281,12 +279,12 @@ export const Stone: FC<StoneInterface> = ({
       });
 
       if (isLionGettingTaken(lyingStone)) {
-        setGameToComplete(
-          gameId!,
-          draggedStone.currentOwner,
-          "LION_CAUGHT_SUCCESS",
-          lyingStone.currentOwner
-        );
+        setGameToComplete({
+          gameId: gameData?.gameId,
+          winner: draggedStone.currentOwner,
+          victoryType: "LION_CAUGHT_SUCCESS",
+          nextTurnPlayerId: lyingStone.currentOwner,
+        });
 
         updateStonePosition({
           gameId: gameId!,
@@ -303,48 +301,20 @@ export const Stone: FC<StoneInterface> = ({
         return;
       }
 
-      //Evaluate whether a dragged lion taking over a stone in opponents homebase is a successful or failed conquer
-      const lionConquerAttemptResult = lionConquerAttemptEvaluation({
-        stoneData: draggedStone,
-        amIOpponent: amIOpponent!,
-        movingToLetter: lyingStone.positionColumnLetter,
-        movingToNumber: lyingStone.positionRowNumber,
-        stones: allStones!,
-      });
-      const { conqueringPlayerId, conqueredPlayerId } =
-        lionConquerAttemptResult;
-
-      if (lionConquerAttemptResult.success === true) {
-        setGameToComplete(
-          gameData?.gameId,
-          conqueringPlayerId,
-          "HOMEBASE_CONQUERED_SUCCESS",
-          conqueredPlayerId
-        );
-        increaseUserLossStats(conqueredPlayerId);
-        increaseUserWinStats(conqueringPlayerId);
-      }
-
-      if (lionConquerAttemptResult.success === false) {
-        setGameToComplete(
-          gameData?.gameId,
-          conqueredPlayerId,
-          "HOMEBASE_CONQUERED_FAILURE",
-          conqueredPlayerId
-        );
-        highlightStonesThatDefendedAttackedBase(
-          lionConquerAttemptResult,
-          gameData!
-        );
-        increaseUserLossStats(conqueringPlayerId);
-        increaseUserWinStats(conqueredPlayerId);
-      }
-
-      switchMoveToOtherPlayer(gameData!, loggedInUserUserId);
+      evaluateLionConquerAttempt(
+        draggedStone,
+        amIOpponent,
+        lyingStone,
+        allStones,
+        gameData,
+        setGameToComplete
+      );
 
       if (isHenGettingTaken(lyingStone)) {
         transformHenToChicken(gameData!, lyingStone.id);
       }
+
+      switchMoveToOtherPlayer(gameData!, loggedInUserUserId);
 
       updateStoneOnTakeOver({
         gameId: gameId!,

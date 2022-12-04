@@ -330,12 +330,19 @@ export function switchMoveToOtherPlayer(
   });
 }
 
-export function setGameToComplete(
-  gameId: string,
-  winner: string | undefined,
-  victoryType: VictoryType,
-  nextTurnPlayerId: string | undefined
-) {
+export interface setGameToCompleteInputInterface {
+  gameId: string;
+  winner: string | undefined;
+  victoryType: VictoryType;
+  nextTurnPlayerId: string | undefined;
+}
+
+export function setGameToComplete({
+  gameId,
+  winner,
+  victoryType,
+  nextTurnPlayerId,
+}: setGameToCompleteInputInterface) {
   updateGame({
     id: gameId,
     updatedDetails: {
