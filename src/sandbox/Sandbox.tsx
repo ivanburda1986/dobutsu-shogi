@@ -38,10 +38,8 @@ export const Sandbox: FunctionComponent = () => {
     },
     { id: "stone3", background: "gold", name: "chicken", parent: "field3" },
   ]);
-  const [movingStoneId, setMovingStoneId] = useState<string | undefined>();
   const [draggingOverId, setDraggingOverId] = useState<string | undefined>();
-  const [draggingFinished, setDraggingFinished] =
-    useState<sandboxDefaultStoneInterface>();
+  useState<sandboxDefaultStoneInterface>();
 
   return (
     <div id="sandboxBoard" className={styles.Sandbox}>
@@ -53,9 +51,7 @@ export const Sandbox: FunctionComponent = () => {
               name={field}
               stonesToRender={stonesToRender}
               setStonesToRender={setStonesToRender}
-              setMovingStoneId={setMovingStoneId}
               setDraggingOverId={setDraggingOverId}
-              setDraggingFinished={setDraggingFinished}
               draggingOverId={draggingOverId}
             />
           );

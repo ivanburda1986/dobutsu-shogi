@@ -8,8 +8,7 @@ export interface sandboxStoneInterface {
   name: string;
   stonesToRender: sandboxDefaultStoneInterface[];
   setStonesToRender: Function;
-  setMovingStoneId?: Function;
-  setDraggingFinished: Function;
+
   draggingOverId: string | undefined;
 }
 
@@ -19,25 +18,15 @@ export const SandboxStone: FunctionComponent<sandboxStoneInterface> = ({
   background,
   stonesToRender,
   setStonesToRender,
-  setMovingStoneId,
-  setDraggingFinished,
   draggingOverId,
 }) => {
-  function onDragStartHandler(event: React.DragEvent<HTMLDivElement>) {
-    setDraggingFinished(false);
-    setMovingStoneId && setMovingStoneId(id);
-    return;
-  }
-
   function onDragEndHandler(event: React.DragEvent<HTMLDivElement>) {
-    console.log("draggingOverId", draggingOverId);
     const updatedStones = stonesToRender.map((item) => {
       if (item.id === id) {
         return { ...item, parent: draggingOverId };
       }
       return item;
     }) as sandboxDefaultStoneInterface[];
-    console.log(updatedStones);
     setStonesToRender(updatedStones);
     return;
   }
@@ -48,7 +37,6 @@ export const SandboxStone: FunctionComponent<sandboxStoneInterface> = ({
       draggable
       className={styles.sandboxStone}
       style={{ background: background }}
-      onDragStart={onDragStartHandler}
       onDragEnd={onDragEndHandler}
     ></div>
   );

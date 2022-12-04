@@ -7,9 +7,9 @@ interface Props {
   name: string;
   setStonesToRender: Function;
   stonesToRender: sandboxDefaultStoneInterface[];
-  setMovingStoneId: Function;
+
   setDraggingOverId: Function;
-  setDraggingFinished: Function;
+
   draggingOverId: string | undefined;
 }
 
@@ -27,9 +27,7 @@ export const SandboxField: FunctionComponent<Props> = ({
   name,
   setStonesToRender,
   stonesToRender,
-  setMovingStoneId,
   setDraggingOverId,
-  setDraggingFinished,
   draggingOverId,
 }) => {
   function onDragOverHandler(event: React.DragEvent<HTMLDivElement>) {
@@ -51,8 +49,6 @@ export const SandboxField: FunctionComponent<Props> = ({
           name={thisStone.name}
           stonesToRender={stonesToRender}
           setStonesToRender={setStonesToRender}
-          setMovingStoneId={setMovingStoneId}
-          setDraggingFinished={setDraggingFinished}
           draggingOverId={draggingOverId}
         />
       )}
