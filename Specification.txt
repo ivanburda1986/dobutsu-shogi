@@ -1,10 +1,7 @@
 =================================================================
 Write automated tests in jest and RTL
 =================================================================
-
 Next enhancements:
-Make sure lions gets correctly displayed highlighted when one lion takes the other
-Show game LOSS/VICTORY/TIE status on game cards on launch screen
 Moving stones should be possible not only by dragging but also by clicking, this is vital for touch devices.
 Handle the state of player when they are in the game and the other player deletes the game
 

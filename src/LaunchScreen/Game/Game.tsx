@@ -1,21 +1,23 @@
-import { FC, useCallback, useContext } from "react";
+import { FC, useContext } from "react";
 import { Link } from "react-router-dom";
 import { Card } from "react-bootstrap";
+import { RiMedalLine } from "react-icons/ri";
 
 import { AppContextInterface } from "../../App";
 import { AppContext } from "../../context/AppContext";
 import {
   deleteGame,
-  getSingleGameDetails,
-  MoveInterface,
   gameStatusType,
+  getSingleGameDetails,
   joinGame,
+  MoveInterface,
   VictoryType,
 } from "../../api/firestore";
 import {
-  shouldDisplayGameDeleteOption,
+  getWinnerName,
   isLoggedInPlayerTurn,
   shouldDisplayAcceptGameOption,
+  shouldDisplayGameDeleteOption,
   shouldDisplayGoToGameOption,
 } from "./GameService";
 import { Avatar } from "../../Avatar/Avatar";
@@ -140,6 +142,13 @@ export const Game: FC<GameInt> = ({ gameData }) => {
           currentPlayerTurn,
           status
         ) && <span className={styles.YourTurnText}>Your turn!</span>}
+        {gameData.winner && (
+          <p>
+            Winner: {getWinnerName(gameData)}
+            <RiMedalLine style={{ marginLeft: "5px" }} />
+          </p>
+        )}
+        {gameData.status === "TIE" && <p>Winner: It's a tie!</p>}
       </Card.Body>
       <Card.Footer>
         {shouldDisplayAcceptGameOption({
