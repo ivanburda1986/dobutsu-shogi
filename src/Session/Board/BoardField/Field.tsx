@@ -4,7 +4,7 @@ import { DocumentData } from "firebase/firestore";
 import { AppContextInterface } from "../../../App";
 import { AppContext } from "../../../context/AppContext";
 import { isThisPlayerOpponent } from "../../SessionService";
-import { StoneInterface, stoneType } from "../Stones/Stone";
+import { Stone, StoneInterface, stoneType } from "../Stones/Stone";
 import {
   enableDropping,
   rotateField,
@@ -16,12 +16,33 @@ import {
   evaluateDroppedStoneMove,
   onStoneDropCallback,
 } from "./FieldServiceStoneDropEvaluation";
+import { getColumnLetters, getRowNumbers } from "../BoardService";
+
+export function getRelatedStoneData(
+  columnLetter: string,
+  rowNumber: number,
+  stones: StoneInterface[]
+) {
+  const relatedStone = stones.filter((stone) => {
+    return (
+      stone.positionRowNumber === rowNumber &&
+      stone.positionColumnLetter === columnLetter
+    );
+  });
+  return relatedStone as StoneInterface[];
+}
 
 interface FieldInterface {
   columnLetter: string;
   gameData: DocumentData | undefined;
   rowNumber: number;
   stones: StoneInterface[];
+  setPositionColumnLetterGlobal: Function;
+  setPositionRowNumberGlobal: Function;
+  positionColumnLetterGlobal: string | undefined;
+  positionRowNumberGlobal: number | undefined;
+  canTakeStone: boolean | undefined;
+  setCanTakeStone: Function;
 }
 
 export const Field: FC<FieldInterface> = ({
@@ -29,9 +50,17 @@ export const Field: FC<FieldInterface> = ({
   columnLetter,
   gameData,
   stones,
+  setPositionColumnLetterGlobal,
+  setPositionRowNumberGlobal,
+  positionColumnLetterGlobal,
+  positionRowNumberGlobal,
+  canTakeStone,
+  setCanTakeStone,
 }) => {
   const { gameId } = useParams();
   const { loggedInUserUserId }: AppContextInterface = useContext(AppContext);
+  const stone = getRelatedStoneData(columnLetter, rowNumber, stones)[0];
+
   const amIOpponent = isThisPlayerOpponent(
     gameData?.creatorId,
     loggedInUserUserId
@@ -62,14 +91,22 @@ export const Field: FC<FieldInterface> = ({
       placedStoneType,
       rowNumber,
       stones: stones,
+      positionColumnLetterGlobal,
+      positionRowNumberGlobal,
     });
   };
 
+  function onDragOverHandler(event: React.DragEvent<HTMLDivElement>) {
+    enableDropping(event);
+    setPositionColumnLetterGlobal(columnLetter);
+    setPositionRowNumberGlobal(rowNumber);
+  }
+
   return (
     <div
-      onDragOver={enableDropping}
+      onDragOver={onDragOverHandler}
       onDrop={onDropHandler}
-      style={{ transform: rotateField(amIOpponent) }}
+      style={{ transform: `rotate(${rotateField(amIOpponent)}deg)` }}
       data-row-number={rowNumber}
       data-column-letter={columnLetter}
       className={`${styles.Field} noselect`}
@@ -79,6 +116,31 @@ export const Field: FC<FieldInterface> = ({
       )}
       {shouldShowNumberLabel({ rowNumber, columnLetter }) && (
         <span className={styles.rowNumber}>{rowNumber}</span>
+      )}
+      {stone && (
+        <Stone
+          amIOpponent={amIOpponent}
+          key={stone.id}
+          id={stone.id}
+          type={stone.type}
+          originalOwner={stone.originalOwner}
+          currentOwner={stone.currentOwner}
+          highlighted={stone.highlighted}
+          stashed={stone.stashed}
+          invisible={stone.invisible}
+          positionColumnLetterGlobal={positionColumnLetterGlobal}
+          positionRowNumberGlobal={positionRowNumberGlobal}
+          setPositionColumnLetterGlobal={setPositionColumnLetterGlobal}
+          setPositionRowNumberGlobal={setPositionRowNumberGlobal}
+          positionColumnLetter={stone.positionColumnLetter}
+          positionRowNumber={stone.positionRowNumber}
+          rowNumbers={getRowNumbers(amIOpponent)}
+          columnLetters={getColumnLetters(amIOpponent)}
+          canTakeStone={canTakeStone}
+          setCanTakeStone={setCanTakeStone}
+          gameData={gameData}
+          allStones={stones}
+        />
       )}
     </div>
   );

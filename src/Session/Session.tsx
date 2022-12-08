@@ -57,7 +57,7 @@ export const Session = () => {
     createAndStoreLastRoundMoveHash(gameData, gameId, updateGame);
     setIsTie(isTieEvaluation(gameData));
     return () => {
-      console.log("Session cleanup");
+      return;
     };
   }, [creatorId, gameData, gameId, loggedInUserUserId, opponentId]);
 
@@ -67,7 +67,7 @@ export const Session = () => {
       increaseTieStatsCountForBothPlayers(creatorId!, opponentId!);
     }
     return () => {
-      console.log("Session cleanup");
+      return;
     };
   }, [creatorId, gameId, isTie, opponentId]);
 
@@ -80,7 +80,7 @@ export const Session = () => {
       }
     });
     return () => {
-      console.log("Session cleanup");
+      return;
     };
   }, [gameId]);
 

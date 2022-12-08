@@ -1,6 +1,5 @@
 import { movementRules } from "./MovementRules";
 import { StoneInterface, stoneType } from "./Stone";
-import { columnLetterType } from "../../PlayerInterface/PlayerInterfaceService";
 import { DocumentData } from "firebase/firestore";
 import { LionConquerAttemptEvaluationOutputInterface } from "./LionStoneService";
 import {
@@ -9,7 +8,8 @@ import {
 } from "../../../api/firestore";
 import React from "react";
 import { isItMyTurn } from "../../SessionService";
-import { translateHenToChickenStashPositioning } from "../StashField/StashFieldService";
+import { log } from "util";
+import { lowerFirst } from "lodash";
 
 interface canStoneMoveThisWayInterface {
   stoneType: stoneType;
@@ -62,6 +62,7 @@ export const canDraggedStoneMoveToThisPosition = ({
   amIOpponent,
   stashed,
 }: canStoneMoveThisWayInterface) => {
+  console.log("StoneService: Evaluation canDraggedStoneMoveToThisPosition");
   if (stoneType === "CHICKEN") {
     if (stashed) {
       return true;
@@ -102,7 +103,7 @@ export const canDraggedStoneMoveToThisPosition = ({
     );
   }
   if (stoneType === "LION") {
-    return canStoneMoveInThisDirection(
+    const result = canStoneMoveInThisDirection(
       movedFromColumnLetter,
       movedFromRowNumber,
       movingToLetter,
@@ -110,6 +111,7 @@ export const canDraggedStoneMoveToThisPosition = ({
       stoneType,
       amIOpponent
     );
+    return result;
   }
   if (stoneType === "HEN") {
     if (stashed) {
@@ -139,56 +141,39 @@ export const amIStoneOwner = ({
   return currentOwner === loggedInUserUserId;
 };
 
-interface setStonePositionInterface {
-  stoneId: string;
-  targetPositionColumnLetter: string | columnLetterType;
-  targetPositionRowNumber: number;
-  positionX: number;
-  setPositionX: (position: number) => void;
-  positionY: number;
-  setPositionY: (position: number) => void;
-}
-
-export const setStonePosition = ({
-  stoneId,
-  targetPositionColumnLetter,
-  targetPositionRowNumber,
-  positionX,
-  setPositionX,
-  positionY,
-  setPositionY,
-}: setStonePositionInterface) => {
-  let targetPosition = document.querySelector(
-    `[data-column-letter=${translateHenToChickenStashPositioning(
-      targetPositionColumnLetter
-    )}][data-row-number="${targetPositionRowNumber}"]`
-  );
-  let stone = document.getElementById(stoneId)?.getBoundingClientRect();
-  let rect = targetPosition?.getBoundingClientRect();
-
-  setPositionX(Math.floor(rect!.left + (rect!.width - stone!.width) / 2));
-  setPositionY(Math.floor(rect!.top + (rect!.height - stone!.height) / 2));
-  let div = document.getElementById(stoneId);
-  div!.style.left = positionX + "px";
-  div!.style.top = positionY + "px";
-};
-
 interface rotateOpponentStonesInterface {
   currentOwner: string;
   loggedInUserUserId: string;
+  amIOpponent: boolean | undefined;
+  stashed: boolean;
 }
 
 export const rotateOpponentStones = ({
   currentOwner,
   loggedInUserUserId,
+  amIOpponent,
+  stashed,
 }: rotateOpponentStonesInterface) => {
   if (!currentOwner || !loggedInUserUserId) {
     return 0;
   }
   if (currentOwner === loggedInUserUserId) {
+    if (amIOpponent) {
+      if (stashed) {
+        return 0;
+      }
+      return 180;
+    }
+
     return 0;
   }
   if (currentOwner !== loggedInUserUserId) {
+    if (amIOpponent) {
+      return 0;
+    }
+    if (stashed) {
+      return 0;
+    }
     return 180;
   }
 
@@ -251,15 +236,18 @@ export function shouldShowStoneStashCountPill(
 export function canStoneBeDragged(
   status: gameStatusType,
   currentOwner: string,
-  loggedInUserUserId: string
+  loggedInUserUserId: string,
+  stoneId: string
 ) {
-  return (
+  const result =
     status === "INPROGRESS" &&
     amIStoneOwner({
       currentOwner: currentOwner,
       loggedInUserUserId: loggedInUserUserId,
-    })
-  );
+    });
+  // console.log("1-StoneService: canStoneBeDragged ->", stoneId);
+  // console.log("1-StoneService: canStoneBeDragged ->", result);
+  return result;
 }
 
 export function getDragStartAction(
@@ -274,8 +262,13 @@ export function getDragStartAction(
       currentTurnPlayerId: currentPlayerTurn,
     })
   ) {
+    // console.log("StoneService: getDragStartAction -> onDragStartHandler");
     return onDragStartHandler;
   } else {
+    console
+      .log
+      // "StoneService: getDragStartAction -> onDragStartHandlerDisallowed"
+      ();
     return onDragStartHandlerDisallowed;
   }
 }

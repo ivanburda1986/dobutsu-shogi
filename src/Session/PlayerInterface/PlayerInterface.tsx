@@ -8,27 +8,32 @@ import {
   getInterfacePlayerName,
   getInterfaceRotation,
   getInterfaceTurnBasedBorderStyle,
+  getStashColumnLetters,
 } from "./PlayerInterfaceService";
-import { StashRow } from "../Board/StashRow/StashRow";
 import styles from "./PlayerInterface.module.css";
+import { StashField } from "../Board/StashField/StashField";
+import { StoneInterface } from "../Board/Stones/Stone";
 
 interface PlayerInterfaceProps {
   amIOpponent: boolean;
   creatorInterface: boolean;
   gameData: DocumentData | undefined;
+  stones: StoneInterface[];
 }
 
 export const PlayerInterface: FC<PlayerInterfaceProps> = ({
   amIOpponent,
   creatorInterface,
   gameData,
+  stones,
 }) => {
+  const columnLetters = getStashColumnLetters(creatorInterface);
   return (
     <div
       className={`${getInterfaceTurnBasedBorderStyle(
         creatorInterface,
         gameData
-      )} mx-3 my-1`}
+      )} d-grid mx-3 my-1`}
       style={{ transform: getInterfaceRotation(creatorInterface) }}
     >
       <div
@@ -44,9 +49,15 @@ export const PlayerInterface: FC<PlayerInterfaceProps> = ({
           {getInterfacePlayerName(creatorInterface, gameData)}
         </span>
       </div>
-      <div>
-        <StashRow key={uuidv4()} isCreatorInterface={creatorInterface} />
-      </div>
+
+      {columnLetters.map((letter) => (
+        <StashField
+          key={uuidv4()}
+          columnLetter={letter}
+          stones={stones}
+          gameData={gameData}
+        />
+      ))}
     </div>
   );
 };

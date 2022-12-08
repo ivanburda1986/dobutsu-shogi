@@ -1,11 +1,15 @@
 .PlayerInterface {
+    position: relative;
+    align-items: center;
+    grid-template-areas: "header header header"
+                         "slotelephant slotgiraffe slotchicken";
+    justify-content: center;
     padding: 0.5rem;
     border-radius: 10px;
     border: 4px solid white;
     -webkit-box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.4);
     box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.4);
-    width: 28vw;
-    max-width: 440px;
+    width: fit-content;
     margin: 0 auto;
 }
 
@@ -20,15 +24,29 @@
 }
 
 .OpponentHeader {
+    grid-area: header;
     background-color: #ccedf2;
 }
 
 .CreatorHeader {
+    grid-area: header;
     background-color: #d9f1aa;
 }
 
 .PlayerName {
     font-size: 1.25rem;
+}
+
+.slotelephant {
+    grid-area: slotelephant;
+}
+
+.slotgiraffe {
+    grid-area: slotgiraffe;
+}
+
+.slotchicken {
+    grid-area: slotchicken;
 }
 
 @media screen and (max-width: 992px ) {
