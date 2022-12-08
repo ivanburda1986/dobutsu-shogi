@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Provider } from "react-redux";
+import store from "./Store";
 import { Route, Routes } from "react-router-dom";
 
 import { onAuthStateChanged } from "firebase/auth";
@@ -74,20 +76,22 @@ export const App = () => {
 
   return (
     <div>
-      <AppContext.Provider value={providedAppContext}>
-        <Header />
-        <Routes>
-          <Route path="*" element={<LaunchScreen />} />
-          <Route path="/" element={<LaunchScreen />} />
-          <Route path="/register" element={<RegisterScreen />} />
-          <Route path="/login" element={<LoginScreen />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/creategame" element={<CreateGame />} />
-          <Route path="/session/:gameId" element={<Session />} />
-          <Route path="/sandbox" element={<Sandbox />} />
-        </Routes>
-      </AppContext.Provider>
+      <Provider store={store}>
+        <AppContext.Provider value={providedAppContext}>
+          <Header />
+          <Routes>
+            <Route path="*" element={<LaunchScreen />} />
+            <Route path="/" element={<LaunchScreen />} />
+            <Route path="/register" element={<RegisterScreen />} />
+            <Route path="/login" element={<LoginScreen />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/creategame" element={<CreateGame />} />
+            <Route path="/session/:gameId" element={<Session />} />
+            <Route path="/sandbox" element={<Sandbox />} />
+          </Routes>
+        </AppContext.Provider>
+      </Provider>
     </div>
   );
 };

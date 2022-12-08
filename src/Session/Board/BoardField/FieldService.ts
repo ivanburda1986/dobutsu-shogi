@@ -37,10 +37,10 @@ export const enableDropping = (event: React.DragEvent<HTMLDivElement>) => {
   event.preventDefault();
 };
 
-export const rotateField = (amIOpponent: boolean): string => {
+export const rotateField = (amIOpponent: boolean): number => {
   if (amIOpponent) {
-    return "rotate(180deg)";
+    return 180;
   }
 
-  return "rotate(0deg)";
+  return 0;
 };

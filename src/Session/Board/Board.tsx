@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { AppContextInterface } from "../../App";
 import { AppContext } from "../../context/AppContext";
 import { PlayerInterface } from "../PlayerInterface/PlayerInterface";
-import { Stone, StoneInterface } from "./Stones/Stone";
+import { StoneInterface } from "./Stones/Stone";
 import { getBackground } from "../../images/imageRelatedService";
 import { isThisPlayerOpponent } from "../SessionService";
 import {
@@ -31,10 +31,12 @@ export const Board: FC<BoardInterface> = ({ gameData }) => {
   );
 
   const [stones, setStones] = useState<StoneInterface[]>([]);
-  const [draggedStone, setDraggedStone] = useState<
-    StoneInterface | undefined
+  const [positionColumnLetterGlobal, setPositionColumnLetterGlobal] = useState<
+    string | undefined
   >();
-  const [lyingStone, setLyingStone] = useState<StoneInterface | undefined>();
+  const [positionRowNumberGlobal, setPositionRowNumberGlobal] = useState<
+    number | undefined
+  >();
   const [canTakeStone, setCanTakeStone] = useState<boolean>(false);
 
   useEffect(() => {
@@ -59,6 +61,7 @@ export const Board: FC<BoardInterface> = ({ gameData }) => {
           amIOpponent={amIOpponent}
           creatorInterface={false}
           gameData={gameData}
+          stones={stones}
         />
       </div>
       <div className={`my-3 my-md-0 ${styles.Board}`}>
@@ -80,34 +83,15 @@ export const Board: FC<BoardInterface> = ({ gameData }) => {
                 columnLetter={letter}
                 gameData={gameData}
                 stones={stones}
+                setPositionColumnLetterGlobal={setPositionColumnLetterGlobal}
+                setPositionRowNumberGlobal={setPositionRowNumberGlobal}
+                positionColumnLetterGlobal={positionColumnLetterGlobal}
+                positionRowNumberGlobal={positionRowNumberGlobal}
+                canTakeStone={canTakeStone}
+                setCanTakeStone={setCanTakeStone}
               />
             ));
           })}
-          {stones.map((stone) => (
-            <Stone
-              amIOpponent={amIOpponent}
-              key={stone.id}
-              id={stone.id}
-              type={stone.type}
-              originalOwner={stone.originalOwner}
-              currentOwner={stone.currentOwner}
-              highlighted={stone.highlighted}
-              stashed={stone.stashed}
-              invisible={stone.invisible}
-              positionColumnLetter={stone.positionColumnLetter}
-              positionRowNumber={stone.positionRowNumber}
-              rowNumbers={getRowNumbers(amIOpponent)}
-              columnLetters={getColumnLetters(amIOpponent)}
-              draggedStone={draggedStone}
-              lyingStone={lyingStone}
-              setDraggedStone={setDraggedStone}
-              setLyingStone={setLyingStone}
-              canTakeStone={canTakeStone}
-              setCanTakeStone={setCanTakeStone}
-              gameData={gameData}
-              allStones={stones}
-            />
-          ))}
         </div>
       </div>
 
@@ -119,6 +103,7 @@ export const Board: FC<BoardInterface> = ({ gameData }) => {
           amIOpponent={amIOpponent}
           creatorInterface={true}
           gameData={gameData}
+          stones={stones}
         />
       </div>
     </Container>

@@ -12,26 +12,42 @@ import placeholder from "./placeholder.png";
 import bg from "./bg-clean.png";
 import bgRotated from "./bg-clean-rotated.png";
 
-export const getImgReference = (name: string | null) => {
-    if(!name){
-        return placeholder;
-    }
-
-    const lowerCasedName = name.toLowerCase()
-    if (lowerCasedName.includes( "boar")) return boar;
-    if (lowerCasedName.includes( "cat")) return cat;
-    if (lowerCasedName.includes( "dog")) return dog;
-    if (lowerCasedName.includes( "elephant")) return elephant;
-    if (lowerCasedName.includes( "giraffe")) return giraffe;
-    if (lowerCasedName.includes( "chicken")) return chicken;
-    if (lowerCasedName.includes( "hen")) return hen;
-    if (lowerCasedName.includes( "lion")) return lion;
-    if (lowerCasedName.includes( "rabbit")) return rabbit;
+export const getStashFieldClassRef = (name: string | null) => {
+  if (!name) {
+    return placeholder;
+  }
+  const lowerCasedName = name.toLowerCase();
+  if (lowerCasedName.includes("boar")) return "boar";
+  if (lowerCasedName.includes("cat")) return "cat";
+  if (lowerCasedName.includes("dog")) return "dog";
+  if (lowerCasedName.includes("elephant")) return "elephant";
+  if (lowerCasedName.includes("giraffe")) return "giraffe";
+  if (lowerCasedName.includes("chicken")) return "chicken";
+  if (lowerCasedName.includes("hen")) return "hen";
+  if (lowerCasedName.includes("lion")) return "lion";
+  if (lowerCasedName.includes("rabbit")) return "rabbit";
 };
 
-export const getBackground = ({rotated}:{rotated?:boolean}) =>{
-    if(rotated){
-        return bgRotated;
-    }
-    return bg;
-}
+export const getImgReference = (name: string | null) => {
+  if (!name) {
+    return placeholder;
+  }
+
+  const lowerCasedName = name.toLowerCase();
+  if (lowerCasedName.includes("boar")) return boar;
+  if (lowerCasedName.includes("cat")) return cat;
+  if (lowerCasedName.includes("dog")) return dog;
+  if (lowerCasedName.includes("elephant")) return elephant;
+  if (lowerCasedName.includes("giraffe")) return giraffe;
+  if (lowerCasedName.includes("chicken")) return chicken;
+  if (lowerCasedName.includes("hen")) return hen;
+  if (lowerCasedName.includes("lion")) return lion;
+  if (lowerCasedName.includes("rabbit")) return rabbit;
+};
+
+export const getBackground = ({ rotated }: { rotated?: boolean }) => {
+  if (rotated) {
+    return bgRotated;
+  }
+  return bg;
+};

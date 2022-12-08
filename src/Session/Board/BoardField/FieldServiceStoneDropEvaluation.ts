@@ -30,10 +30,10 @@ function isFieldEmpty(
   stones: StoneInterface[]
 ): boolean {
   const stonesOccupyingField = stones.filter((stone) => {
-    return (
+    const result =
       `${stone.positionColumnLetter}${stone.positionRowNumber}` ===
-      `${movingToLetter}${movingToNumber}`
-    );
+      `${movingToLetter}${movingToNumber}`;
+    return result;
   });
 
   return stonesOccupyingField.length <= 0;
@@ -54,6 +54,8 @@ interface EvaluateDroppedStoneMoveInterface {
   placedStoneType: stoneType;
   rowNumber: number;
   stones: StoneInterface[];
+  positionColumnLetterGlobal: string | undefined;
+  positionRowNumberGlobal: number | undefined;
 }
 
 export const evaluateDroppedStoneMove = ({
@@ -71,6 +73,8 @@ export const evaluateDroppedStoneMove = ({
   placedStoneType,
   rowNumber,
   stones,
+  positionColumnLetterGlobal,
+  positionRowNumberGlobal,
 }: EvaluateDroppedStoneMoveInterface): void => {
   const stone = getSingleStoneDetails({ gameId, stoneId: placedStoneId });
   stone.then((received) => {
@@ -85,8 +89,8 @@ export const evaluateDroppedStoneMove = ({
         amIOpponent: amIOpponent,
         movedFromColumnLetter,
         movedFromRowNumber,
-        movingToLetter,
-        movingToNumber,
+        movingToLetter: movingToLetter,
+        movingToNumber: movingToNumber,
         stashed: stoneData!.stashed,
         stoneType: stoneData!.type,
       });
@@ -119,6 +123,8 @@ export const evaluateDroppedStoneMove = ({
       stoneMoveAllowed: isMoveToThisFieldAllowed,
       shouldChickenTransformToHen: shouldChickenOnThisFieldTurnToHen,
       lionConquerAttemptResult,
+      positionColumnLetterGlobal,
+      positionRowNumberGlobal,
     });
   });
 };
@@ -135,6 +141,8 @@ interface OnStoneDropCallBackInterface {
   rowNumber: number;
   shouldChickenTransformToHen: boolean;
   stoneMoveAllowed: boolean;
+  positionColumnLetterGlobal: string | undefined;
+  positionRowNumberGlobal: number | undefined;
 }
 
 export const onStoneDropCallback = ({
@@ -149,13 +157,15 @@ export const onStoneDropCallback = ({
   rowNumber,
   shouldChickenTransformToHen,
   stoneMoveAllowed,
+  positionColumnLetterGlobal,
+  positionRowNumberGlobal,
 }: OnStoneDropCallBackInterface) => {
   if (stoneMoveAllowed) {
     updateStonePosition({
       gameId: gameData.gameId,
       stoneId: placedStoneId,
-      targetPositionColumnLetter: columnLetter,
-      targetPositionRowNumber: rowNumber,
+      targetPositionColumnLetter: positionColumnLetterGlobal!,
+      targetPositionRowNumber: positionRowNumberGlobal!,
     });
     trackStoneMove(
       gameData,

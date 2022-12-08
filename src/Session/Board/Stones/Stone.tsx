@@ -1,5 +1,10 @@
 import React, { FC, useContext, useEffect, useState } from "react";
-
+import { useDispatch, useSelector } from "react-redux";
+import {
+  saveDraggedStone,
+  selectDraggedStone,
+} from "../../../DraggedStoneSlice";
+import { saveLyingStone, selectLyingStone } from "../../../LyingStoneSlice";
 import {
   updateGame,
   updateStoneOnTakeOver,
@@ -15,7 +20,6 @@ import {
   isDraggedStoneHoveringAboveOwnStone,
   isDraggedStoneStillAboveItself,
   rotateOpponentStones,
-  setStonePosition,
   shouldHighlightStone,
   shouldMakeStoneInvisible,
   shouldShowStoneStashCountPill,
@@ -57,18 +61,23 @@ export interface StoneInterface {
   canTakeStone?: boolean;
   columnLetters?: string[];
   currentOwner: string;
-  draggedStone?: StoneInterface;
   gameData?: DocumentData | undefined;
   highlighted: boolean;
   id: string;
   invisible: boolean;
-  lyingStone?: StoneInterface;
   originalOwner: string;
+  positionColumnLetterGlobal?: string;
+  positionRowNumberGlobal?: number;
+  setPositionColumnLetterGlobal?: Function;
+  setPositionRowNumberGlobal?: Function;
   positionColumnLetter: string;
   positionRowNumber: number;
   rowNumbers?: number[];
   setCanTakeStone?: Function;
-  setDraggedStone?: Function;
+  // draggedStone?: StoneInterface;
+  // setDraggedStone?: Function;
+
+  lyingStone?: StoneInterface;
   setLyingStone?: Function;
   stashed: boolean;
   type: stoneType;
@@ -80,28 +89,30 @@ export const Stone: FC<StoneInterface> = ({
   currentOwner,
   columnLetters,
   canTakeStone,
-  draggedStone,
   gameData,
+  // setDraggedStone,
+  // draggedStone,
+
   highlighted,
   id,
   invisible,
   lyingStone,
   originalOwner,
+  positionColumnLetterGlobal,
+  positionRowNumberGlobal,
+  setPositionColumnLetterGlobal,
+  setPositionRowNumberGlobal,
   positionColumnLetter,
   positionRowNumber,
   rowNumbers,
   setCanTakeStone,
-  setDraggedStone,
   setLyingStone,
   stashed,
   type,
 }) => {
   const { loggedInUserUserId }: AppContextInterface = useContext(AppContext);
   const { gameId } = useParams();
-  const [positionX, setPositionX] = useState<number>(0);
-  const [positionY, setPositionY] = useState<number>(0);
-  const [screenWidth, setScreenWidth] = useState<number>();
-  const [screenHeight, setScreenHeight] = useState<number>();
+  const dispatch = useDispatch();
   const [hideStoneStashCountPill, setHideStoneStashCountPill] =
     useState<boolean>(false);
   const [isHighlighted, setIsHighlighted] = useState<boolean>(false);
@@ -112,65 +123,32 @@ export const Stone: FC<StoneInterface> = ({
     stashed,
     type,
   });
-
-  useEffect(() => {
-    setStonePosition({
-      stoneId: id,
-      targetPositionColumnLetter: positionColumnLetter,
-      targetPositionRowNumber: positionRowNumber,
-      positionX,
-      positionY,
-      setPositionX,
-      setPositionY,
-    });
-    return () => {
-      console.log("Stone cleanup");
-    };
-  }, [
-    id,
-    positionColumnLetter,
-    positionRowNumber,
-    positionX,
-    positionY,
-    screenHeight,
-    screenWidth,
-  ]);
+  const draggedStoneFromRedux = useSelector(selectDraggedStone);
+  const lyingStoneFromRedux = useSelector(selectLyingStone);
 
   useEffect(() => {
     const stone: StoneInterface[] = getStone(allStones, id);
     shouldHighlightStone(stone) && setIsHighlighted(true);
     shouldMakeStoneInvisible(stone) && setIsInvisible(true);
     return () => {
-      console.log("Stone cleanup");
+      return;
     };
   }, [allStones, id]);
 
-  // Make sure stones are in place even after change of the UI size and appearance of new elements
-  function onResizeHandler({
-    newHeight,
-    newWidth,
-  }: {
-    newHeight: number;
-    newWidth: number;
-  }) {
-    setScreenHeight(newHeight);
-    setScreenWidth(newWidth);
-  }
-
-  window.addEventListener("resize", () =>
-    onResizeHandler({
-      newHeight: window.innerHeight,
-      newWidth: window.innerWidth,
-    })
-  );
-
   function onDragStartHandler(event: React.DragEvent<HTMLDivElement>) {
+    console.log("Stone type:", type);
+    console.log("Stone: onDragStartHandler - inside");
+    console.log("-placedStoneId", id);
+    console.log("-placedStoneType", type);
+    console.log("-movedFromColumnLetter", positionColumnLetter);
+    console.log("-movedFromRowNumber", positionRowNumber);
     event.dataTransfer.setData("placedStoneId", id);
     event.dataTransfer.setData("placedStoneType", type);
     event.dataTransfer.setData("movedFromColumnLetter", positionColumnLetter);
     event.dataTransfer.setData("movedFromRowNumber", String(positionRowNumber));
-    setDraggedStone &&
-      setDraggedStone({
+
+    dispatch(
+      saveDraggedStone({
         amIOpponent,
         columnLetters,
         currentOwner,
@@ -181,89 +159,131 @@ export const Stone: FC<StoneInterface> = ({
         rowNumbers,
         stashed,
         type,
-      });
+        allStones,
+        highlighted,
+        invisible,
+      })
+    );
     setHideStoneStashCountPill(true);
   }
 
   function onDragStartHandlerDisallowed(
     event: React.DragEvent<HTMLDivElement>
   ) {
+    console.log("Prevent default from Stone: onDragStartHandlerDisallowed");
     event.preventDefault();
   }
 
   function onDragEnterHandler() {
-    setLyingStone &&
-      setLyingStone({
-        amIOpponent,
-        id,
-        type,
-        originalOwner,
-        currentOwner,
-        stashed,
-        positionColumnLetter,
-        positionRowNumber,
-        rowNumbers,
-        columnLetters,
-      });
+    // onTakeOverAttemptHandler();
+
+    if (setPositionColumnLetterGlobal && setPositionRowNumberGlobal) {
+      setPositionColumnLetterGlobal(positionColumnLetter);
+      setPositionRowNumberGlobal(positionRowNumber);
+      dispatch(
+        saveLyingStone({
+          amIOpponent,
+          id,
+          type,
+          originalOwner,
+          currentOwner,
+          stashed,
+          positionColumnLetter,
+          positionRowNumber,
+          rowNumbers,
+          columnLetters,
+        })
+      );
+    }
   }
 
-  function onTakeOverAttemptHandler(event: React.DragEvent<HTMLDivElement>) {
-    if (!lyingStone || !draggedStone || !setCanTakeStone) {
+  //event: React.DragEvent<HTMLDivElement> was originally as a param
+  function onTakeOverAttemptHandler() {
+    console.log("onTakeOverAttemptHandler");
+    if (
+      !lyingStoneFromRedux.lyingStone ||
+      !draggedStoneFromRedux.draggedStone ||
+      !setCanTakeStone
+    ) {
+      console.log("missing preconditions");
       return;
     }
 
-    if (isDraggedStoneStillAboveItself(lyingStone, draggedStone)) {
+    if (
+      isDraggedStoneStillAboveItself(
+        lyingStoneFromRedux.lyingStone,
+        draggedStoneFromRedux.draggedStone
+      )
+    ) {
+      console.log("above self");
       setCanTakeStone(false);
       return;
     }
 
-    if (isDraggedStoneComingFromStash(draggedStone)) {
+    if (isDraggedStoneComingFromStash(draggedStoneFromRedux.draggedStone)) {
+      console.log("coming from stash");
+      setCanTakeStone(false);
       return;
     }
 
-    if (isDraggedStoneHoveringAboveOwnStone(lyingStone, draggedStone)) {
+    if (
+      isDraggedStoneHoveringAboveOwnStone(
+        lyingStoneFromRedux.lyingStone,
+        draggedStoneFromRedux.draggedStone
+      )
+    ) {
+      console.log("hovering above own");
       setCanTakeStone(false);
       return;
     }
 
     if (
       !canDraggedStoneMoveToThisPosition({
-        stoneType: draggedStone.type,
-        movedFromColumnLetter: draggedStone.positionColumnLetter,
-        movedFromRowNumber: draggedStone.positionRowNumber,
-        movingToLetter: lyingStone.positionColumnLetter,
-        movingToNumber: lyingStone.positionRowNumber,
-        amIOpponent: !!draggedStone.amIOpponent,
-        stashed: draggedStone.stashed,
+        stoneType: draggedStoneFromRedux.draggedStone.type,
+        movedFromColumnLetter:
+          draggedStoneFromRedux.draggedStone.positionColumnLetter,
+        movedFromRowNumber:
+          draggedStoneFromRedux.draggedStone.positionRowNumber,
+        movingToLetter: lyingStoneFromRedux.lyingStone.positionColumnLetter,
+        movingToNumber: lyingStoneFromRedux.lyingStone.positionRowNumber,
+        amIOpponent: !!draggedStoneFromRedux.draggedStone.amIOpponent,
+        stashed: draggedStoneFromRedux.draggedStone.stashed,
       })
     ) {
       setCanTakeStone(false);
+      console.log("cannot take this coordinate");
       return;
     }
-
+    console.log("setCanTakeStone(=======true======)");
     setCanTakeStone(true);
     return;
   }
 
   function onDropHandler(event: React.DragEvent<HTMLDivElement>) {
+    console.log("Stone: onDropHandler");
     setHideStoneStashCountPill(false);
 
-    if (!lyingStone || !draggedStone || !canTakeStone) {
+    if (
+      !lyingStoneFromRedux.lyingStone ||
+      !draggedStoneFromRedux.draggedStone ||
+      !canTakeStone
+    ) {
       return;
     }
 
     if (canTakeStone) {
+      console.log("Stone: canTakeStone");
       // Prepare data for stone move tracking
       let updatedMoves = gameData?.moves;
-      let draggedStoneCoordinates = `${draggedStone.positionColumnLetter}${draggedStone.positionRowNumber}`;
-      let targetStoneCoordinates = `${lyingStone.positionColumnLetter}${lyingStone.positionRowNumber}`;
+      let draggedStoneCoordinates = `${draggedStoneFromRedux.draggedStone.positionColumnLetter}${draggedStoneFromRedux.draggedStone.positionRowNumber}`;
+      let targetStoneCoordinates = `${lyingStoneFromRedux.lyingStone.positionColumnLetter}${lyingStoneFromRedux.lyingStone.positionRowNumber}`;
       updatedMoves.push({
         moveNumber:
           updatedMoves.length > 0
             ? updatedMoves[updatedMoves.length - 1].moveNumber + 1
             : 0,
-        id: draggedStone.id,
-        type: draggedStone.type,
+        id: draggedStoneFromRedux.draggedStone.id,
+        type: draggedStoneFromRedux.draggedStone.type,
         movingPlayerId: loggedInUserUserId,
         fromCoordinates: draggedStoneCoordinates,
         targetCoordinates: targetStoneCoordinates,
@@ -278,40 +298,42 @@ export const Stone: FC<StoneInterface> = ({
         },
       });
 
-      if (isLionGettingTaken(lyingStone)) {
+      if (isLionGettingTaken(lyingStoneFromRedux.lyingStone)) {
         setGameToComplete({
           gameId: gameData?.gameId,
-          winner: draggedStone.currentOwner,
+          winner: draggedStoneFromRedux.draggedStone.currentOwner,
           victoryType: "LION_CAUGHT_SUCCESS",
-          nextTurnPlayerId: lyingStone.currentOwner,
+          nextTurnPlayerId: lyingStoneFromRedux.lyingStone.currentOwner,
         });
 
         updateStonePosition({
           gameId: gameId!,
-          stoneId: draggedStone.id,
-          targetPositionColumnLetter: lyingStone.positionColumnLetter,
-          targetPositionRowNumber: lyingStone.positionRowNumber,
+          stoneId: draggedStoneFromRedux.draggedStone.id,
+          targetPositionColumnLetter:
+            lyingStoneFromRedux.lyingStone.positionColumnLetter,
+          targetPositionRowNumber:
+            lyingStoneFromRedux.lyingStone.positionRowNumber,
         });
 
         highlightLionTakeoverStone(gameId, id);
-        makeTakenLionInvisible(gameId, lyingStone);
-        increaseUserLossStats(lyingStone.originalOwner);
-        increaseUserWinStats(draggedStone.currentOwner);
+        makeTakenLionInvisible(gameId, lyingStoneFromRedux.lyingStone);
+        increaseUserLossStats(lyingStoneFromRedux.lyingStone.originalOwner);
+        increaseUserWinStats(draggedStoneFromRedux.draggedStone.currentOwner);
 
         return;
       }
 
       evaluateLionConquerAttempt(
-        draggedStone,
+        draggedStoneFromRedux.draggedStone,
         amIOpponent,
-        lyingStone,
+        lyingStoneFromRedux.lyingStone,
         allStones,
         gameData,
         setGameToComplete
       );
 
-      if (isHenGettingTaken(lyingStone)) {
-        transformHenToChicken(gameData!, lyingStone.id);
+      if (isHenGettingTaken(lyingStoneFromRedux.lyingStone)) {
+        transformHenToChicken(gameData!, lyingStoneFromRedux.lyingStone.id);
       }
 
       switchMoveToOtherPlayer(gameData!, loggedInUserUserId);
@@ -319,11 +341,11 @@ export const Stone: FC<StoneInterface> = ({
       updateStoneOnTakeOver({
         gameId: gameId!,
         stone: {
-          id: lyingStone.id,
-          currentOwner: draggedStone.currentOwner,
+          id: lyingStoneFromRedux.lyingStone.id,
+          currentOwner: draggedStoneFromRedux.draggedStone.currentOwner,
           stashed: true,
           positionColumnLetter: getStashTargetPosition({
-            type: lyingStone.type,
+            type: lyingStoneFromRedux.lyingStone.type,
             amIOpponent: amIOpponent!,
           }),
           positionRowNumber: 1,
@@ -332,18 +354,18 @@ export const Stone: FC<StoneInterface> = ({
 
       // Prepare data for stone move tracking
       updatedMoves = gameData?.moves;
-      draggedStoneCoordinates = `${lyingStone.positionColumnLetter}${lyingStone.positionRowNumber}`;
+      draggedStoneCoordinates = `${lyingStoneFromRedux.lyingStone.positionColumnLetter}${lyingStoneFromRedux.lyingStone.positionRowNumber}`;
       targetStoneCoordinates = `${getStashTargetPosition({
-        type: lyingStone.type,
+        type: lyingStoneFromRedux.lyingStone.type,
         amIOpponent: amIOpponent!,
-      })}${lyingStone.positionRowNumber}`;
+      })}${lyingStoneFromRedux.lyingStone.positionRowNumber}`;
       updatedMoves.push({
         moveNumber:
           updatedMoves.length > 0
             ? updatedMoves[updatedMoves.length - 1].moveNumber + 1
             : 0,
-        id: lyingStone.id,
-        type: lyingStone.type,
+        id: lyingStoneFromRedux.lyingStone.id,
+        type: lyingStoneFromRedux.lyingStone.type,
         movingPlayerId: loggedInUserUserId,
         fromCoordinates: draggedStoneCoordinates,
         targetCoordinates: targetStoneCoordinates,
@@ -359,23 +381,25 @@ export const Stone: FC<StoneInterface> = ({
       });
 
       if (
-        isChickenTakingOver(draggedStone) &&
+        isChickenTakingOver(draggedStoneFromRedux.draggedStone) &&
         shouldChickenTurnIntoHen({
           amIOpponent: amIOpponent!,
-          type: draggedStone!.type,
-          stashed: draggedStone!.stashed,
-          movingToLetter: lyingStone.positionColumnLetter,
-          movingToNumber: lyingStone.positionRowNumber,
+          type: draggedStoneFromRedux.draggedStone!.type,
+          stashed: draggedStoneFromRedux.draggedStone!.stashed,
+          movingToLetter: lyingStoneFromRedux.lyingStone.positionColumnLetter,
+          movingToNumber: lyingStoneFromRedux.lyingStone.positionRowNumber,
         })
       ) {
-        transformChickenToHen(gameData!, draggedStone.id);
+        transformChickenToHen(gameData!, draggedStoneFromRedux.draggedStone.id);
       }
 
       updateStonePosition({
         gameId: gameId!,
-        stoneId: draggedStone.id,
-        targetPositionColumnLetter: lyingStone.positionColumnLetter,
-        targetPositionRowNumber: lyingStone.positionRowNumber,
+        stoneId: draggedStoneFromRedux.draggedStone.id,
+        targetPositionColumnLetter:
+          lyingStoneFromRedux.lyingStone.positionColumnLetter,
+        targetPositionRowNumber:
+          lyingStoneFromRedux.lyingStone.positionRowNumber,
       });
 
       switchMoveToOtherPlayer(gameData!, loggedInUserUserId);
@@ -384,13 +408,15 @@ export const Stone: FC<StoneInterface> = ({
     }
   }
 
+  console.log("=====Stone end=====");
   return (
     <div
       id={id}
       draggable={canStoneBeDragged(
         gameData?.status,
         currentOwner,
-        loggedInUserUserId
+        loggedInUserUserId,
+        id
       )}
       onDragStart={getDragStartAction(
         loggedInUserUserId,
@@ -400,12 +426,14 @@ export const Stone: FC<StoneInterface> = ({
       )}
       onDragEnter={onDragEnterHandler}
       onDragOver={onTakeOverAttemptHandler}
-      onDragEnd={onDropHandler}
+      onDrop={onDropHandler}
       style={{
         backgroundImage: `url(${getImgReference(type)})`,
         transform: `rotate(${rotateOpponentStones({
           currentOwner: currentOwner,
           loggedInUserUserId: loggedInUserUserId,
+          amIOpponent,
+          stashed,
         })}deg)`,
       }}
       className={`${styles.Stone} ${isHighlighted && styles.Highlighted} ${
