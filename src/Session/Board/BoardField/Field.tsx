@@ -24,6 +24,10 @@ export function getRelatedStoneData(
   stones: StoneInterface[]
 ) {
   const relatedStone = stones.filter((stone) => {
+    //Filter out the invisible lion stone
+    if (stone.invisible) {
+      return false;
+    }
     return (
       stone.positionRowNumber === rowNumber &&
       stone.positionColumnLetter === columnLetter
@@ -128,8 +132,6 @@ export const Field: FC<FieldInterface> = ({
           highlighted={stone.highlighted}
           stashed={stone.stashed}
           invisible={stone.invisible}
-          positionColumnLetterGlobal={positionColumnLetterGlobal}
-          positionRowNumberGlobal={positionRowNumberGlobal}
           setPositionColumnLetterGlobal={setPositionColumnLetterGlobal}
           setPositionRowNumberGlobal={setPositionRowNumberGlobal}
           positionColumnLetter={stone.positionColumnLetter}

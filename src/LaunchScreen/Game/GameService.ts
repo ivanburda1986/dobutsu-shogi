@@ -1,4 +1,5 @@
 import { gameStatusType } from "../../api/firestore";
+import { ReturnedGameInterface } from "./Game";
 
 export const isLoggedInPlayerTurn = (
   loggedInUserUserId: string,
@@ -51,5 +52,13 @@ export const shouldDisplayGoToGameOption = ({
     return true;
   } else {
     return false;
+  }
+};
+
+export const getWinnerName = (gameData: ReturnedGameInterface) => {
+  if (gameData.winner === gameData.opponentId) {
+    return gameData.opponentName;
+  } else {
+    return gameData.creatorName;
   }
 };

@@ -1,22 +1,19 @@
 =================================================================
-Write automated tests in jest and RTL
+Review and refactor the remaining code
+Write automated tests in jest
+Build
+Deploy with netlify
+Add to my portfolio
 =================================================================
-
 Next enhancements:
-Show game LOSS/VICTORY/TIE status on game cards on launch screen
-
-Make sure stone position works correctly even when the screen is displayed as a column
--could render stones directly in containers of fields
--board field, stash field
-
 Moving stones should be possible not only by dragging but also by clicking, this is vital for touch devices.
-
-
+Styling: gap between board columns; responsiveness especially above 2000px width
 =================================================================
 Reference
 https://getbootstrap.com/docs/5.0/layout/containers/
 https://variantslove.netlify.app/#
 https://react-bootstrap.github.io/layout/stack/
+https://redux.js.org/tutorials/essentials/part-2-app-structure
 
 Detecting a touch device
 https://www.geeksforgeeks.org/how-to-detect-touch-screen-device-using-javascript/
@@ -26,6 +23,21 @@ https://www.kindacode.com/article/react-get-the-position-x-y-of-an-element/
 
 Rules
 https://shogivancouver.wordpress.com/animal-shogi/
+
+
+=================================================================
+
+Touch vs drag logics:
+
+if touch device -> block d&d
+click stone to select it -> dragged stone, highlight the border to indicate selection
+--only own stones can be selected/deselected
+click selected stone to deselect it -> dragged stone clean
+
+click field to move your selected stone to place it
+click opponents stone to take it
+
+remove stone selection-highlighting after a move is finished
 
 
 

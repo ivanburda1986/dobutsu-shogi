@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useContext, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   saveDraggedStone,
@@ -15,13 +15,10 @@ import {
   canStoneBeDragged,
   getDragStartAction,
   getStashedStonePillCount,
-  getStone,
   isDraggedStoneComingFromStash,
   isDraggedStoneHoveringAboveOwnStone,
   isDraggedStoneStillAboveItself,
   rotateOpponentStones,
-  shouldHighlightStone,
-  shouldMakeStoneInvisible,
   shouldShowStoneStashCountPill,
 } from "./StoneService";
 import { AppContextInterface } from "../../../App";
@@ -66,19 +63,12 @@ export interface StoneInterface {
   id: string;
   invisible: boolean;
   originalOwner: string;
-  positionColumnLetterGlobal?: string;
-  positionRowNumberGlobal?: number;
   setPositionColumnLetterGlobal?: Function;
   setPositionRowNumberGlobal?: Function;
   positionColumnLetter: string;
   positionRowNumber: number;
   rowNumbers?: number[];
   setCanTakeStone?: Function;
-  // draggedStone?: StoneInterface;
-  // setDraggedStone?: Function;
-
-  lyingStone?: StoneInterface;
-  setLyingStone?: Function;
   stashed: boolean;
   type: stoneType;
 }
@@ -90,33 +80,24 @@ export const Stone: FC<StoneInterface> = ({
   columnLetters,
   canTakeStone,
   gameData,
-  // setDraggedStone,
-  // draggedStone,
-
-  highlighted,
   id,
-  invisible,
-  lyingStone,
   originalOwner,
-  positionColumnLetterGlobal,
-  positionRowNumberGlobal,
   setPositionColumnLetterGlobal,
   setPositionRowNumberGlobal,
   positionColumnLetter,
   positionRowNumber,
   rowNumbers,
   setCanTakeStone,
-  setLyingStone,
   stashed,
   type,
+  invisible,
+  highlighted,
 }) => {
   const { loggedInUserUserId }: AppContextInterface = useContext(AppContext);
   const { gameId } = useParams();
   const dispatch = useDispatch();
   const [hideStoneStashCountPill, setHideStoneStashCountPill] =
     useState<boolean>(false);
-  const [isHighlighted, setIsHighlighted] = useState<boolean>(false);
-  const [isInvisible, setIsInvisible] = useState<boolean>(false);
   const stashedPillCount = getStashedStonePillCount({
     allStones: allStones ?? [],
     currentOwnerId: currentOwner,
@@ -126,22 +107,7 @@ export const Stone: FC<StoneInterface> = ({
   const draggedStoneFromRedux = useSelector(selectDraggedStone);
   const lyingStoneFromRedux = useSelector(selectLyingStone);
 
-  useEffect(() => {
-    const stone: StoneInterface[] = getStone(allStones, id);
-    shouldHighlightStone(stone) && setIsHighlighted(true);
-    shouldMakeStoneInvisible(stone) && setIsInvisible(true);
-    return () => {
-      return;
-    };
-  }, [allStones, id]);
-
   function onDragStartHandler(event: React.DragEvent<HTMLDivElement>) {
-    console.log("Stone type:", type);
-    console.log("Stone: onDragStartHandler - inside");
-    console.log("-placedStoneId", id);
-    console.log("-placedStoneType", type);
-    console.log("-movedFromColumnLetter", positionColumnLetter);
-    console.log("-movedFromRowNumber", positionRowNumber);
     event.dataTransfer.setData("placedStoneId", id);
     event.dataTransfer.setData("placedStoneType", type);
     event.dataTransfer.setData("movedFromColumnLetter", positionColumnLetter);
@@ -175,8 +141,6 @@ export const Stone: FC<StoneInterface> = ({
   }
 
   function onDragEnterHandler() {
-    // onTakeOverAttemptHandler();
-
     if (setPositionColumnLetterGlobal && setPositionRowNumberGlobal) {
       setPositionColumnLetterGlobal(positionColumnLetter);
       setPositionRowNumberGlobal(positionRowNumber);
@@ -192,20 +156,19 @@ export const Stone: FC<StoneInterface> = ({
           positionRowNumber,
           rowNumbers,
           columnLetters,
+          invisible,
+          highlighted,
         })
       );
     }
   }
 
-  //event: React.DragEvent<HTMLDivElement> was originally as a param
   function onTakeOverAttemptHandler() {
-    console.log("onTakeOverAttemptHandler");
     if (
       !lyingStoneFromRedux.lyingStone ||
       !draggedStoneFromRedux.draggedStone ||
       !setCanTakeStone
     ) {
-      console.log("missing preconditions");
       return;
     }
 
@@ -215,13 +178,11 @@ export const Stone: FC<StoneInterface> = ({
         draggedStoneFromRedux.draggedStone
       )
     ) {
-      console.log("above self");
       setCanTakeStone(false);
       return;
     }
 
     if (isDraggedStoneComingFromStash(draggedStoneFromRedux.draggedStone)) {
-      console.log("coming from stash");
       setCanTakeStone(false);
       return;
     }
@@ -232,7 +193,6 @@ export const Stone: FC<StoneInterface> = ({
         draggedStoneFromRedux.draggedStone
       )
     ) {
-      console.log("hovering above own");
       setCanTakeStone(false);
       return;
     }
@@ -251,16 +211,15 @@ export const Stone: FC<StoneInterface> = ({
       })
     ) {
       setCanTakeStone(false);
-      console.log("cannot take this coordinate");
+
       return;
     }
-    console.log("setCanTakeStone(=======true======)");
+
     setCanTakeStone(true);
     return;
   }
 
   function onDropHandler(event: React.DragEvent<HTMLDivElement>) {
-    console.log("Stone: onDropHandler");
     setHideStoneStashCountPill(false);
 
     if (
@@ -272,7 +231,6 @@ export const Stone: FC<StoneInterface> = ({
     }
 
     if (canTakeStone) {
-      console.log("Stone: canTakeStone");
       // Prepare data for stone move tracking
       let updatedMoves = gameData?.moves;
       let draggedStoneCoordinates = `${draggedStoneFromRedux.draggedStone.positionColumnLetter}${draggedStoneFromRedux.draggedStone.positionRowNumber}`;
@@ -315,7 +273,10 @@ export const Stone: FC<StoneInterface> = ({
             lyingStoneFromRedux.lyingStone.positionRowNumber,
         });
 
-        highlightLionTakeoverStone(gameId, id);
+        highlightLionTakeoverStone(
+          gameId,
+          draggedStoneFromRedux.draggedStone.id
+        );
         makeTakenLionInvisible(gameId, lyingStoneFromRedux.lyingStone);
         increaseUserLossStats(lyingStoneFromRedux.lyingStone.originalOwner);
         increaseUserWinStats(draggedStoneFromRedux.draggedStone.currentOwner);
@@ -408,7 +369,6 @@ export const Stone: FC<StoneInterface> = ({
     }
   }
 
-  console.log("=====Stone end=====");
   return (
     <div
       id={id}
@@ -436,8 +396,8 @@ export const Stone: FC<StoneInterface> = ({
           stashed,
         })}deg)`,
       }}
-      className={`${styles.Stone} ${isHighlighted && styles.Highlighted} ${
-        isInvisible && styles.Invisible
+      className={`${styles.Stone} ${highlighted && styles.Highlighted} ${
+        invisible && styles.Invisible
       } noselect`}
     >
       {shouldShowStoneStashCountPill(

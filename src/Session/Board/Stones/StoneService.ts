@@ -8,8 +8,6 @@ import {
 } from "../../../api/firestore";
 import React from "react";
 import { isItMyTurn } from "../../SessionService";
-import { log } from "util";
-import { lowerFirst } from "lodash";
 
 interface canStoneMoveThisWayInterface {
   stoneType: stoneType;
@@ -62,7 +60,6 @@ export const canDraggedStoneMoveToThisPosition = ({
   amIOpponent,
   stashed,
 }: canStoneMoveThisWayInterface) => {
-  console.log("StoneService: Evaluation canDraggedStoneMoveToThisPosition");
   if (stoneType === "CHICKEN") {
     if (stashed) {
       return true;
@@ -239,15 +236,13 @@ export function canStoneBeDragged(
   loggedInUserUserId: string,
   stoneId: string
 ) {
-  const result =
+  return (
     status === "INPROGRESS" &&
     amIStoneOwner({
       currentOwner: currentOwner,
       loggedInUserUserId: loggedInUserUserId,
-    });
-  // console.log("1-StoneService: canStoneBeDragged ->", stoneId);
-  // console.log("1-StoneService: canStoneBeDragged ->", result);
-  return result;
+    })
+  );
 }
 
 export function getDragStartAction(
@@ -262,23 +257,10 @@ export function getDragStartAction(
       currentTurnPlayerId: currentPlayerTurn,
     })
   ) {
-    // console.log("StoneService: getDragStartAction -> onDragStartHandler");
     return onDragStartHandler;
   } else {
-    console
-      .log
-      // "StoneService: getDragStartAction -> onDragStartHandlerDisallowed"
-      ();
     return onDragStartHandlerDisallowed;
   }
-}
-
-export function shouldHighlightStone(stone: StoneInterface[]) {
-  return stone[0] && stone[0].highlighted;
-}
-
-export function shouldMakeStoneInvisible(stone: StoneInterface[]) {
-  return stone[0] && stone[0].invisible;
 }
 
 export function getStone(allStones: StoneInterface[], id: string) {
