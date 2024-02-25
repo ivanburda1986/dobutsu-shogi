@@ -29,7 +29,7 @@ import {
 import { StoneInterface, stoneType } from "../Session/Board/Stones/Stone";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCqlVC55nc4D2E-SBFfK4twNrUJQoguQ8",
+  apiKey: "AIzaSyCqlVC55nc4D2E-SBFfK4twNrUJQoguQ8I",
   authDomain: "dobutsushogi-43c6e.firebaseapp.com",
   databaseURL:
     "https://dobutsushogi-43c6e-default-rtdb.europe-west1.firebasedatabase.app",
